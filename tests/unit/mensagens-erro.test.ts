@@ -1,0 +1,47 @@
+// T014: tradução de erros do Supabase e das funções SQL para mensagens em pt-BR
+// (RF-007, RF-034): nunca mostrar erro técnico cru e nunca revelar se um email existe.
+import { describe, expect, it } from "vitest";
+import { traduzirErro } from "@/lib/auth/mensagens-erro";
+
+describe("traduzirErro", () => {
+  it("credenciais inválidas: mensagem genérica, sem dizer qual campo errou", () => {
+    const m = traduzirErro({ code: "invalid_credentials", message: "Invalid login credentials" });
+    expect(m).toBe("Email ou senha incorretos.");
+  });
+  it("limite de tentativas (código ou status 429)", () => {
+    expect(traduzirErro({ code: "over_request_rate_limit" })).toMatch(/Muitas tentativas/);
+    expect(traduzirErro({ status: 429 })).toMatch(/Muitas tentativas/);
+  });
+  it("email já cadastrado não revela que a conta existe", () => {
+    const m = traduzirErro({ code: "user_already_exists" });
+    expect(m).not.toMatch(/já (existe|está cadastrado)/i);
+    expect(m).toMatch(/Não foi possível criar a conta/);
+    expect(traduzirErro({ code: "email_exists" })).toBe(m);
+  });
+  it("senha fraca", () => {
+    expect(traduzirErro({ code: "weak_password" })).toMatch(/senha/i);
+  });
+  it("link expirado", () => {
+    expect(traduzirErro({ code: "otp_expired" })).toMatch(/expirou/);
+  });
+  it("email ainda não confirmado", () => {
+    expect(traduzirErro({ code: "email_not_confirmed" })).toMatch(/confirme/i);
+  });
+  it("códigos das funções do banco (message = código)", () => {
+    expect(traduzirErro({ message: "sem_permissao" })).toMatch(/permissão/);
+    expect(traduzirErro({ message: "conflito_situacao" })).toMatch(/mudou/);
+    expect(traduzirErro({ message: "transicao_invalida" })).toMatch(/não é permitida/);
+    expect(traduzirErro({ message: "ultimo_administrador" })).toMatch(/sem administrador|único administrador/);
+    expect(traduzirErro({ message: "nao_encontrado" })).toMatch(/não encontrada/);
+  });
+  it("falha de rede", () => {
+    expect(traduzirErro({ message: "Failed to fetch" })).toMatch(/conexão/i);
+    expect(traduzirErro(new TypeError("fetch failed"))).toMatch(/conexão/i);
+  });
+  it("erro desconhecido ou vazio cai em mensagem genérica, sem texto técnico", () => {
+    const m = traduzirErro({ message: "duplicate key value violates unique constraint xyz" });
+    expect(m).not.toMatch(/duplicate|constraint/);
+    expect(traduzirErro(null)).toBe(m);
+    expect(traduzirErro(undefined)).toBe(m);
+  });
+});
