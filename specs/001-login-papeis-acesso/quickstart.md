@@ -76,16 +76,27 @@ Google real:
 
 ## 5. Checklist de preparação dos ambientes online
 
-- [ ] Projeto Supabase de desenvolvimento e outro de produção criados.
-- [ ] `supabase link` + `supabase db push` aplicados em cada um.
-- [ ] Auth: confirmação de email ligada; senha mínima 8 com letras e números; URL do site e
-  URLs de retorno (preview e produção) cadastradas.
-- [ ] Google Cloud: tela de consentimento **"Em produção"**, escopos básicos; Client ID e
-  Secret colocados no painel do Supabase (não no git); URI de retorno do Supabase autorizada.
-- [ ] SMTP próprio (Resend) configurado **em produção** (depende de domínio; ver
+Ordem recomendada (detalhes e o porquê em [ADR 0003](../../docs/decisions/0003-implantacao-de-migracoes.md)).
+Repita o que for "por ambiente" para **desenvolvimento** e **produção**.
+
+- [ ] Por ambiente: projeto Supabase criado (`imbutanta-dev` e `imbutanta-prod`, plano gratuito).
+- [ ] Vercel: projeto ligado ao GitHub (`main` = produção); Node 22.x; variáveis
+  `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` com o projeto **prod** no escopo
+  Production e o projeto **dev** nos escopos Preview e Development; domínio fixo para `develop`.
+- [ ] Por projeto, em *Authentication → URL Configuration*: Site URL (URL fixa do ambiente) e
+  Redirect URLs (`/auth/callback` e `/auth/confirmar`; no dev, também o curinga dos previews).
+- [ ] Por projeto, em *Authentication*: confirmação de email ligada; senha mínima 8 com letras e
+  números; templates de email em português (`supabase/templates/`).
+- [ ] Google Cloud: tela de consentimento **"Em produção"**, escopos básicos; um client OAuth Web
+  com as duas URIs de retorno `https://<ref>.supabase.co/auth/v1/callback`; Client ID e Secret
+  colocados no painel de cada projeto (não no git).
+- [ ] SMTP próprio (Resend) em **produção** (depende de domínio; ver
   [research.md](research.md#decisao-4)).
-- [ ] Email do dono inserido em `administradores_iniciais` em cada ambiente.
-- [ ] Vercel: projeto ligado ao GitHub; variáveis `NEXT_PUBLIC_SUPABASE_URL` e
-  `NEXT_PUBLIC_SUPABASE_ANON_KEY` por ambiente (Preview = dev, Production = prod).
-- [ ] Branch protection em `main` e `develop` com os testes como exigência (constitution).
+- [ ] Por projeto, integração Supabase + GitHub (*Project Settings → Integrations → GitHub*):
+  repositório conectado, *Deploy to production* ligado, branch `develop` no dev e `main` no prod.
+  A primeira implantação aplica as migrações existentes. (Alternativa: `supabase link` +
+  `supabase db push` à mão.)
+- [ ] Email do dono inserido em `administradores_iniciais` em cada projeto (ADR 0002).
+- [ ] Branch protection em `main` e `develop` exigindo o check `verificar` (e o check do Supabase,
+  se a integração o criar).
 - [ ] Verificação de acessibilidade/mobile registrada no PR (CS-009).

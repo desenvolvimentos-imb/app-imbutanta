@@ -64,5 +64,12 @@ nasce aprovada como administradora.
 ## Publicação
 
 `main` é produção (Vercel Production + projeto Supabase de produção); `develop` e as branches de
-feature usam o ambiente de desenvolvimento. Checklist de configuração dos ambientes online em
+feature usam o ambiente de desenvolvimento (Vercel Preview + projeto Supabase de
+desenvolvimento). As migrações do banco vão para cada projeto pela integração Supabase + GitHub
+ao fazer merge na branch acompanhada ([ADR 0003](docs/decisions/0003-implantacao-de-migracoes.md)).
+Checklist de configuração dos ambientes online em
 [`specs/001-login-papeis-acesso/quickstart.md`](specs/001-login-papeis-acesso/quickstart.md).
+
+**Criando uma migração nova:** `npx supabase migration new nome_curto` (gera o arquivo com data e
+hora) e teste com `npx supabase db reset && npm run test:db`. Nunca edite uma migração já aplicada
+em ambiente online; crie uma nova.

@@ -16,7 +16,8 @@ uma única pessoa e pediu o uso de Supabase e Vercel.
 - **Next.js (App Router) + TypeScript + Tailwind**, hospedado na **Vercel** (plano Hobby).
 - **Supabase** (plano gratuito): Auth (Google + email/senha), Postgres e RLS.
 - Regras de acesso por RLS e funções SQL; papel lido do banco a cada requisição.
-- Dois projetos Supabase gratuitos: desenvolvimento/preview e produção.
+- Dois projetos Supabase gratuitos: desenvolvimento/preview e produção. As migrações são
+  implantadas pela integração Supabase + GitHub (ver [ADR 0003](0003-implantacao-de-migracoes.md)).
 - Email transacional por SMTP próprio (Resend, plano gratuito), pois o SMTP padrão do Supabase
   não atende uso real.
 

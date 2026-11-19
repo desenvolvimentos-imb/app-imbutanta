@@ -148,20 +148,35 @@ mudam com frequência: **reconfirmar nas páginas de preços antes de ir para pr
 
 - **Decisão**:
   - **Local**: Supabase CLI (precisa de Docker) + `next dev`; é onde rodam os testes.
-  - **Desenvolvimento/Preview**: um projeto Supabase gratuito + Vercel Preview (branches de
-    feature e `develop`).
-  - **Produção**: segundo projeto Supabase gratuito + Vercel Production (branch `main`).
-  - Migrações aplicadas com `supabase db push`; CI no GitHub Actions rodando lint, tipos,
-    Vitest, `supabase test db` e Playwright.
-- **Justificativa**: o plano gratuito do Supabase permite 2 projetos ativos, o que cabe
-  exatamente nesse desenho e separa dados de teste dos reais (LGPD).
+  - **Desenvolvimento/Preview**: um projeto Supabase gratuito (`imbutanta-dev`) + Vercel Preview
+    (branch `develop` e branches de feature).
+  - **Produção**: segundo projeto Supabase gratuito (`imbutanta-prod`) + Vercel Production
+    (branch `main`).
+  - **Migrações**: aplicadas pela **integração do Supabase com o GitHub** ("Deploy to
+    production"), uma integração por projeto: o projeto dev acompanha a branch `develop` e o
+    projeto prod acompanha a `main`. Detalhes em
+    [ADR 0003](../../docs/decisions/0003-implantacao-de-migracoes.md).
+  - CI no GitHub Actions rodando lint, tipos, Vitest, `supabase test db` e Playwright.
+- **Justificativa**: a integração com o GitHub é gratuita e dispensa guardar token do Supabase
+  nos segredos do GitHub. O **Supabase Branching** (banco de preview por PR) exige o plano Pro,
+  então fica fora (constituição VI). Dois projetos gratuitos separam dados de teste dos reais
+  (LGPD) e é o máximo que o plano gratuito permite.
+- **Alternativa considerada, um único projeto**: `develop`, previews e produção compartilhando o
+  mesmo banco. Funciona no plano gratuito e economiza configuração, mas testes e previews
+  escreveriam em dados reais de membros (risco de privacidade) e uma migração com defeito
+  derrubaria a produção. Rejeitada.
+- **Fallback**: se a integração não oferecer o "Deploy to production" no plano gratuito, usar um
+  workflow do GitHub Actions com `supabase db push` (precisa de `SUPABASE_ACCESS_TOKEN`, senha
+  do banco e `project-ref` como segredos do GitHub).
+- **Configurações de Auth (Site URL, Google, SMTP, senha) não são implantadas pela integração**
+  (ela só leva migrações, funções e buckets); são feitas à mão no painel de cada projeto.
 - **Risco**: projetos gratuitos do Supabase **pausam após ~1 semana sem atividade**. Em
   produção, o uso semanal da igreja evita; no projeto de desenvolvimento, aceitar a pausa e
-  restaurar quando necessário. Mitigação futura, se preciso: tarefa agendada que faz uma
-  consulta leve.
-- **Variáveis de ambiente** (nunca no git; ver `.env.example` a criar na implementação):
-  `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (chave pública, protegida por
-  RLS). Chave `service_role` **não** é configurada no app.
+  restaurar quando necessário.
+- **Variáveis de ambiente** (nunca no git; ver `.env.example`): `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY` (chave pública, protegida por RLS). Chave `service_role`
+  **não** é configurada no app. Na Vercel: escopo Production aponta para o projeto prod; escopo
+  Preview (e Development) para o projeto dev.
 
 ## Decisão 13: Mensagens de erro em pt-BR
 

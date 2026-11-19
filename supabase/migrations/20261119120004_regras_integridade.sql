@@ -2,7 +2,7 @@
 -- até contra alteração direta (rebaixar, remover acesso ou apagar a conta do último).
 --
 -- Observação: a proteção de campos (usuário só edita o próprio `nome`) já está nas
--- permissões por coluna de 0003_rls_perfis.sql; não é preciso um gatilho para isso.
+-- permissões por coluna de 20261119120003_rls_perfis.sql; não é preciso um gatilho para isso.
 
 create function public.proteger_ultimo_administrador()
 returns trigger

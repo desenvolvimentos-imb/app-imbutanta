@@ -59,10 +59,10 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Implementação da fundação
 
-- [X] T017 Criar migração com enums `situacao_conta` e `papel_usuario`, tabela `perfis` (campos e restrições do [data-model.md](data-model.md)) e tabela `administradores_iniciais` (vazia, sem acesso para usuários) em `supabase/migrations/0001_perfis.sql`
-- [X] T018 Na migração `supabase/migrations/0002_gatilhos_auth.sql`, criar os gatilhos em `auth.users`: criação do perfil `pendente`/`membro` com nome dos metadados (ou nome da conta Google), sincronia de `email`/`email_verificado` e aplicação do administrador inicial (faz T009 e T010 passarem)
-- [X] T019 Criar a função auxiliar `perfil_atual()` (`security definer`, `stable`, `search_path` fixo) e habilitar RLS com as políticas de `perfis` em `supabase/migrations/0003_rls_perfis.sql` (faz T011 passar)
-- [X] T020 Criar a proteção de campos (usuário comum só altera o próprio `nome`, feita por **permissões por coluna** em 0003, mais simples que um gatilho) e o gatilho do último administrador em `supabase/migrations/0004_regras_integridade.sql` (faz T011 e T012 passarem)
+- [X] T017 Criar migração com enums `situacao_conta` e `papel_usuario`, tabela `perfis` (campos e restrições do [data-model.md](data-model.md)) e tabela `administradores_iniciais` (vazia, sem acesso para usuários) em `supabase/migrations/20261119120001_perfis.sql`
+- [X] T018 Na migração `supabase/migrations/20261119120002_gatilhos_auth.sql`, criar os gatilhos em `auth.users`: criação do perfil `pendente`/`membro` com nome dos metadados (ou nome da conta Google), sincronia de `email`/`email_verificado` e aplicação do administrador inicial (faz T009 e T010 passarem)
+- [X] T019 Criar a função auxiliar `perfil_atual()` (`security definer`, `stable`, `search_path` fixo) e habilitar RLS com as políticas de `perfis` em `supabase/migrations/20261119120003_rls_perfis.sql` (faz T011 passar)
+- [X] T020 Criar a proteção de campos (usuário comum só altera o próprio `nome`, feita por **permissões por coluna** em 0003, mais simples que um gatilho) e o gatilho do último administrador em `supabase/migrations/20261119120004_regras_integridade.sql` (faz T011 e T012 passarem)
 - [X] T021 [P] Implementar `src/lib/auth/validacao.ts` com esquemas Zod de nome, email e senha, mensagens em pt-BR (faz T013 passar)
 - [X] T022 [P] Implementar `src/lib/auth/mensagens-erro.ts` mapeando códigos do Supabase e códigos das funções SQL (`sem_permissao`, `conflito_situacao`, `transicao_invalida`, `ultimo_administrador`, `nao_encontrado`, `over_request_rate_limit`) para pt-BR, com fallback genérico (faz T014 passar)
 - [X] T023 [P] Implementar `src/lib/auth/redirecionamento.ts` com `caminhoVoltarSeguro` (faz T015 passar)
@@ -137,7 +137,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Implementação da História 3
 
-- [X] T047 [US3] Criar a função `decidir_cadastro` conforme [contracts/banco-rpc.md](contracts/banco-rpc.md) em `supabase/migrations/0005_decidir_cadastro.sql` (faz T045 passar)
+- [X] T047 [US3] Criar a função `decidir_cadastro` conforme [contracts/banco-rpc.md](contracts/banco-rpc.md) em `supabase/migrations/20261119120005_decidir_cadastro.sql` (faz T045 passar)
 - [X] T048 [US3] Criar `src/app/(app)/aprovacoes/page.tsx` listando pendentes com email verificado (nome e data em America/Sao_Paulo, formato brasileiro), guardado por `podeAcessar` (admin e líder), e a Server Action de aprovar/recusar em `src/app/(app)/aprovacoes/actions.ts` com `situacao_esperada` e tradução de erros
 - [X] T049 [US3] Mostrar a contagem de pendentes no atalho "Aprovar cadastros" em `src/app/(app)/inicio/page.tsx`
 - [X] T050 [US3] Documentar no `README.md` e em `docs/decisions/0002-administrador-inicial.md` como inserir o email do dono em `administradores_iniciais` em cada ambiente (SQL de exemplo, sem email real)
@@ -180,7 +180,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Implementação da História 5
 
-- [X] T058 [US5] Criar a função `excluir_minha_conta` em `supabase/migrations/0006_excluir_conta.sql` (faz T056 passar); se o Supabase não permitir apagar `auth.users` por função SQL, registrar o plano B em `docs/decisions/0003-exclusao-de-conta.md` (rota de servidor com `service_role`, protegida) e ajustar [contracts/banco-rpc.md](contracts/banco-rpc.md)
+- [X] T058 [US5] Criar a função `excluir_minha_conta` em `supabase/migrations/20261119120006_excluir_conta.sql` (faz T056 passar); se o Supabase não permitir apagar `auth.users` por função SQL, registrar o plano B em `docs/decisions/0004-exclusao-de-conta.md` (rota de servidor com `service_role`, protegida) e ajustar [contracts/banco-rpc.md](contracts/banco-rpc.md)
 - [X] T059 [US5] Adicionar a seção "Excluir minha conta" em `src/app/(app)/conta/page.tsx` com confirmação em duas etapas (explica o que será apagado) e a Server Action em `src/app/(app)/conta/actions.ts` (chama a função, encerra a sessão, redireciona a `/entrar`)
 - [X] T060 [P] [US5] Oferecer a exclusão também nas telas `cadastro-recusado` e `acesso-removido` em `src/app/(situacao)/`, reutilizando o componente de confirmação em `src/components/ExcluirConta.tsx`
 
@@ -201,7 +201,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Implementação da História 6
 
-- [X] T063 [US6] Criar `alterar_papel` e `alterar_situacao` em `supabase/migrations/0007_gestao_usuarios.sql` (faz T061 passar)
+- [X] T063 [US6] Criar `alterar_papel` e `alterar_situacao` em `supabase/migrations/20261119120007_gestao_usuarios.sql` (faz T061 passar)
 - [X] T064 [US6] Criar `src/app/(app)/usuarios/page.tsx` (lista com filtro por situação, papel atual, ações de alterar papel, remover/restaurar acesso e reaprovar recusados; somente administrador) e `src/app/(app)/usuarios/actions.ts` com `situacao_esperada` e tradução de erros
 - [X] T065 [US6] Registrar no `data-model.md` a nota de que a tabela de participação em ministérios fica para a funcionalidade futura (já descrito); conferir que nenhuma tabela de ministério foi criada
 
