@@ -1,4 +1,4 @@
-# Como contribuir com o Imbutanta
+# Como contribuir com o IM Butantã
 
 Este guia é o passo a passo prático do fluxo de trabalho. As regras e o porquê estão na
 [constituição do projeto](.specify/memory/constitution.md), que prevalece em caso de dúvida.
