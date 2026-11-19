@@ -3,7 +3,7 @@ import "./globals.css";
 import { RegistrarServiceWorker } from "@/components/RegistrarServiceWorker";
 
 export const metadata: Metadata = {
-  title: { default: "Imbutanta", template: "%s | Imbutanta" },
+  title: { default: "IM Butantã", template: "%s | IM Butantã" },
   description: "Escalas, informativos e estudos da Igreja Metodista no Butantã.",
   icons: { apple: "/icons/apple-touch-icon.png" },
 };

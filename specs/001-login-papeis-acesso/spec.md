@@ -6,7 +6,7 @@
 
 **Status**: Rascunho
 
-**Entrada**: Descrição do usuário: "Login e papéis de acesso do app Imbutanta (Igreja Metodista no Butantã): entrar com Google ou email e senha, cadastro com aprovação, papéis (administrador, líder de ministério e membro), tela inicial por papel, recuperação de acesso, saída e exclusão de conta (LGPD)."
+**Entrada**: Descrição do usuário: "Login e papéis de acesso do app IM Butantã (Igreja Metodista no Butantã): entrar com Google ou email e senha, cadastro com aprovação, papéis (administrador, líder de ministério e membro), tela inicial por papel, recuperação de acesso, saída e exclusão de conta (LGPD)."
 
 ## Cenários de Usuário e Testes *(obrigatório)*
 

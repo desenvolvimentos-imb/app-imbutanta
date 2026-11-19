@@ -43,19 +43,25 @@ mudam com frequência: **reconfirmar nas páginas de preços antes de ir para pr
 
 ## Decisão 4: Email transacional (confirmação e recuperação) {#decisao-4}
 
-- **Decisão**: configurar **SMTP próprio** no Supabase usando **Resend** (plano gratuito) como
-  provedor, com remetente em domínio verificado. Em desenvolvimento local, usar o Mailpit que
-  vem com o Supabase CLI.
-- **Justificativa**: o SMTP padrão do Supabase tem cota muito baixa e só entrega para membros
-  da equipe do projeto; serve para testar, não para a igreja (RF-027, premissa de confirmação
-  de email). Resend gratuito (~3.000/mês, 100/dia) cobre com folga o volume esperado.
-- **Risco/ação do dono**: provedores gratuitos exigem domínio verificado. Se a igreja não tem
-  domínio, é preciso decidir: (a) comprar um domínio (pequeno custo anual, requer emenda ou
-  aceite explícito da constitution VI), ou (b) usar um domínio já existente da igreja/pessoal
-  apenas para o DNS do remetente. **Decisão pendente do Arthur**; não bloqueia desenvolvimento
-  local nem login por Google.
-- **Alternativas**: Brevo (300/dia grátis, também pede validação de remetente); Gmail SMTP
-  (frágil e contra os termos para envio de aplicação); depender do SMTP padrão (inviável).
+- **Decisão (revista em 2026-11-19)**: usar **SMTP próprio no Supabase com uma conta Gmail e
+  "senha de app"** (guia oficial: *Using Google SMTP with Supabase Custom SMTP*). Em
+  desenvolvimento local, continua o Mailpit que vem com o Supabase CLI. O Resend (plano
+  gratuito) fica como alternativa para quando houver um domínio.
+- **Justificativa**: o SMTP padrão do Supabase só entrega para membros da equipe do projeto e,
+  desde as mudanças recentes do painel, **nem permite editar os templates de email** sem SMTP
+  próprio. O Gmail com senha de app é gratuito, **não exige domínio** e o Supabase documenta o uso.
+  A conta precisa de verificação em duas etapas ligada (requisito para criar a senha de app).
+- **Limites e cuidados**: o Gmail tem cotas diárias de envio próprias (confira a cota atual no
+  Google; para os poucos emails de confirmação de uma igreja, costuma bastar), o remetente
+  aparece como o endereço Gmail (o nome exibido pode ser "IM Butantã") e o Google pode bloquear a
+  conta se detectar envio suspeito. Com SMTP próprio o Supabase limita a 30 emails/hora por
+  padrão (ajustável em *Authentication → Rate Limits*). Use uma conta dedicada ao app, não a
+  pessoal, e guarde a senha de app só no painel do Supabase.
+- **Resend**: o plano gratuito (~3.000 emails/mês, 100/dia, 1 domínio) só envia para qualquer
+  destinatário depois de **verificar um domínio** por DNS; sem domínio, só permite testes para o
+  próprio dono da conta. Vira a melhor opção se a igreja passar a ter um domínio.
+- **Alternativas**: Brevo (300/dia grátis, também pede validação de remetente); depender do SMTP
+  padrão (inviável: sem templates e sem entrega a terceiros).
 
 ## Decisão 5: Login com Google e vinculação de contas
 

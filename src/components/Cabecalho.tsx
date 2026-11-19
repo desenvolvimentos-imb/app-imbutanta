@@ -6,7 +6,7 @@ import { atalhosPorPapel, type Papel } from "@/lib/auth/permissoes";
 export function Cabecalho({ titulo }: { titulo?: string }) {
   return (
     <header className="border-b border-slate-300 bg-blue-900 px-4 py-3 text-white">
-      <p className="mx-auto max-w-xl text-lg font-semibold">{titulo ?? "Imbutanta"}</p>
+      <p className="mx-auto max-w-xl text-lg font-semibold">{titulo ?? "IM Butantã"}</p>
     </header>
   );
 }

@@ -1,4 +1,4 @@
-# Imbutanta
+# IM Butantã
 
 App web (PWA) da Igreja Metodista no Butantã: escalas dos ministérios, informativos e área de
 estudos. Tudo é escrito em português do Brasil. Regras do projeto: veja a
