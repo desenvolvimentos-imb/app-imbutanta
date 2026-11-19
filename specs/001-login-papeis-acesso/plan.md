@@ -6,7 +6,7 @@
 
 ## Resumo
 
-Primeira funcionalidade do app Imbutanta: cadastro e login (Google e email/senha), fila de
+Primeira funcionalidade do app IM Butantã: cadastro e login (Google e email/senha), fila de
 aprovação, três papéis (administrador, líder de ministério, membro), tela inicial por papel,
 recuperação de senha, saída e exclusão de conta (LGPD).
 
@@ -62,7 +62,11 @@ Resumo; números e fontes em [research.md](research.md#limites-gratuitos).
 | Resend (SMTP) | ~3.000 emails/mês, 100/dia, 1 domínio | Envios recusados até o dia/mês virar |
 | Google Cloud (OAuth) | Gratuito para login básico (email, perfil) | Sem custo; app precisa estar "Em produção" na tela de consentimento |
 
-**Pendência que depende do dono do projeto**: o envio de email de confirmação e de
+**Atualização (2026-11-19)**: o plano do SMTP foi revisto: usar uma conta Gmail com senha de
+app (sem domínio) e deixar o Resend para quando houver domínio; ver
+[research.md](research.md#decisao-4). O texto abaixo é o da versão original.
+
+**Pendência original**: o envio de email de confirmação e de
 recuperação precisa de um SMTP próprio, e provedores gratuitos exigem **um domínio verificado**
 (DNS). Se a igreja não tiver domínio, será preciso um (custo anual, fora do "custo zero") ou
 um provedor que aceite remetente sem domínio próprio. Registrado como risco em

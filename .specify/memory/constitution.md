@@ -1,17 +1,17 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 → 1.1.0
-- Modified principles: nenhum renomeado
-- Added sections: Princípio VII (Documentação Completa em pt-BR); fluxo de branches
-  main/develop/feature em "Fluxo de Desenvolvimento"
-- Modified sections: "Fluxo de Desenvolvimento" (regra genérica de branch principal
-  substituída pelo fluxo main/develop/feature); "Restrições Técnicas" (idioma ampliado)
-- Removed sections: nenhum
-- Follow-up TODOs: criar CONTRIBUTING.md (passo a passo de branches/PR), configurar branch
-  protection no GitHub e criar docs/decisions/ para registros de decisão. Stack concreta
-  adiada para /speckit-plan.
+- Version change: 1.1.0 → 1.1.1 (PATCH: correção de redação)
+- Modified principles: nenhum
+- Added sections: nenhuma
+- Modified sections: título do documento ("Imbutanta Constitution" → "IM Butantã Constitution"),
+  para refletir o nome oficial do app
+- Removed sections: nenhuma
+- Impacto em especificações, planos e tarefas: nenhum (apenas o nome exibido nos textos, já
+  ajustado nos demais documentos no mesmo PR)
+- Follow-up TODOs (herdados da 1.1.0): configurar branch protection no GitHub e manter
+  docs/decisions/ atualizado. Stack concreta definida em /speckit-plan da funcionalidade 001.
 -->
-# Imbutanta Constitution
+# IM Butantã Constitution
 
 App web da Igreja Metodista no Butantã: escalas dos ministérios, informativos da igreja e
 área de estudos (vídeos, fotos e quiz).
@@ -148,4 +148,4 @@ Racional: o projeto sobreviverá a quem o criou; a memória deve estar no reposi
 - Revisão periódica: a constitution MUST ser revisada a cada novo marco do projeto ou ao
   menos a cada seis meses.
 
-**Version**: 1.1.0 | **Ratified**: 2026-11-18 | **Last Amended**: 2026-11-18
+**Version**: 1.1.1 | **Ratified**: 2026-11-18 | **Last Amended**: 2026-11-19

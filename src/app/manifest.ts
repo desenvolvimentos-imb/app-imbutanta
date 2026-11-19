@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Imbutanta - Igreja Metodista no Butantã",
-    short_name: "Imbutanta",
+    name: "IM Butantã - Igreja Metodista no Butantã",
+    short_name: "IM Butantã",
     description: "Escalas, informativos e estudos da Igreja Metodista no Butantã.",
     lang: "pt-BR",
     start_url: "/inicio",
