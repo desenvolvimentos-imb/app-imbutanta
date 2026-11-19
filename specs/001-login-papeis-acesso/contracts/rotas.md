@@ -27,6 +27,8 @@ Fonte única: `lib/auth/sessao.ts`.
 | `/redefinir-senha` | via link de email válido | Definir nova senha; link expirado mostra aviso e oferece novo pedido |
 | `/auth/callback` | navegador, após Google | Troca o código PKCE por sessão e redireciona conforme a situação |
 | `/auth/confirmar` | navegador, via link de email | Confirma email ou valida recuperação e redireciona |
+| `/privacidade` | qualquer pessoa, com ou sem login | Política de Privacidade (dados guardados, uso, direitos, contato) |
+| `/termos` | qualquer pessoa, com ou sem login | Termos de Uso |
 | `/aguardando-aprovacao` | logada `pendente` | Explica que o cadastro aguarda aprovação; permite sair |
 | `/cadastro-recusado` | logada `recusado` | Informa que o cadastro não foi aprovado; permite sair e excluir conta |
 | `/acesso-removido` | logada `acesso_removido` | Informa que o acesso foi removido; permite sair e excluir conta |
@@ -35,7 +37,7 @@ Fonte única: `lib/auth/sessao.ts`.
 | `/usuarios` | `aprovado` + `administrador` | Lista de usuários, alterar papel/situação |
 | `/conta` | `aprovado` | Dados da conta, sair e excluir a própria conta com confirmação |
 
-`/entrar`, `/cadastrar`, `/recuperar-senha`, `/redefinir-senha`, `/auth/*` e as três telas de
+`/entrar`, `/cadastrar`, `/recuperar-senha`, `/redefinir-senha`, `/privacidade`, `/termos`, `/auth/*` e as três telas de
 situação são as **únicas** acessíveis sem conta aprovada (RF-024). Qualquer outra rota,
 inclusive inexistente, exige login.
 
