@@ -1,0 +1,55 @@
+# Integração contínua: roda a cada PR para `develop`/`main` (constituição, quality gates).
+# Sem tudo verde, não há merge.
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Valores falsos: só existem para o Supabase local aceitar o provedor Google.
+      - name: Preparar variáveis do Supabase local
+        run: |
+          printf 'SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=ci-dummy\nSUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=ci-dummy\n' > supabase/.env
+
+      - name: Subir Supabase local
+        run: supabase start
+
+      - name: Testes de banco (pgTAP)
+        run: supabase test db
+
+      - name: Preparar variáveis do app para os testes ponta a ponta
+        run: |
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$(supabase status -o env | grep -E '^(ANON_KEY|PUBLISHABLE_KEY)=' | head -n1 | cut -d= -f2- | tr -d '\"')"
+          } > .env.local
+
+      - run: npx playwright install --with-deps chromium
+      - name: Testes ponta a ponta
+        run: npm run test:e2e
+
+      - name: Parar Supabase local
+        if: always()
+        run: supabase stop
