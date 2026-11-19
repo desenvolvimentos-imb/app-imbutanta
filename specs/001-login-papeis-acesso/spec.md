@@ -167,7 +167,7 @@ O administrador vê a lista de usuários aprovados e pode alterar o papel de cad
 **Tela inicial e acesso**
 
 - **RF-023**: Após entrar, a pessoa MUST ver uma tela inicial que muda conforme o seu papel, mostrando somente as ações permitidas a ele.
-- **RF-024**: Todas as páginas do app, exceto cadastro, login, recuperação de conta e as telas de situação da conta, MUST exigir login.
+- **RF-024**: Todas as páginas do app, exceto cadastro, login, recuperação de conta, as telas de situação da conta e as páginas legais públicas (Política de Privacidade e Termos de Uso), MUST exigir login. *(Páginas legais acrescentadas em 2026-11-19: o Google exige links públicos para publicar o login e a LGPD pede transparência; nenhum conteúdo do app é exposto sem login.)*
 - **RF-025**: O modelo de informativos futuros MUST prever a marcação "público" definida no momento da criação; nesta funcionalidade nenhuma tela pública é criada nem conteúdo é exposto sem login.
 - **RF-026**: Mudanças de papel ou de situação da conta MUST passar a valer sem exigir que a pessoa saia e entre novamente.
 

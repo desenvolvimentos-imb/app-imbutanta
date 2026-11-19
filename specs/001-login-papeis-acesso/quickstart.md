@@ -87,6 +87,8 @@ Repita o que for "por ambiente" para **desenvolvimento** e **produção**.
   Redirect URLs (`/auth/callback` e `/auth/confirmar`; no dev, também o curinga dos previews).
 - [ ] Por projeto, em *Authentication*: confirmação de email ligada; senha mínima 8 com letras e
   números; templates de email em português (`supabase/templates/`).
+- [ ] Vercel: variável `EMAIL_CONTATO` (email da igreja para pedidos sobre dados) em Production e Preview;
+  aparece em `/privacidade` e `/termos`. Redeploy depois de criar.
 - [ ] Google Cloud: tela de consentimento **"Em produção"**, escopos básicos; um client OAuth Web
   com as duas URIs de retorno `https://<ref>.supabase.co/auth/v1/callback`; Client ID e Secret
   colocados no painel de cada projeto (não no git).

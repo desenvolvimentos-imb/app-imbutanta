@@ -5,7 +5,16 @@ import { NextResponse, type NextRequest } from "next/server";
 import { renovarSessao } from "@/lib/supabase/proxy";
 
 // Rotas acessíveis sem login (RF-024). As telas de situação exigem login, mas não aprovação.
-const ROTAS_PUBLICAS = ["/entrar", "/cadastrar", "/recuperar-senha", "/redefinir-senha", "/auth"];
+// "/privacidade" e "/termos" são páginas legais abertas a todos (exigidas pelo Google e pela LGPD).
+const ROTAS_PUBLICAS = [
+  "/entrar",
+  "/cadastrar",
+  "/recuperar-senha",
+  "/redefinir-senha",
+  "/privacidade",
+  "/termos",
+  "/auth",
+];
 
 const ehPublica = (caminho: string) =>
   ROTAS_PUBLICAS.some((r) => caminho === r || caminho.startsWith(`${r}/`));

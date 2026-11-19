@@ -15,6 +15,17 @@ export default async function PaginaCadastrar() {
       <BotaoGoogle />
       <p className="text-center text-slate-700">ou use o seu email</p>
       <FormularioCadastro />
+      <p className="text-center text-sm text-slate-700">
+        Ao criar a conta, você concorda com os{" "}
+        <Link href="/termos" className="font-semibold text-blue-900 underline">
+          Termos de Uso
+        </Link>{" "}
+        e a{" "}
+        <Link href="/privacidade" className="font-semibold text-blue-900 underline">
+          Política de Privacidade
+        </Link>
+        .
+      </p>
       <p className="text-center">
         Já tem conta?{" "}
         <Link href="/entrar" className="font-semibold text-blue-900 underline">

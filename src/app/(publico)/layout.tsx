@@ -1,3 +1,5 @@
+import { RodapeLegal } from "@/components/RodapeLegal";
+
 // Telas sem login: entrar, cadastrar, recuperar e redefinir senha.
 // Layout centralizado, pensado para celular.
 export default function LayoutPublico({ children }: { children: React.ReactNode }) {
@@ -5,6 +7,7 @@ export default function LayoutPublico({ children }: { children: React.ReactNode 
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-8">
       <p className="text-center text-2xl font-bold text-blue-900">IM Butantã</p>
       {children}
+      <RodapeLegal />
     </main>
   );
 }
