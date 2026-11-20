@@ -3,15 +3,10 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { criarClienteServidor } from "@/lib/supabase/server";
-import { destinoPara, rotaDaSituacao, type Papel, type Situacao } from "./permissoes";
+import { destinoPara, rotaDaSituacao } from "./permissoes";
+import { perfilOuFalha, type Perfil } from "./perfil";
 
-export type Perfil = {
-  id: string;
-  nome: string;
-  email: string;
-  situacao: Situacao;
-  papel: Papel;
-};
+export type { Perfil } from "./perfil";
 
 // `cache` evita consultar duas vezes na mesma requisição (layout + página).
 export const obterSessao = cache(async (): Promise<Perfil | null> => {
@@ -21,22 +16,14 @@ export const obterSessao = cache(async (): Promise<Perfil | null> => {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data } = await supabase
+  const consulta = await supabase
     .from("perfis")
     .select("id, nome, email, situacao, papel")
     .eq("id", user.id)
     .maybeSingle();
 
-  // Sem perfil (não deveria acontecer): trata como pendente, ou seja, sem acesso algum.
-  return (
-    (data as Perfil | null) ?? {
-      id: user.id,
-      nome: user.email ?? "",
-      email: user.email ?? "",
-      situacao: "pendente",
-      papel: "membro",
-    }
-  );
+  // Falha do banco ou perfil ausente viram um erro claro (ver perfil.ts), não "pendente".
+  return perfilOuFalha(consulta as Parameters<typeof perfilOuFalha>[0], user);
 });
 
 // Para páginas que exigem login: sem sessão, vai para /entrar.
