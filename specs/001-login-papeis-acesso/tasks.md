@@ -29,7 +29,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 **Objetivo**: criar o projeto e as ferramentas básicas.
 
-- [X] T001 Criar a branch `develop` a partir de `main` e preparar o PR da feature para `develop` (constitution, fluxo de branches); anotar no `CONTRIBUTING.md` se algo mudar *(branches `main` e `develop` já existiam e a feature sai de `develop`; o PR ainda não foi aberto)*
+- [X] T001 Criar a branch `develop` a partir de `main` e preparar o PR da feature para `develop` (constitution, fluxo de branches); anotar no `CONTRIBUTING.md` se algo mudar *(branches `main` e `develop` já existiam e a feature saiu de `develop`)*
 - [X] T002 Criar o projeto Next.js 16 (App Router, TypeScript, Tailwind, ESLint) na raiz do repositório, com `src/app/layout.tsx` em `lang="pt-BR"` e Node 22 fixado em `package.json` (`engines`)
 - [X] T003 [P] Instalar dependências `@supabase/supabase-js`, `@supabase/ssr`, `zod` e de teste (`vitest`, `@playwright/test`) em `package.json`, com scripts `lint`, `typecheck`, `test`, `test:e2e`
 - [X] T004 [P] Inicializar o Supabase CLI (`supabase init`) criando `supabase/config.toml`; ajustar Auth: confirmação de email ligada, senha mínima 8 com letras e números, URLs de retorno locais, provedor Google (lendo Client ID/Secret de variáveis de ambiente)
@@ -224,6 +224,21 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ---
 
+## Fase 10: Concessões para colocar o app no ar
+
+**Objetivo**: registrar o que foi feito além do plano original, por exigência de serviços externos
+ou por problemas descobertos ao publicar. Nada aqui amplia o escopo funcional da feature.
+
+- [X] T074 Criar as páginas públicas `/privacidade` e `/termos` (`src/app/(legal)/`, `src/components/RodapeLegal.tsx`, `src/lib/contato.ts` lendo `EMAIL_CONTATO`) e liberá-las no `proxy.ts`; teste em `tests/e2e/paginas-legais.spec.ts`. **Motivo**: o Google exige links públicos para publicar o login e a LGPD pede transparência; altera o RF-024 (nota no `spec.md`)
+- [X] T075 Mostrar erro claro quando o perfil não pode ser lido (`src/lib/auth/perfil.ts`, `src/app/error.tsx`, `src/lib/auth/sessao.ts`; testes `tests/unit/perfil.test.ts` e `tests/e2e/erro-claro.spec.ts`). **Motivo**: sem as migrações aplicadas, o app mostrava "aguardando aprovação" com o email como nome, escondendo o problema real
+- [X] T076 Registrar no log do servidor o motivo real de erros do Auth sem tradução, ocultando emails (`src/lib/auth/mensagens-erro.ts`, teste em `tests/unit/mensagens-erro.test.ts`). **Motivo**: o cadastro falhou por SMTP recusado e a tela só dizia "Algo deu errado"
+- [X] T077 Trocar o SMTP planejado (Resend, exige domínio) por Gmail com senha de app e documentar o diagnóstico (ADR 0001, `research.md`, `quickstart.md`). **Motivo**: a igreja não tem domínio; custo zero (constitution VI)
+- [X] T078 Tornar o repositório público e documentar a decisão em `docs/decisions/0004-repositorio-publico.md`. **Motivo**: no plano Hobby da Vercel, repositório privado só implanta commits do dono da conta
+- [X] T079 Aplicar as migrações no Supabase de desenvolvimento pelo SQL Editor e registrar o histórico na mão (ADR 0003, seção de atualização). **Motivo**: a integração Supabase + GitHub não aplicou as migrações sozinha no plano gratuito
+- [X] T080 Corrigir o nome do app para "IM Butantã" em código, documentos e constitution (v1.1.1), e emendar a constitution (v1.2.0) para permitir que ajustes da mesma funcionalidade dividam a branch e o PR
+
+---
+
 ## Dependências e ordem de execução
 
 ### Entre fases
@@ -276,7 +291,7 @@ Em paralelo: T021, T022, T023, T024, T025, T028, T029
 2. US1 → US2 → US3 (MVP).
 3. US4 (recuperação) e US5 (exclusão) em seguida; são exigências de privacidade/usabilidade e devem estar antes de abrir o app a toda a igreja.
 4. US6 (gestão de papéis) por último; até lá o dono promove líderes por SQL.
-5. Um PR por história, pequeno e focado, apontando para `develop` (constitution).
+5. Um PR por história, pequeno e focado, apontando para `develop` (constitution). Na prática, a feature foi entregue em poucos PRs maiores; ver a Fase 10 e as notas abaixo.
 
 ### Observações
 
@@ -287,10 +302,12 @@ Em paralelo: T021, T022, T023, T024, T025, T028, T029
 
 ---
 
-## Notas de implementação (2026-11-19)
+## Notas de implementação (atualizadas em 2026-11-20)
 
-- **Estado**: fases 1 a 8 concluídas e verificadas localmente (lint, tipos, 38 testes Vitest, 8 arquivos pgTAP, 29 testes Playwright com axe-core, build de produção). Nada foi commitado.
-- **Pendentes**: nenhum. T067, T068 e T070–T073 foram concluídos em 2026-11-20 com a validação do mantenedor nos ambientes online (desenvolvimento e produção). Opcionais que ficaram fora: licença do repositório e revisão dos textos legais pela liderança.
-- **Ordem "vermelho antes de verde"**: nas fases 2 e 3 os testes foram escritos antes, mas migrações e código foram escritos logo em seguida, antes de ver cada teste falhar isoladamente. Nas demais histórias o ciclo foi o previsto.
+- **Estado**: fases 1 a 10 concluídas e validadas, localmente e nos ambientes online (lint, tipos, 45 testes Vitest, 8 arquivos pgTAP, 41 testes Playwright com axe-core, build de produção; CI do GitHub verde).
+- **Pendentes**: nenhum. Opcionais fora do escopo: licença do repositório e revisão dos textos legais pela liderança.
+- **Ordem "vermelho antes de verde"**: nas fases 2 e 3 os testes foram escritos antes, mas migrações e código foram escritos logo em seguida, antes de ver cada teste falhar isoladamente. Nas demais histórias e nas tarefas da Fase 10 o ciclo foi o previsto.
 - **Desvio do plano**: o Next.js 16 gerado vinha com `cacheComponents` ligado; foi desligado em `next.config.ts` porque todas as telas dependem de quem está logado.
 - **Desvio do contrato**: nas funções SQL a mensagem do erro é exatamente o código (ex.: `sem_permissao`).
+- **Medições do T068**: o mantenedor confirmou carga dentro do limite (Slow 4G) e fluxos com até 3 toques, mas os números exatos não foram anotados.
+- **Cobertura que ficou só no teste manual**: pessoa recusada que tenta recriar a conta com o mesmo email (o cadastro responde de forma neutra para emails existentes, então não burla a recusa, mas não há teste automatizado dedicado); limite de tentativas de login (RF-032), que depende do Supabase e só tem teste da mensagem.

@@ -66,4 +66,12 @@ describe("traduzirErro", () => {
     expect(log).not.toHaveBeenCalled();
     log.mockRestore();
   });
+  it("o log não grava emails de pessoas (dados mínimos, LGPD)", () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    traduzirErro({ code: "email_address_invalid", message: 'Email address "maria@exemplo.com" is invalid' });
+    const registrado = JSON.stringify(log.mock.calls[0]);
+    expect(registrado).not.toContain("maria@exemplo.com");
+    expect(registrado).toContain("email_address_invalid");
+    log.mockRestore();
+  });
 });

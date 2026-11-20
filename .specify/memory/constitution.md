@@ -1,15 +1,16 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.0 → 1.1.1 (PATCH: correção de redação)
+- Version change: 1.1.1 → 1.2.0 (MINOR: regra de branches ampliada)
 - Modified principles: nenhum
 - Added sections: nenhuma
-- Modified sections: título do documento ("Imbutanta Constitution" → "IM Butantã Constitution"),
-  para refletir o nome oficial do app
+- Modified sections: Fluxo de Desenvolvimento (branches): ajustes e correções da mesma
+  funcionalidade passam a poder dividir a branch e o PR da funcionalidade
 - Removed sections: nenhuma
-- Impacto em especificações, planos e tarefas: nenhum (apenas o nome exibido nos textos, já
-  ajustado nos demais documentos no mesmo PR)
-- Follow-up TODOs (herdados da 1.1.0): configurar branch protection no GitHub e manter
-  docs/decisions/ atualizado. Stack concreta definida em /speckit-plan da funcionalidade 001.
+- Motivo: na feature 001 cada correção ganhou branch e PR próprios, gerando dezenas de branches
+  e um histórico fragmentado; o mantenedor decidiu agrupar o trabalho por funcionalidade
+- Impacto em especificações, planos e tarefas: CONTRIBUTING.md atualizado no mesmo PR; nenhuma
+  especificação, plano ou tarefa precisa mudar
+- Follow-up TODOs: manter docs/decisions/ atualizado.
 -->
 # IM Butantã Constitution
 
@@ -122,9 +123,12 @@ Racional: o projeto sobreviverá a quem o criou; a memória deve estar no reposi
   - `main` é a branch de **produção**. MUST receber alterações apenas por merge de `develop`.
   - `develop` é a branch de **integração e testes**. MUST receber as funcionalidades prontas
     e ser validada antes de ser enviada à `main`.
-  - Cada funcionalidade ou correção MUST ter uma branch própria, criada a partir de
-    `develop`, e voltar para `develop` por Pull Request ao fim do desenvolvimento.
-    As branches numeradas do Spec Kit (ex.: `001-escalas`) seguem essa mesma regra.
+  - Cada funcionalidade MUST ter uma branch própria, criada a partir de `develop`, e voltar
+    para `develop` por Pull Request ao fim do desenvolvimento. As branches numeradas do Spec
+    Kit (ex.: `001-escalas`) seguem essa mesma regra.
+  - Ajustes, correções e registros de validação **da mesma funcionalidade** MAY seguir na
+    branch e no PR dela até a funcionalidade ser fechada. Correção independente de uma
+    funcionalidade já entregue MUST ter branch própria.
   - Commits diretos em `main` e `develop` MUST NOT ser feitos, mesmo trabalhando sozinho.
     Ambas MUST ter branch protection no GitHub (PR obrigatório e testes passando).
 - Commits: seguir Conventional Commits (feat:, fix:, docs:, test:, chore:), com descrição em
@@ -148,4 +152,4 @@ Racional: o projeto sobreviverá a quem o criou; a memória deve estar no reposi
 - Revisão periódica: a constitution MUST ser revisada a cada novo marco do projeto ou ao
   menos a cada seis meses.
 
-**Version**: 1.1.1 | **Ratified**: 2026-11-18 | **Last Amended**: 2026-11-19
+**Version**: 1.2.0 | **Ratified**: 2026-11-18 | **Last Amended**: 2026-11-20

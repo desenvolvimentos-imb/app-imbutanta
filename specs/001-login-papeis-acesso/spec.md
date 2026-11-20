@@ -4,7 +4,7 @@
 
 **Criada em**: 2026-11-18
 
-**Status**: Rascunho
+**Status**: Implementada e validada em 2026-11-20 (desenvolvimento e produção)
 
 **Entrada**: Descrição do usuário: "Login e papéis de acesso do app IM Butantã (Igreja Metodista no Butantã): entrar com Google ou email e senha, cadastro com aprovação, papéis (administrador, líder de ministério e membro), tela inicial por papel, recuperação de acesso, saída e exclusão de conta (LGPD)."
 
