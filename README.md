@@ -65,8 +65,10 @@ nasce aprovada como administradora.
 
 `main` é produção (Vercel Production + projeto Supabase de produção); `develop` e as branches de
 feature usam o ambiente de desenvolvimento (Vercel Preview + projeto Supabase de
-desenvolvimento). As migrações do banco vão para cada projeto pela integração Supabase + GitHub
-ao fazer merge na branch acompanhada ([ADR 0003](docs/decisions/0003-implantacao-de-migracoes.md)).
+desenvolvimento). As migrações do banco vão para cada projeto por um workflow do GitHub Actions
+ao fazer merge na branch acompanhada ([ADR 0005](docs/decisions/0005-migracoes-automatizadas.md);
+a integração nativa citada na [ADR 0003](docs/decisions/0003-implantacao-de-migracoes.md) não
+funcionou no plano gratuito).
 Checklist de configuração dos ambientes online em
 [`specs/001-login-papeis-acesso/quickstart.md`](specs/001-login-papeis-acesso/quickstart.md).
 

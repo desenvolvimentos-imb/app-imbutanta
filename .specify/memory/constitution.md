@@ -1,16 +1,18 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.1 → 1.2.0 (MINOR: regra de branches ampliada)
+- Version change: 1.2.0 → 1.3.0 (MINOR: nova regra no Fluxo de Desenvolvimento)
 - Modified principles: nenhum
 - Added sections: nenhuma
-- Modified sections: Fluxo de Desenvolvimento (branches): ajustes e correções da mesma
-  funcionalidade passam a poder dividir a branch e o PR da funcionalidade
+- Modified sections: Fluxo de Desenvolvimento: migrações do banco passam a ser aplicadas em
+  cada ambiente por procedimento automatizado e versionado, não por colagem manual
 - Removed sections: nenhuma
-- Motivo: na feature 001 cada correção ganhou branch e PR próprios, gerando dezenas de branches
-  e um histórico fragmentado; o mantenedor decidiu agrupar o trabalho por funcionalidade
-- Impacto em especificações, planos e tarefas: CONTRIBUTING.md atualizado no mesmo PR; nenhuma
-  especificação, plano ou tarefa precisa mudar
-- Follow-up TODOs: manter docs/decisions/ atualizado.
+- Motivo: a integração Supabase + GitHub não aplicou as migrações sozinha no plano gratuito
+  (ADR 0003, atualização de 2026-11-20); o passo manual é frágil e fica mais arriscado a cada
+  funcionalidade, principalmente em produção
+- Impacto em especificações, planos e tarefas: toda funcionalidade com migração MUST seguir a
+  regra; a 002 passa a incluir o workflow de migrações (ADR 0005); a 001 já está entregue e não muda
+- Follow-up TODOs: implementar o workflow na 002 e então marcar a ADR 0005 como implementada;
+  manter docs/decisions/ atualizado.
 -->
 # IM Butantã Constitution
 
@@ -129,6 +131,11 @@ Racional: o projeto sobreviverá a quem o criou; a memória deve estar no reposi
   - Ajustes, correções e registros de validação **da mesma funcionalidade** MAY seguir na
     branch e no PR dela até a funcionalidade ser fechada. Correção independente de uma
     funcionalidade já entregue MUST ter branch própria.
+  - Migrações do banco (`supabase/migrations/`) MUST chegar ao projeto Supabase de cada
+    ambiente (`develop` → desenvolvimento, `main` → produção) por um procedimento automatizado e
+    versionado no repositório (ver `docs/decisions/`). Colar SQL à mão no painel MAY ser usado
+    apenas como contingência, registrando o motivo no PR. Migração já aplicada MUST NOT ser
+    editada: crie uma nova.
   - Commits diretos em `main` e `develop` MUST NOT ser feitos, mesmo trabalhando sozinho.
     Ambas MUST ter branch protection no GitHub (PR obrigatório e testes passando).
 - Commits: seguir Conventional Commits (feat:, fix:, docs:, test:, chore:), com descrição em
@@ -152,4 +159,4 @@ Racional: o projeto sobreviverá a quem o criou; a memória deve estar no reposi
 - Revisão periódica: a constitution MUST ser revisada a cada novo marco do projeto ou ao
   menos a cada seis meses.
 
-**Version**: 1.2.0 | **Ratified**: 2026-11-18 | **Last Amended**: 2026-11-20
+**Version**: 1.3.0 | **Ratified**: 2026-11-18 | **Last Amended**: 2026-11-20
