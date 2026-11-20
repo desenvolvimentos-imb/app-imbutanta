@@ -218,7 +218,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 - [ ] T068 [P] Medir carga da tela inicial em conexão móvel simulada (< 10 s, CS-002) e contar toques dos fluxos (CS-002, CS-003)
 - [X] T069 [P] Criar `docs/decisions/` índice se necessário e conferir que o ADR `0001-stack-supabase-vercel.md` está coerente com o implementado
 - [ ] T070 Configurar os ambientes online conforme a checklist da seção 5 do [quickstart.md](quickstart.md): dois projetos Supabase, Google Cloud em produção, Vercel com variáveis por ambiente, `supabase db push` em cada um (**exige ações do dono do projeto**; SMTP em produção depende da decisão do domínio)
-- [ ] T071 Executar o roteiro manual do Google (seção 4 do quickstart) no ambiente de desenvolvimento e registrar o resultado no PR
+- [X] T071 Executar o roteiro manual do Google (seção 4 do quickstart) no ambiente de desenvolvimento e registrar o resultado no PR *(validado pelo mantenedor em 2026-11-20 no ambiente de desenvolvimento: cadastro por senha com confirmação por email, aprovação, troca de papel, mesmo email por Google e senha sem duplicar conta, recuperação de senha e exclusão de conta)*
 - [ ] T072 Configurar branch protection em `main` e `develop` no GitHub (PR obrigatório, CI verde) conforme a constitution
 - [ ] T073 Rodar todos os cenários da seção 3 do [quickstart.md](quickstart.md) e atualizar `README.md` e `CONTRIBUTING.md` com o que mudou
 
@@ -290,7 +290,7 @@ Em paralelo: T021, T022, T023, T024, T025, T028, T029
 ## Notas de implementação (2026-11-19)
 
 - **Estado**: fases 1 a 8 concluídas e verificadas localmente (lint, tipos, 38 testes Vitest, 8 arquivos pgTAP, 29 testes Playwright com axe-core, build de produção). Nada foi commitado.
-- **Pendentes** (dependem de pessoas/ambientes online, não de código): T067 revisão manual de acessibilidade, T068 medição de carga em rede móvel real, T070 ambientes online, T071 roteiro manual do Google, T072 branch protection no GitHub, T073 rodada final do quickstart nos ambientes online.
+- **Pendentes** (dependem de pessoas/ambientes online, não de código): T067 revisão manual de acessibilidade, T068 medição de carga em rede móvel real, T070 ambientes online (desenvolvimento validado; falta produção), T072 branch protection no GitHub, T073 rodada final do quickstart nos ambientes online.
 - **Ordem "vermelho antes de verde"**: nas fases 2 e 3 os testes foram escritos antes, mas migrações e código foram escritos logo em seguida, antes de ver cada teste falhar isoladamente. Nas demais histórias o ciclo foi o previsto.
 - **Desvio do plano**: o Next.js 16 gerado vinha com `cacheComponents` ligado; foi desligado em `next.config.ts` porque todas as telas dependem de quem está logado.
 - **Desvio do contrato**: nas funções SQL a mensagem do erro é exatamente o código (ex.: `sem_permissao`).
