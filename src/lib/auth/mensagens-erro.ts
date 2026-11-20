@@ -43,5 +43,13 @@ export function traduzirErro(erro: ErroLike | Error): string {
   if (texto.includes("fetch failed") || texto.includes("failed to fetch") || texto.includes("network")) {
     return SEM_CONEXAO;
   }
+  // Sem tradução: a tela mostra só a mensagem genérica, e o motivo real vai para o log do
+  // servidor (Vercel), onde a pessoa que mantém o app consegue diagnosticar (ex.: SMTP recusado).
+  console.error("[auth] erro sem tradução", {
+    code: e.code,
+    status: e.status,
+    name: e.name,
+    message: e.message,
+  });
   return GENERICA;
 }

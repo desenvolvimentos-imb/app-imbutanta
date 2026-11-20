@@ -1,6 +1,6 @@
 // T014: tradução de erros do Supabase e das funções SQL para mensagens em pt-BR
 // (RF-007, RF-034): nunca mostrar erro técnico cru e nunca revelar se um email existe.
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { traduzirErro } from "@/lib/auth/mensagens-erro";
 
 describe("traduzirErro", () => {
@@ -43,5 +43,27 @@ describe("traduzirErro", () => {
     expect(m).not.toMatch(/duplicate|constraint/);
     expect(traduzirErro(null)).toBe(m);
     expect(traduzirErro(undefined)).toBe(m);
+  });
+
+  it("erro sem tradução vai para o log do servidor com o motivo real, sem aparecer na tela", () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    const m = traduzirErro({
+      code: "unexpected_failure",
+      status: 500,
+      message: '535 "5.7.8 Username and Password not accepted"',
+    });
+    expect(m).not.toMatch(/535|Username/);
+    expect(log).toHaveBeenCalledTimes(1);
+    const registrado = JSON.stringify(log.mock.calls[0]);
+    expect(registrado).toContain("unexpected_failure");
+    expect(registrado).toContain("535");
+    log.mockRestore();
+  });
+  it("erro já traduzido não polui o log", () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    traduzirErro({ code: "invalid_credentials" });
+    traduzirErro({ status: 429 });
+    expect(log).not.toHaveBeenCalled();
+    log.mockRestore();
   });
 });

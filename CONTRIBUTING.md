@@ -36,7 +36,13 @@ feature/escalas ──PR──▶ develop ──PR (release)──▶ main
    git push -u origin feature/nome-curto-da-funcionalidade
    ```
 5. Preencha o PR (veja "Pull Requests"), espere os testes passarem e faça o merge.
-6. Apague a branch da feature depois do merge.
+6. Apague a branch da feature depois do merge (o GitHub faz isso sozinho: *Automatically delete head
+   branches* está ligado).
+
+**Uma branch por feature.** Ajustes, correções e registros de validação da mesma feature entram
+na **mesma branch** (e no mesmo PR), em vez de uma branch para cada mudança. Branches separadas
+ficam para trabalhos independentes. Em PRs pequenos de ajuste, prefira *Squash and merge* (um
+commit na `develop`); PRs de release (`develop` → `main`) usam *Create a merge commit*.
 
 ## Publicar em produção (release)
 
