@@ -51,3 +51,7 @@ plano gratuito. Elas foram aplicadas colando os arquivos de `supabase/migrations
 tente reaplicá-las. Esse é o procedimento de fallback aceito; vale também para o projeto de
 produção. Migrações novas voltam a seguir a regra normal (arquivo novo, nunca editar o aplicado).
 
+## Atualização (2026-11-20, 2)
+
+O procedimento manual acima passou a ser só contingência. A aplicação das migrações foi
+automatizada por workflow do GitHub Actions: ver [ADR 0005](0005-migracoes-automatizadas.md).

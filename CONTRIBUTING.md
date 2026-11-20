@@ -50,6 +50,19 @@ commit na `develop`); PRs de release (`develop` → `main`) usam *Create a merge
 2. Abra um PR de `develop` para `main`, descrevendo o que está sendo publicado.
 3. Após os testes passarem, faça o merge. A `main` é a versão de produção.
 
+## Migrações do banco
+
+Toda mudança de banco é um arquivo novo em `supabase/migrations/`:
+
+1. `npx supabase migration new nome_curto` e escreva o SQL (nunca edite uma migração já aplicada).
+2. Teste localmente: `npx supabase db reset && npm run test:db`.
+3. O PR roda o CI (inclui os testes de banco). Após o merge, o workflow de migrações aplica o
+   arquivo no projeto Supabase do ambiente: `develop` → desenvolvimento, `main` → produção
+   (a produção espera a sua aprovação no GitHub). Decisão e detalhes em
+   [ADR 0005](docs/decisions/0005-migracoes-automatizadas.md).
+4. Colar SQL à mão no painel só como contingência; registre o motivo no PR e conferir o histórico
+   de migrações depois.
+
 ## Commits
 
 Usamos [Conventional Commits](https://www.conventionalcommits.org/pt-br/), com descrição em
