@@ -18,8 +18,8 @@ uma única pessoa e pediu o uso de Supabase e Vercel.
 - Regras de acesso por RLS e funções SQL; papel lido do banco a cada requisição.
 - Dois projetos Supabase gratuitos: desenvolvimento/preview e produção. As migrações são
   implantadas pela integração Supabase + GitHub (ver [ADR 0003](0003-implantacao-de-migracoes.md)).
-- Email transacional por SMTP próprio (Resend, plano gratuito), pois o SMTP padrão do Supabase
-  não atende uso real.
+- Email transacional por SMTP próprio: Gmail com senha de app (gratuito, sem domínio), pois o
+  SMTP padrão do Supabase não atende uso real. Resend fica como alternativa se a igreja tiver domínio.
 
 ## Consequências
 
@@ -29,6 +29,7 @@ uma única pessoa e pediu o uso de Supabase e Vercel.
   produção (ver `research.md`).
 - (−) Projetos gratuitos do Supabase pausam por inatividade; aceitável em produção com uso
   semanal.
-- (−) Email em produção depende de domínio verificado; decisão pendente do dono do projeto.
+- (−) O Gmail limita o volume de envios (centenas por dia, suficiente para o uso atual); com
+  domínio próprio, migrar para Resend é só trocar as credenciais de SMTP.
 - Trocar a hospedagem (por exemplo, Cloudflare Pages) não exige mudar o banco; trocar o
   Supabase exigiria reescrever autenticação e RLS.

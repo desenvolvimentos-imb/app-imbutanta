@@ -73,3 +73,14 @@ Checklist de configuração dos ambientes online em
 **Criando uma migração nova:** `npx supabase migration new nome_curto` (gera o arquivo com data e
 hora) e teste com `npx supabase db reset && npm run test:db`. Nunca edite uma migração já aplicada
 em ambiente online; crie uma nova.
+
+## Problemas comuns nos ambientes online
+
+- **Cadastro por email mostra "Algo deu errado":** quase sempre é o SMTP (envio do email de
+  confirmação). O motivo real está em *Supabase → Logs → Auth* e no log da Vercel
+  (`[auth] erro sem tradução`). Passo a passo em
+  [`quickstart.md`](specs/001-login-papeis-acesso/quickstart.md#se-o-cadastro-por-email-falhar-com-algo-deu-errado).
+- **Google mostra `redirect_uri_mismatch`:** falta a URL de retorno do projeto Supabase em uso nas
+  *URIs de redirecionamento autorizadas* do Google Cloud (cada ambiente tem a sua).
+- **Tela "Não foi possível carregar a sua conta":** o perfil não pôde ser lido, em geral porque as
+  migrações não foram aplicadas naquele projeto Supabase.

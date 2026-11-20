@@ -29,7 +29,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 **Objetivo**: criar o projeto e as ferramentas básicas.
 
-- [X] T001 Criar a branch `develop` a partir de `main` e preparar o PR da feature para `develop` (constitution, fluxo de branches); anotar no `CONTRIBUTING.md` se algo mudar *(branches `main` e `develop` já existiam e a feature sai de `develop`; o PR ainda não foi aberto)*
+- [X] T001 Criar a branch `develop` a partir de `main` e preparar o PR da feature para `develop` (constitution, fluxo de branches); anotar no `CONTRIBUTING.md` se algo mudar *(branches `main` e `develop` já existiam e a feature saiu de `develop`)*
 - [X] T002 Criar o projeto Next.js 16 (App Router, TypeScript, Tailwind, ESLint) na raiz do repositório, com `src/app/layout.tsx` em `lang="pt-BR"` e Node 22 fixado em `package.json` (`engines`)
 - [X] T003 [P] Instalar dependências `@supabase/supabase-js`, `@supabase/ssr`, `zod` e de teste (`vitest`, `@playwright/test`) em `package.json`, com scripts `lint`, `typecheck`, `test`, `test:e2e`
 - [X] T004 [P] Inicializar o Supabase CLI (`supabase init`) criando `supabase/config.toml`; ajustar Auth: confirmação de email ligada, senha mínima 8 com letras e números, URLs de retorno locais, provedor Google (lendo Client ID/Secret de variáveis de ambiente)
@@ -214,13 +214,28 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 **Objetivo**: qualidade, acessibilidade, segurança e publicação.
 
 - [X] T066 [P] Teste Playwright de segurança por chamada direta à API do Supabase com chave pública (membro lendo perfis alheios e chamando `decidir_cadastro`; anônimo sem acesso) em `tests/e2e/seguranca-api.spec.ts` (cenário 15 do quickstart)
-- [ ] T067 [P] Revisar acessibilidade WCAG AA e mobile de todas as telas (contraste, foco visível, rótulos, `aria-describedby`, alvos ≥ 44 px, leitor de tela) e registrar o resultado no checklist do PR (CS-009) *(parte automática feita: `tests/e2e/acessibilidade.spec.ts` com axe-core passa em todas as telas; falta a revisão manual com leitor de tela/zoom e o registro no PR)*
-- [ ] T068 [P] Medir carga da tela inicial em conexão móvel simulada (< 10 s, CS-002) e contar toques dos fluxos (CS-002, CS-003)
+- [X] T067 [P] Revisar acessibilidade WCAG AA e mobile de todas as telas (contraste, foco visível, rótulos, `aria-describedby`, alvos ≥ 44 px, leitor de tela) e registrar o resultado no checklist do PR (CS-009) *(parte automática feita: `tests/e2e/acessibilidade.spec.ts` com axe-core passa em todas as telas; revisão manual com leitor de tela, fonte grande e alvos de toque feita pelo mantenedor em 2026-11-20, sem problemas)*
+- [X] T068 [P] Medir carga da tela inicial em conexão móvel simulada (< 10 s, CS-002) e contar toques dos fluxos (CS-002, CS-003) *(medido pelo mantenedor em 2026-11-20 com Slow 4G: carga dentro do limite e fluxos com até 3 toques)*
 - [X] T069 [P] Criar `docs/decisions/` índice se necessário e conferir que o ADR `0001-stack-supabase-vercel.md` está coerente com o implementado
-- [ ] T070 Configurar os ambientes online conforme a checklist da seção 5 do [quickstart.md](quickstart.md): dois projetos Supabase, Google Cloud em produção, Vercel com variáveis por ambiente, `supabase db push` em cada um (**exige ações do dono do projeto**; SMTP em produção depende da decisão do domínio)
-- [ ] T071 Executar o roteiro manual do Google (seção 4 do quickstart) no ambiente de desenvolvimento e registrar o resultado no PR
-- [ ] T072 Configurar branch protection em `main` e `develop` no GitHub (PR obrigatório, CI verde) conforme a constitution
-- [ ] T073 Rodar todos os cenários da seção 3 do [quickstart.md](quickstart.md) e atualizar `README.md` e `CONTRIBUTING.md` com o que mudou
+- [X] T070 Configurar os ambientes online conforme a checklist da seção 5 do [quickstart.md](quickstart.md): dois projetos Supabase, Google Cloud em produção, Vercel com variáveis por ambiente, `supabase db push` em cada um (**exige ações do dono do projeto**; SMTP em produção depende da decisão do domínio)
+- [X] T071 Executar o roteiro manual do Google (seção 4 do quickstart) no ambiente de desenvolvimento e registrar o resultado no PR *(validado pelo mantenedor em 2026-11-20 no desenvolvimento: cadastro por senha com confirmação por email, aprovação, troca de papel, mesmo email por Google e senha sem duplicar conta, recuperação de senha e exclusão de conta)*
+- [X] T072 Configurar branch protection em `main` e `develop` no GitHub (PR obrigatório, CI verde) conforme a constitution
+- [X] T073 Rodar todos os cenários da seção 3 do [quickstart.md](quickstart.md) e atualizar `README.md` e `CONTRIBUTING.md` com o que mudou
+
+---
+
+## Fase 10: Concessões para colocar o app no ar
+
+**Objetivo**: registrar o que foi feito além do plano original, por exigência de serviços externos
+ou por problemas descobertos ao publicar. Nada aqui amplia o escopo funcional da feature.
+
+- [X] T074 Criar as páginas públicas `/privacidade` e `/termos` (`src/app/(legal)/`, `src/components/RodapeLegal.tsx`, `src/lib/contato.ts` lendo `EMAIL_CONTATO`) e liberá-las no `proxy.ts`; teste em `tests/e2e/paginas-legais.spec.ts`. **Motivo**: o Google exige links públicos para publicar o login e a LGPD pede transparência; altera o RF-024 (nota no `spec.md`)
+- [X] T075 Mostrar erro claro quando o perfil não pode ser lido (`src/lib/auth/perfil.ts`, `src/app/error.tsx`, `src/lib/auth/sessao.ts`; testes `tests/unit/perfil.test.ts` e `tests/e2e/erro-claro.spec.ts`). **Motivo**: sem as migrações aplicadas, o app mostrava "aguardando aprovação" com o email como nome, escondendo o problema real
+- [X] T076 Registrar no log do servidor o motivo real de erros do Auth sem tradução, ocultando emails (`src/lib/auth/mensagens-erro.ts`, teste em `tests/unit/mensagens-erro.test.ts`). **Motivo**: o cadastro falhou por SMTP recusado e a tela só dizia "Algo deu errado"
+- [X] T077 Trocar o SMTP planejado (Resend, exige domínio) por Gmail com senha de app e documentar o diagnóstico (ADR 0001, `research.md`, `quickstart.md`). **Motivo**: a igreja não tem domínio; custo zero (constitution VI)
+- [X] T078 Tornar o repositório público e documentar a decisão em `docs/decisions/0004-repositorio-publico.md`. **Motivo**: no plano Hobby da Vercel, repositório privado só implanta commits do dono da conta
+- [X] T079 Aplicar as migrações no Supabase de desenvolvimento pelo SQL Editor e registrar o histórico na mão (ADR 0003, seção de atualização). **Motivo**: a integração Supabase + GitHub não aplicou as migrações sozinha no plano gratuito
+- [X] T080 Corrigir o nome do app para "IM Butantã" em código, documentos e constitution (v1.1.1), e emendar a constitution (v1.2.0) para permitir que ajustes da mesma funcionalidade dividam a branch e o PR
 
 ---
 
@@ -276,7 +291,7 @@ Em paralelo: T021, T022, T023, T024, T025, T028, T029
 2. US1 → US2 → US3 (MVP).
 3. US4 (recuperação) e US5 (exclusão) em seguida; são exigências de privacidade/usabilidade e devem estar antes de abrir o app a toda a igreja.
 4. US6 (gestão de papéis) por último; até lá o dono promove líderes por SQL.
-5. Um PR por história, pequeno e focado, apontando para `develop` (constitution).
+5. Um PR por história, pequeno e focado, apontando para `develop` (constitution). Na prática, a feature foi entregue em poucos PRs maiores; ver a Fase 10 e as notas abaixo.
 
 ### Observações
 
@@ -287,10 +302,12 @@ Em paralelo: T021, T022, T023, T024, T025, T028, T029
 
 ---
 
-## Notas de implementação (2026-11-19)
+## Notas de implementação (atualizadas em 2026-11-20)
 
-- **Estado**: fases 1 a 8 concluídas e verificadas localmente (lint, tipos, 38 testes Vitest, 8 arquivos pgTAP, 29 testes Playwright com axe-core, build de produção). Nada foi commitado.
-- **Pendentes** (dependem de pessoas/ambientes online, não de código): T067 revisão manual de acessibilidade, T068 medição de carga em rede móvel real, T070 ambientes online, T071 roteiro manual do Google, T072 branch protection no GitHub, T073 rodada final do quickstart nos ambientes online.
-- **Ordem "vermelho antes de verde"**: nas fases 2 e 3 os testes foram escritos antes, mas migrações e código foram escritos logo em seguida, antes de ver cada teste falhar isoladamente. Nas demais histórias o ciclo foi o previsto.
+- **Estado**: fases 1 a 10 concluídas e validadas, localmente e nos ambientes online (lint, tipos, 45 testes Vitest, 8 arquivos pgTAP, 41 testes Playwright com axe-core, build de produção; CI do GitHub verde).
+- **Pendentes**: nenhum. Opcionais fora do escopo: licença do repositório e revisão dos textos legais pela liderança.
+- **Ordem "vermelho antes de verde"**: nas fases 2 e 3 os testes foram escritos antes, mas migrações e código foram escritos logo em seguida, antes de ver cada teste falhar isoladamente. Nas demais histórias e nas tarefas da Fase 10 o ciclo foi o previsto.
 - **Desvio do plano**: o Next.js 16 gerado vinha com `cacheComponents` ligado; foi desligado em `next.config.ts` porque todas as telas dependem de quem está logado.
 - **Desvio do contrato**: nas funções SQL a mensagem do erro é exatamente o código (ex.: `sem_permissao`).
+- **Medições do T068**: o mantenedor confirmou carga dentro do limite (Slow 4G) e fluxos com até 3 toques, mas os números exatos não foram anotados.
+- **Cobertura que ficou só no teste manual**: pessoa recusada que tenta recriar a conta com o mesmo email (o cadastro responde de forma neutra para emails existentes, então não burla a recusa, mas não há teste automatizado dedicado); limite de tentativas de login (RF-032), que depende do Supabase e só tem teste da mensagem.

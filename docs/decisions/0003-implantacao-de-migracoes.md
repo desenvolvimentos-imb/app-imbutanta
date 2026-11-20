@@ -41,3 +41,13 @@ mas exige o plano Pro (pago).
 - (+) Dados de teste e reais separados.
 - (−) Os previews da Vercel compartilham o banco do projeto dev (não há banco isolado por PR).
 - (−) Configurações de Auth em duas telas de painel precisam ser mantidas iguais à mão.
+
+## Atualização (2026-11-20)
+
+No projeto de desenvolvimento, a integração com o GitHub **não aplicou as migrações sozinha** no
+plano gratuito. Elas foram aplicadas colando os arquivos de `supabase/migrations/` (em ordem) no
+*SQL Editor* do Supabase, e o histórico foi registrado à mão em `supabase_migrations.schema_migrations`
+(criando o schema e a tabela se faltarem, com um registro por versão) para que a integração não
+tente reaplicá-las. Esse é o procedimento de fallback aceito; vale também para o projeto de
+produção. Migrações novas voltam a seguir a regra normal (arquivo novo, nunca editar o aplicado).
+

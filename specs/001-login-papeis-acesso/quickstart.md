@@ -79,26 +79,50 @@ Google real:
 Ordem recomendada (detalhes e o porquê em [ADR 0003](../../docs/decisions/0003-implantacao-de-migracoes.md)).
 Repita o que for "por ambiente" para **desenvolvimento** e **produção**.
 
-- [ ] Por ambiente: projeto Supabase criado (`imbutanta-dev` e `imbutanta-prod`, plano gratuito).
-- [ ] Vercel: projeto ligado ao GitHub (`main` = produção); Node 22.x; variáveis
+- [X] Por ambiente: projeto Supabase criado (`imbutanta-dev` e `imbutanta-prod`, plano gratuito).
+- [X] Vercel: projeto ligado ao GitHub (`main` = produção); Node 22.x; variáveis
   `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` com o projeto **prod** no escopo
   Production e o projeto **dev** nos escopos Preview e Development; domínio fixo para `develop`.
-- [ ] Por projeto, em *Authentication → URL Configuration*: Site URL (URL fixa do ambiente) e
+- [X] Por projeto, em *Authentication → URL Configuration*: Site URL (URL fixa do ambiente) e
   Redirect URLs (`/auth/callback` e `/auth/confirmar`; no dev, também o curinga dos previews).
-- [ ] Por projeto, em *Authentication*: confirmação de email ligada; senha mínima 8 com letras e
+- [X] Por projeto, em *Authentication*: confirmação de email ligada; senha mínima 8 com letras e
   números; templates de email em português (`supabase/templates/`).
-- [ ] Vercel: variável `EMAIL_CONTATO` (email da igreja para pedidos sobre dados) em Production e Preview;
+- [X] Vercel: variável `EMAIL_CONTATO` (email da igreja para pedidos sobre dados) em Production e Preview;
   aparece em `/privacidade` e `/termos`. Redeploy depois de criar.
-- [ ] Google Cloud: tela de consentimento **"Em produção"**, escopos básicos; um client OAuth Web
+- [X] Google Cloud: tela de consentimento **"Em produção"**, escopos básicos; um client OAuth Web
   com as duas URIs de retorno `https://<ref>.supabase.co/auth/v1/callback`; Client ID e Secret
   colocados no painel de cada projeto (não no git).
-- [ ] SMTP próprio nos dois projetos (Gmail com senha de app, ou Resend se houver domínio; ver
+- [X] SMTP próprio nos dois projetos (Gmail com senha de app, ou Resend se houver domínio; ver
   [research.md](research.md#decisao-4)). Sem SMTP próprio o Supabase não deixa editar os templates.
-- [ ] Por projeto, integração Supabase + GitHub (*Project Settings → Integrations → GitHub*):
+- [X] Por projeto, integração Supabase + GitHub (*Project Settings → Integrations → GitHub*):
   repositório conectado, *Deploy to production* ligado, branch `develop` no dev e `main` no prod.
   A primeira implantação aplica as migrações existentes. (Alternativa: `supabase link` +
   `supabase db push` à mão.)
-- [ ] Email do dono inserido em `administradores_iniciais` em cada projeto (ADR 0002).
-- [ ] Branch protection em `main` e `develop` exigindo o check `verificar` (e o check do Supabase,
+- [X] Email do dono inserido em `administradores_iniciais` em cada projeto (ADR 0002).
+- [X] Branch protection em `main` e `develop` exigindo o check `verificar` (e o check do Supabase,
   se a integração o criar).
-- [ ] Verificação de acessibilidade/mobile registrada no PR (CS-009).
+- [X] Verificação de acessibilidade/mobile registrada no PR (CS-009).
+
+Checklist validado pelo mantenedor em 2026-11-20 nos dois ambientes (desenvolvimento e produção),
+incluindo login com Google, cadastro com confirmação por email, aprovação, troca de papel,
+recuperação de senha e exclusão de conta.
+
+### Se o cadastro por email falhar com "Algo deu errado"
+
+O motivo real não aparece na tela de propósito. Procure em *Supabase → Logs → Auth* a linha do
+`/signup` com status 500 (o log do app na Vercel também registra `[auth] erro sem tradução`).
+O caso mais comum é o SMTP do Gmail recusar o login (`535 5.7.8 Username and Password not accepted`):
+
+- **Senha de app:** gerada em myaccount.google.com/apppasswords (exige verificação em duas etapas),
+  colada **sem espaços**. Nunca a senha normal da conta.
+- **Usuário SMTP e remetente:** o email completo da **mesma conta Google** que gerou a senha de app.
+- **Host e porta:** `smtp.gmail.com`, porta `465` (ou `587`).
+- A senha fica oculta depois de salvar; ao corrigir, cole de novo.
+- Quando o envio falha, o Supabase desfaz o cadastro inteiro: o usuário não aparece em
+  *Authentication → Users*.
+
+### Se o login com Google mostrar `redirect_uri_mismatch`
+
+A URL `https://<ref>.supabase.co/auth/v1/callback` do projeto em uso não está nas *URIs de
+redirecionamento autorizadas* do client OAuth. Cada projeto Supabase (dev e prod) tem a sua; as
+duas precisam estar na lista. A alteração no Google leva alguns minutos para valer.

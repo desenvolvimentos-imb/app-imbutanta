@@ -59,7 +59,8 @@ Resumo; números e fontes em [research.md](research.md#limites-gratuitos).
 | Supabase | 50 mil usuários ativos/mês, 500 MB de banco, 2 projetos; **pausa o projeto após ~1 semana sem uso** | Projeto pausado (restaurável pelo painel); acima das cotas o serviço restringe ou exige plano pago. Muito acima da nossa escala |
 | Supabase (email padrão) | Envio de email nativo é **muito limitado** e só entrega a membros da equipe do projeto | **Inviável para o app real**: exige SMTP próprio (ver abaixo) |
 | Vercel Hobby | Gratuito, uso pessoal/não comercial; cotas mensais de banda e execuções | Deploys/funções bloqueados até o mês virar; sem cobrança automática |
-| Resend (SMTP) | ~3.000 emails/mês, 100/dia, 1 domínio | Envios recusados até o dia/mês virar |
+| Gmail (SMTP, senha de app) | cerca de 500 emails/dia por conta (limite do Google, sujeito a mudança) | Envios recusados até o dia seguinte; suficiente para o uso atual |
+| Resend (SMTP), alternativa | ~3.000 emails/mês, 100/dia, 1 domínio | Exige domínio verificado; só se a igreja tiver um |
 | Google Cloud (OAuth) | Gratuito para login básico (email, perfil) | Sem custo; app precisa estar "Em produção" na tela de consentimento |
 
 **Atualização (2026-11-19)**: o plano do SMTP foi revisto: usar uma conta Gmail com senha de
@@ -94,9 +95,8 @@ do fluxo de email.
 (`perfis`), uma tabela de configuração (`administradores_iniciais`) e funções SQL; nada além
 do necessário.
 
-> **Nota sobre branches**: a constitution manda criar branches de feature a partir de
-> `develop`. O repositório hoje só tem `main` e esta branch saiu dela. Antes do primeiro PR é
-> preciso criar `develop` e apontar o PR para ela.
+> **Nota sobre branches** (atualizada): `develop` foi criada e a feature sai dela; a feature foi
+> entregue em poucos PRs (ver a Fase 10 de [tasks.md](tasks.md)).
 
 ## Estrutura do Projeto
 
@@ -133,6 +133,8 @@ src/
 │   │   ├── aprovacoes/          # admin e líder
 │   │   ├── usuarios/            # somente admin
 │   │   └── conta/               # sair e excluir conta
+│   ├── (legal)/                 # páginas públicas: privacidade e termos (concessão, ver tasks T074)
+│   ├── error.tsx                # erro claro quando o perfil não pode ser lido (T075)
 │   ├── auth/
 │   │   ├── callback/route.ts    # retorno do Google (OAuth/PKCE)
 │   │   └── confirmar/route.ts   # links de email (confirmação e recuperação)
@@ -196,7 +198,7 @@ um único lugar (`layout.tsx` de cada grupo + `proxy.ts`), em vez de página por
 | RF-015–023, RF-026 | enums `papel_usuario`/`situacao_conta`, RLS, `permissoes.ts`, `inicio/` |
 | RF-020 | RLS + funções `security definer`; testes pgTAP |
 | RF-021/022 | `usuarios/`, funções `alterar_papel`/`alterar_situacao`, gatilho "último administrador" |
-| RF-024 | `proxy.ts` + `layout.tsx` por grupo |
+| RF-024 | `proxy.ts` + `layout.tsx` por grupo; páginas legais públicas em `(legal)/` |
 | RF-025/019 | Apenas previstos no modelo (ver data-model.md); nada criado agora |
 | RF-027/028 | Fluxos Supabase de recuperação; Google recupera pelo próprio Google |
 | RF-029 | Sessão Supabase (cookies renovados pelo `proxy.ts`) |
