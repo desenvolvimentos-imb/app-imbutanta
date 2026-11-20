@@ -2,19 +2,22 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BotaoGoogle } from "@/components/BotaoGoogle";
 import { redirecionarSeLogado } from "@/lib/auth/sessao";
+import { listarMinisteriosAtivos } from "@/lib/ministerios/consultas";
 import { FormularioCadastro } from "./formulario";
 
 export const metadata: Metadata = { title: "Criar conta" };
 
 export default async function PaginaCadastrar() {
   await redirecionarSeLogado();
+  // Ministérios ativos para a pessoa marcar (lista pública de nome e descrição; vazia = não aparece).
+  const ministerios = await listarMinisteriosAtivos();
 
   return (
     <>
       <h1 className="text-2xl font-bold">Criar conta</h1>
       <BotaoGoogle />
       <p className="text-center text-slate-700">ou use o seu email</p>
-      <FormularioCadastro />
+      <FormularioCadastro ministerios={ministerios} />
       <p className="text-center text-sm text-slate-700">
         Ao criar a conta, você concorda com os{" "}
         <Link href="/termos" className="font-semibold text-blue-900 underline">

@@ -28,7 +28,7 @@ update public.perfis set situacao = 'aprovado', papel = 'administrador'
  where id = '00000000-0000-0000-0000-0000000000d2';
 select lives_ok($$ update public.perfis set papel = 'membro' where id = '00000000-0000-0000-0000-0000000000d1' $$,
                 'com dois administradores, um pode ser rebaixado');
-select throws_ok($$ update public.perfis set papel = 'lider' where id = '00000000-0000-0000-0000-0000000000d2' $$,
+select throws_ok($$ update public.perfis set papel = 'membro' where id = '00000000-0000-0000-0000-0000000000d2' $$,
                  'P0001', 'ultimo_administrador', 'o que sobrou virou o último e fica protegido');
 
 -- Mudanças que não afetam o administrador continuam livres.

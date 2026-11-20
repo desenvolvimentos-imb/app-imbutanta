@@ -5,6 +5,7 @@ import { criarClienteServidor } from "@/lib/supabase/server";
 import { validarEmail, validarNome, validarSenha } from "@/lib/auth/validacao";
 import { traduzirErro } from "@/lib/auth/mensagens-erro";
 import type { EstadoForm } from "@/lib/auth/estado-form";
+import { validarIdsMinisterios } from "@/lib/ministerios/validacao";
 
 // Mesma resposta para email novo e para email que já tem conta: assim ninguém descobre,
 // pelo cadastro, quais emails estão cadastrados (RF-007).
@@ -29,11 +30,15 @@ export async function cadastrar(_anterior: EstadoForm, formData: FormData): Prom
   if (!senha.ok) erros.senha = senha.mensagem;
   if (!nome.ok || !email.ok || !senha.ok) return { erros, valores };
 
+  // Ministérios marcados: viram PEDIDOS pelo gatilho do banco. Entrada ruim é ignorada: o
+  // cadastro nunca falha por causa dos ministérios.
+  const ministerios = validarIdsMinisterios(formData.getAll("ministerios"));
+
   const supabase = await criarClienteServidor();
   const { error } = await supabase.auth.signUp({
     email: email.valor,
     password: senha.valor,
-    options: { data: { nome: nome.valor } },
+    options: { data: { nome: nome.valor, ...(ministerios.length > 0 ? { ministerios } : {}) } },
   });
 
   if (error && !JA_EXISTE.includes(error.code ?? "")) {

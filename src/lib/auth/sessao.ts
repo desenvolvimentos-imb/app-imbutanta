@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { criarClienteServidor } from "@/lib/supabase/server";
 import { destinoPara, rotaDaSituacao } from "./permissoes";
 import { perfilOuFalha, type Perfil } from "./perfil";
+import { lideraAlgumMinisterio } from "./lideranca";
 
 export type { Perfil } from "./perfil";
 
@@ -23,7 +24,11 @@ export const obterSessao = cache(async (): Promise<Perfil | null> => {
     .maybeSingle();
 
   // Falha do banco ou perfil ausente viram um erro claro (ver perfil.ts), não "pendente".
-  return perfilOuFalha(consulta as Parameters<typeof perfilOuFalha>[0], user);
+  const perfil = perfilOuFalha(consulta as Parameters<typeof perfilOuFalha>[0], user);
+
+  // Liderança é por ministério: só vale para conta aprovada (a função do banco já confere).
+  const lidera = perfil.situacao === "aprovado" ? await lideraAlgumMinisterio(supabase) : false;
+  return { ...perfil, lidera };
 });
 
 // Para páginas que exigem login: sem sessão, vai para /entrar.
@@ -36,7 +41,7 @@ export async function exigirSessao(): Promise<Perfil> {
 // Para páginas do grupo (app): exige conta aprovada e o papel permitido para a rota.
 export async function exigirAcesso(rota: string): Promise<Perfil> {
   const perfil = await exigirSessao();
-  const destino = destinoPara(perfil.situacao, perfil.papel, rota);
+  const destino = destinoPara(perfil.situacao, perfil.papel, rota, perfil.lidera);
   if (destino) redirect(destino);
   return perfil;
 }

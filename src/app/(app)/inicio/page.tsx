@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { atalhosPorPapel } from "@/lib/auth/permissoes";
+import { ATALHOS_MINISTERIOS, atalhosPorPapel } from "@/lib/auth/permissoes";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { contarPedidosPendentes } from "@/lib/ministerios/consultas";
 import { criarClienteServidor } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Início" };
@@ -12,23 +13,45 @@ const RESERVADOS = ["Minhas escalas", "Informativos", "Estudos"];
 // funcionalidades futuras; por enquanto ficam como espaços reservados.
 export default async function PaginaInicio() {
   const perfil = await exigirAcesso("/inicio");
-  const atalhos = atalhosPorPapel(perfil.papel);
+  const atalhos = atalhosPorPapel(perfil.papel, perfil.lidera);
 
-  // Contagem de pendentes para quem aprova (RLS já limita o que cada papel enxerga).
+  // Contagem de pendentes para quem decide: pedidos de entrada (líder e administrador) e, só para o
+  // administrador, também as contas novas sem decisão. As regras de quem vê o quê estão no banco.
   let pendentes = 0;
   if (atalhos.some((a) => a.href === "/aprovacoes")) {
-    const supabase = await criarClienteServidor();
-    const { count } = await supabase
-      .from("perfis")
-      .select("id", { count: "exact", head: true })
-      .eq("situacao", "pendente")
-      .eq("email_verificado", true);
-    pendentes = count ?? 0;
+    pendentes = await contarPedidosPendentes();
+    if (perfil.papel === "administrador") {
+      const supabase = await criarClienteServidor();
+      const { count } = await supabase
+        .from("perfis")
+        .select("id", { count: "exact", head: true })
+        .eq("situacao", "pendente")
+        .eq("email_verificado", true);
+      pendentes += count ?? 0;
+    }
   }
 
   return (
     <>
       <h1 className="text-2xl font-bold">Olá, {perfil.nome}!</h1>
+
+      <section aria-labelledby="titulo-ministerios" className="flex flex-col gap-3">
+        <h2 id="titulo-ministerios" className="text-lg font-semibold">
+          Ministérios
+        </h2>
+        <ul className="flex flex-col gap-3">
+          {ATALHOS_MINISTERIOS.map((a) => (
+            <li key={a.href}>
+              <Link
+                href={a.href}
+                className="flex min-h-14 items-center rounded-lg border-2 border-blue-900 px-4 text-lg font-semibold text-blue-900 hover:bg-blue-50"
+              >
+                {a.rotulo}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {atalhos.length > 0 && (
         <section aria-labelledby="titulo-gestao" className="flex flex-col gap-3">

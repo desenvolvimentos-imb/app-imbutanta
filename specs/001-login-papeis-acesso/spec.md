@@ -148,18 +148,18 @@ O administrador vê a lista de usuários aprovados e pode alterar o papel de cad
 - **RF-008**: Toda conta nova MUST começar com situação "pendente" e MUST NOT dar acesso a nenhum conteúdo do app.
 - **RF-009**: Pessoas com conta pendente MUST ver uma tela clara explicando que o cadastro aguarda aprovação.
 - **RF-010**: Pessoas com cadastro recusado MUST ver uma tela clara informando que o cadastro não foi aprovado, sem acesso a conteúdo.
-- **RF-011**: O sistema MUST oferecer uma tela de aprovação, acessível apenas a administradores e líderes de ministério, que lista as pessoas pendentes (nome e data do cadastro).
-- **RF-012**: O aprovador MUST poder aprovar ou recusar cada pessoa pendente; ao aprovar, a pessoa MUST receber o papel de membro.
+- **RF-011**: O sistema MUST oferecer uma tela de aprovação, acessível apenas a administradores e líderes de ministério, que lista as pessoas pendentes (nome e data do cadastro). *(Ajustado pela 002: a tela agora mostra pedidos de entrada em ministérios para o líder do ministério e para o administrador; o cadastro de contas sem ministério é só do administrador.)*
+- **RF-012**: O aprovador MUST poder aprovar ou recusar cada pessoa pendente; ao aprovar, a pessoa MUST receber o papel de membro. *(Ajustado pela 002: o líder aceita ou recusa pedidos de entrada; aceitar o pedido de uma conta pendente também a ativa como membro. Aprovar ou recusar a conta em si é só do administrador.)*
 - **RF-013**: O sistema MUST evitar decisões conflitantes: se a situação da pessoa mudou desde que o aprovador abriu a lista, ele MUST ser avisado.
 - **RF-014**: O primeiro administrador MUST ser o dono do projeto (Arthur), definido previamente, sem passar pela fila de aprovação.
 
 **Papéis e permissões**
 
-- **RF-015**: O sistema MUST ter três papéis: administrador, líder de ministério e membro.
+- **RF-015**: O sistema MUST ter três papéis: administrador, líder de ministério e membro. *(Ajustado pela 002: o papel global "líder de ministério" deixou de existir; restam administrador e membro, e a liderança é por ministério.)*
 - **RF-016**: O administrador MUST poder realizar todas as ações do app, incluindo gerenciar usuários e papéis.
-- **RF-017**: O líder de ministério MUST poder aprovar novos usuários e MUST ter acesso de leitura a conteúdos, informativos e estudos; a montagem de escalas do seu ministério será entregue em funcionalidade futura, e este requisito apenas reserva essa permissão.
+- **RF-017**: O líder de ministério MUST poder aprovar novos usuários e MUST ter acesso de leitura a conteúdos, informativos e estudos; a montagem de escalas do seu ministério será entregue em funcionalidade futura, e este requisito apenas reserva essa permissão. *(Ajustado pela 002: a permissão de aprovar novos usuários passa a valer por ministério, via pedidos de entrada.)*
 - **RF-018**: O membro MUST poder ver as suas escalas, os informativos e os estudos (a serem entregues em funcionalidades futuras), sem acesso a aprovação nem gestão de usuários.
-- **RF-019**: O modelo de usuário MUST permitir que uma mesma pessoa participe de vários ministérios ao mesmo tempo (a criação de ministérios é futura).
+- **RF-019**: O modelo de usuário MUST permitir que uma mesma pessoa participe de vários ministérios ao mesmo tempo (a criação de ministérios é futura). *(Entregue pela 002: participações em vários ministérios.)*
 - **RF-020**: As regras de acesso por papel MUST ser aplicadas no servidor e no banco de dados, e não apenas escondendo opções na interface: uma pessoa sem permissão MUST ser barrada mesmo ao acessar pelo endereço direto ou por chamadas diretas.
 - **RF-021**: O administrador MUST poder listar os usuários aprovados, alterar o papel de cada um e remover o acesso de alguém.
 - **RF-022**: O sistema MUST impedir que fique sem nenhum administrador (rebaixamento, remoção de acesso ou exclusão do último administrador).
@@ -191,7 +191,7 @@ O administrador vê a lista de usuários aprovados e pode alterar o papel de cad
 
 - **Pessoa/Usuário**: representa quem usa o app. Atributos: nome, email, método(s) de entrada, situação da conta (pendente, aprovada, recusada, acesso removido), papel (administrador, líder de ministério, membro), data do cadastro e, quando houver, quem decidiu a aprovação e quando.
 - **Papel**: define o que a pessoa pode ver e fazer (administrador, líder de ministério, membro). Cada pessoa aprovada tem exatamente um papel.
-- **Participação em Ministério** *(prevista, uso futuro)*: relaciona uma pessoa a um ministério; uma pessoa pode ter várias. Os ministérios em si serão criados em funcionalidade futura.
+- **Participação em Ministério** *(prevista, uso futuro)*: relaciona uma pessoa a um ministério; uma pessoa pode ter várias. Os ministérios em si serão criados em funcionalidade futura. *(Atualizado: ministérios e participações foram entregues na funcionalidade 002.)*
 - **Marcação de Visibilidade de Informativo** *(prevista, uso futuro)*: indica se um informativo é público ou restrito a quem tem login; definida no momento da criação do informativo.
 
 ## Critérios de Sucesso *(obrigatório)*
@@ -216,7 +216,7 @@ O administrador vê a lista de usuários aprovados e pode alterar o papel de cad
 - Pessoa recusada não vê conteúdo; poderá ser reavaliada por um administrador, que pode reabrir o cadastro (reaprovar) pela tela de usuários.
 - Ao excluir a conta, os dados pessoais são apagados; registros históricos que não identificam a pessoa podem ser mantidos nas funcionalidades futuras.
 - O dono do projeto (Arthur) é definido como o primeiro administrador por configuração prévia do ambiente, não por cadastro aberto.
-- O líder de ministério pode aprovar qualquer pessoa pendente, independentemente do ministério; vincular o líder a ministérios específicos acontecerá com o cadastro de ministérios.
+- O líder de ministério pode aprovar qualquer pessoa pendente, independentemente do ministério; vincular o líder a ministérios específicos acontecerá com o cadastro de ministérios. *(Substituído pela 002: o líder só decide pedidos de entrada no ministério que lidera.)*
 - O aviso ao aprovador sobre novos pendentes dentro do app é suficiente; notificações por email ou push ficam fora do escopo.
 - Fora do escopo desta funcionalidade: cadastro de ministérios, montagem de escalas, informativos, estudos, quiz e a tela pública de informativos.
 - Dependências: serviço gratuito de autenticação e de envio de email de recuperação, conforme a constitution (custo zero); a escolha concreta será feita em `/speckit-plan`.

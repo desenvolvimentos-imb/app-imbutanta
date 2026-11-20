@@ -11,8 +11,14 @@ export function Cabecalho({ titulo }: { titulo?: string }) {
   );
 }
 
-export function NavegacaoInferior({ papel }: { papel: Papel }) {
-  const itens = [{ href: "/inicio", rotulo: "Início" }, ...atalhosPorPapel(papel), { href: "/conta", rotulo: "Conta" }];
+export function NavegacaoInferior({ papel, lidera }: { papel: Papel; lidera: boolean }) {
+  // Rótulos curtos: a barra tem no máximo 5 itens e o celular pouca largura.
+  const itens = [
+    { href: "/inicio", rotulo: "Início" },
+    { href: "/ministerios", rotulo: "Ministérios" },
+    ...atalhosPorPapel(papel, lidera).map((a) => ({ href: a.href, rotulo: a.curto })),
+    { href: "/conta", rotulo: "Conta" },
+  ];
   return (
     <nav
       aria-label="Principal"

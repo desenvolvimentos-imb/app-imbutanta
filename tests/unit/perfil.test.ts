@@ -1,13 +1,13 @@
 // Ler o perfil da pessoa logada: se o banco falhar ou o perfil não existir, o app NÃO pode
 // fingir que está tudo bem (antes tratava como "pendente" e escondia o problema).
 import { describe, expect, it, vi } from "vitest";
-import { ErroPerfil, perfilOuFalha, type Perfil } from "@/lib/auth/perfil";
+import { ErroPerfil, perfilOuFalha, type PerfilBanco } from "@/lib/auth/perfil";
 
 const usuario = { id: "u1", email: "pessoa@exemplo.com" };
 
 describe("perfilOuFalha", () => {
   it("devolve o perfil quando a consulta deu certo", () => {
-    const linha: Perfil = { id: "u1", nome: "Pessoa", email: "pessoa@exemplo.com", situacao: "aprovado", papel: "lider" };
+    const linha: PerfilBanco = { id: "u1", nome: "Pessoa", email: "pessoa@exemplo.com", situacao: "aprovado", papel: "administrador" };
     expect(perfilOuFalha({ data: linha, error: null }, usuario)).toEqual(linha);
   });
 
