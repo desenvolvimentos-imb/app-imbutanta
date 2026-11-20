@@ -3,6 +3,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { caminhoVoltarSeguro } from "./redirecionamento";
 import { destinoPara, rotaDaSituacao, type Papel, type Situacao } from "./permissoes";
+import { lideraAlgumMinisterio } from "./lideranca";
 
 export async function destinoPosLogin(supabase: SupabaseClient, voltar?: string | null): Promise<string> {
   const {
@@ -19,5 +20,6 @@ export async function destinoPosLogin(supabase: SupabaseClient, voltar?: string 
   const alvo = caminhoVoltarSeguro(voltar);
   // Se o papel não permite a página pedida, cai no início.
   const caminho = alvo.split(/[?#]/)[0];
-  return destinoPara(situacao, papel, caminho) ? "/inicio" : alvo;
+  const lidera = await lideraAlgumMinisterio(supabase);
+  return destinoPara(situacao, papel, caminho, lidera) ? "/inicio" : alvo;
 }

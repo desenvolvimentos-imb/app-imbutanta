@@ -34,6 +34,22 @@ describe("traduzirErro", () => {
     expect(traduzirErro({ message: "ultimo_administrador" })).toMatch(/sem administrador|único administrador/);
     expect(traduzirErro({ message: "nao_encontrado" })).toMatch(/não encontrada/);
   });
+  it("códigos das funções de ministérios (002)", () => {
+    expect(traduzirErro({ message: "nome_duplicado" })).toMatch(/Já existe um ministério ativo com esse nome/);
+    expect(traduzirErro({ message: "nome_invalido" })).toMatch(/nome/i);
+    expect(traduzirErro({ message: "ultimo_lider" })).toMatch(/pelo menos um líder/);
+    expect(traduzirErro({ message: "ministerio_inativo" })).toMatch(/desativado/);
+    expect(traduzirErro({ message: "ja_participa" })).toMatch(/já participa/);
+    expect(traduzirErro({ message: "pedido_duplicado" })).toMatch(/pedido pendente/);
+    expect(traduzirErro({ message: "conflito_pedido" })).toMatch(/já foi decidido/);
+    expect(traduzirErro({ message: "pessoa_invalida" })).toMatch(/não pode ser adicionada/);
+    expect(traduzirErro({ message: "sem_lider" })).toMatch(/Escolha um líder/);
+  });
+  it("ultimo_lider cita o ministério quando o banco informa o nome no detalhe", () => {
+    const m = traduzirErro({ message: "ultimo_lider", details: "Louvor" } as never);
+    expect(m).toMatch(/Louvor/);
+    expect(m).toMatch(/pelo menos um líder/);
+  });
   it("falha de rede", () => {
     expect(traduzirErro({ message: "Failed to fetch" })).toMatch(/conexão/i);
     expect(traduzirErro(new TypeError("fetch failed"))).toMatch(/conexão/i);

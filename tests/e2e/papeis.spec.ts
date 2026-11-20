@@ -29,7 +29,8 @@ async function criarPessoa(prefixo: string, situacao: Situacao = "aprovado") {
   return { nome, email, id: data.user.id };
 }
 
-test("administrador promove membro a líder; o líder conectado vê a mudança sem novo login", async ({ browser, page }) => {
+// Desde a 002 não existe papel global "líder": o administrador só alterna entre membro e administrador.
+test("administrador promove membro a administrador; a pessoa conectada vê a mudança sem novo login", async ({ browser, page }) => {
   const pessoa = await criarPessoa("Promovida");
 
   // A pessoa já está conectada como membro, em outro aparelho.
@@ -37,29 +38,29 @@ test("administrador promove membro a líder; o líder conectado vê a mudança s
   const paginaPessoa = await ctxPessoa.newPage();
   await entrarCom(paginaPessoa, pessoa.email);
   await expect(paginaPessoa).toHaveURL(/\/inicio/);
-  await expect(paginaPessoa.getByRole("link", { name: "Aprovar cadastros" })).toHaveCount(0);
+  await expect(paginaPessoa.getByRole("link", { name: "Gerenciar usuários" })).toHaveCount(0);
 
   // O administrador muda o papel.
   await entrarCom(page, "admin@teste.local");
   await page.goto("/usuarios");
-  await page.getByLabel(`Papel de ${pessoa.nome}`, { exact: true }).selectOption("lider");
+  await page.getByLabel(`Papel de ${pessoa.nome}`, { exact: true }).selectOption("administrador");
   await page.getByRole("button", { name: `Alterar papel de ${pessoa.nome}` }).click();
-  await esperarPapel(pessoa.id, "lider");
+  await esperarPapel(pessoa.id, "administrador");
 
   // Sem sair e entrar de novo, basta atualizar.
   await paginaPessoa.reload();
-  await expect(paginaPessoa.getByRole("link", { name: "Aprovar cadastros" }).first()).toBeVisible();
+  await expect(paginaPessoa.getByRole("link", { name: "Gerenciar usuários" }).first()).toBeVisible();
 
   // Volta a membro e a mudança também vale na hora.
   await page.getByLabel(`Papel de ${pessoa.nome}`, { exact: true }).selectOption("membro");
   await page.getByRole("button", { name: `Alterar papel de ${pessoa.nome}` }).click();
   await esperarPapel(pessoa.id, "membro");
-  await paginaPessoa.goto("/aprovacoes");
+  await paginaPessoa.goto("/usuarios");
   await expect(paginaPessoa).toHaveURL(/\/inicio/);
   await ctxPessoa.close();
 });
 
-test("líder e membro não acessam a gestão de usuários", async ({ page }) => {
+test("quem lidera um ministério e o membro comum não acessam a gestão de usuários", async ({ page }) => {
   await entrarCom(page, "lider@teste.local");
   await page.goto("/usuarios");
   await expect(page).toHaveURL(/\/inicio/);

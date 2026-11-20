@@ -1,7 +1,7 @@
 // Traduz erros do Supabase Auth e das funções SQL para mensagens em português
 // (RF-007, RF-034). Nunca mostra texto técnico cru e nunca revela se um email existe.
 
-type ErroLike = { code?: string; message?: string; status?: number } | null | undefined;
+type ErroLike = { code?: string; message?: string; status?: number; details?: string } | null | undefined;
 
 const GENERICA = "Algo deu errado. Tente de novo em instantes.";
 const SEM_CONEXAO = "Sem conexão. Verifique a internet e tente de novo.";
@@ -28,13 +28,27 @@ const POR_CODIGO: Record<string, string> = {
   ultimo_administrador:
     "Não é possível deixar o app sem administrador. Passe o papel de administrador a outra pessoa antes.",
   nao_encontrado: "Pessoa não encontrada.",
+  // Ministérios (funcionalidade 002)
+  nome_duplicado: "Já existe um ministério ativo com esse nome.",
+  nome_invalido: "Informe um nome de 2 a 60 caracteres e uma descrição de até 200.",
+  ultimo_lider: "O ministério precisa de pelo menos um líder. Defina outro líder antes.",
+  ministerio_inativo: "Este ministério está desativado.",
+  ja_participa: "Esta pessoa já participa deste ministério.",
+  pedido_duplicado: "Você já tem um pedido pendente para este ministério.",
+  conflito_pedido: "Este pedido já foi decidido. Atualize a lista.",
+  pessoa_invalida: "Esta pessoa não pode ser adicionada.",
+  sem_lider: "Escolha um líder para reativar o ministério.",
 };
 
 export function traduzirErro(erro: ErroLike | Error): string {
   if (!erro) return GENERICA;
-  const e = erro as { code?: string; message?: string; status?: number; name?: string };
+  const e = erro as { code?: string; message?: string; status?: number; name?: string; details?: string };
 
   if (e.status === 429) return LIMITE;
+  // O banco informa em `details` o nome do ministério que ficaria sem líder: citar na mensagem.
+  if (e.message === "ultimo_lider" && e.details) {
+    return `O ministério ${e.details} precisa de pelo menos um líder. Defina outro líder antes.`;
+  }
   if (e.code && POR_CODIGO[e.code]) return POR_CODIGO[e.code];
   // Funções SQL levantam exceção com message igual ao código.
   if (e.message && POR_CODIGO[e.message]) return POR_CODIGO[e.message];

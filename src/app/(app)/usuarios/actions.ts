@@ -6,7 +6,8 @@ import { criarClienteServidor } from "@/lib/supabase/server";
 import { traduzirErro } from "@/lib/auth/mensagens-erro";
 import type { EstadoForm } from "@/lib/auth/estado-form";
 
-const PAPEIS = ["membro", "lider", "administrador"];
+// Não existe papel global de líder: a liderança é uma participação em ministério (002).
+const PAPEIS = ["membro", "administrador"];
 const SITUACOES = ["pendente", "aprovado", "recusado", "acesso_removido"];
 
 export async function alterarPapel(_anterior: EstadoForm, formData: FormData): Promise<EstadoForm> {

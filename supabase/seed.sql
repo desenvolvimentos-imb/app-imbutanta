@@ -3,11 +3,14 @@
 --
 -- Todas as contas usam a senha:  Senha1234
 --
---   admin@teste.local      administrador (nasce assim pelo mecanismo de administrador inicial)
---   lider@teste.local      líder de ministério
---   membro@teste.local     membro aprovado
---   pendente@teste.local   aguardando aprovação (email verificado, aparece na fila)
+--   admin@teste.local      administrador (nasce assim pelo mecanismo de administrador inicial);
+--                          também lidera o ministério "Recepção"
+--   lider@teste.local      membro que lidera o ministério "Louvor" (liderança é por ministério)
+--   membro@teste.local     membro aprovado, participante do "Louvor"
+--   pendente@teste.local   aguardando aprovação (email verificado) com pedido pendente para o "Louvor"
 --   recusado@teste.local   cadastro recusado
+--
+-- Ministérios de teste: "Louvor" e "Recepção" (ativos) e "Teatro" (desativado, com histórico).
 
 -- O administrador entra pelo mesmo caminho do dono do projeto em produção:
 -- email na lista de iniciais + email confirmado.
@@ -48,9 +51,27 @@ select pg_temp.criar_usuario('11111111-1111-1111-1111-111111111104', 'pendente@t
 select pg_temp.criar_usuario('11111111-1111-1111-1111-111111111105', 'recusado@teste.local', 'Rita Recusada');
 
 -- O gatilho já criou os perfis (pendentes); ajustamos os demais.
-update public.perfis set situacao = 'aprovado', papel = 'lider'
+update public.perfis set situacao = 'aprovado', papel = 'membro'
  where id = '11111111-1111-1111-1111-111111111102';
 update public.perfis set situacao = 'aprovado', papel = 'membro'
  where id = '11111111-1111-1111-1111-111111111103';
 update public.perfis set situacao = 'recusado'
  where id = '11111111-1111-1111-1111-111111111105';
+
+-- Ministérios de teste (specs/002-ministerios-participantes). "Teatro" está desativado para
+-- validar que o histórico é preservado.
+insert into public.ministerios (id, nome, descricao, ativo, desativado_em) values
+  ('22222222-2222-2222-2222-222222222201', 'Louvor',   'Música e adoração nos cultos.', true,  null),
+  ('22222222-2222-2222-2222-222222222202', 'Recepção', 'Acolhe as pessoas na chegada.', true,  null),
+  ('22222222-2222-2222-2222-222222222203', 'Teatro',   'Ministério encerrado (histórico).', false, now());
+
+insert into public.participacoes_ministerio (ministerio_id, perfil_id, papel) values
+  ('22222222-2222-2222-2222-222222222201', '11111111-1111-1111-1111-111111111102', 'lider'),
+  ('22222222-2222-2222-2222-222222222201', '11111111-1111-1111-1111-111111111103', 'participante'),
+  ('22222222-2222-2222-2222-222222222202', '11111111-1111-1111-1111-111111111101', 'lider'),
+  ('22222222-2222-2222-2222-222222222203', '11111111-1111-1111-1111-111111111102', 'lider'),
+  ('22222222-2222-2222-2222-222222222203', '11111111-1111-1111-1111-111111111103', 'participante');
+
+-- A pessoa pendente pediu o Louvor no cadastro: o líder do Louvor pode aceitar e ativar a conta.
+insert into public.pedidos_entrada_ministerio (ministerio_id, perfil_id, origem_cadastro) values
+  ('22222222-2222-2222-2222-222222222201', '11111111-1111-1111-1111-111111111104', true);

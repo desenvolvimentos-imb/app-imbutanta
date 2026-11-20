@@ -6,21 +6,22 @@ test("membro vê o início sem atalhos administrativos", async ({ page }) => {
   await entrarCom(page, "membro@teste.local");
   await expect(page).toHaveURL(/\/inicio/);
   await expect(page.getByRole("heading", { name: /Marta Membro/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Aprovar cadastros" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Pedidos e aprovações/ })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Gerenciar usuários" })).toHaveCount(0);
 });
 
-test("líder vê Aprovar cadastros, mas não Gerenciar usuários", async ({ page }) => {
+// Desde a 002, "líder" é quem lidera um ministério (lider@teste.local lidera o Louvor no seed).
+test("quem lidera um ministério vê Pedidos e aprovações, mas não Gerenciar usuários", async ({ page }) => {
   await entrarCom(page, "lider@teste.local");
   await expect(page).toHaveURL(/\/inicio/);
-  await expect(page.getByRole("link", { name: "Aprovar cadastros" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Pedidos e aprovações/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Gerenciar usuários" })).toHaveCount(0);
 });
 
 test("administrador vê os dois atalhos", async ({ page }) => {
   await entrarCom(page, "admin@teste.local");
   await expect(page).toHaveURL(/\/inicio/);
-  await expect(page.getByRole("link", { name: "Aprovar cadastros" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Pedidos e aprovações/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Gerenciar usuários" }).first()).toBeVisible();
 });
 

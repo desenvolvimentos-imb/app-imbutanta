@@ -32,8 +32,13 @@ export default function PaginaPrivacidade() {
         </li>
         <li>
           <strong>Dados da sua conta no app:</strong> a situação (aguardando aprovação, aprovado,
-          recusado, acesso removido), o papel (membro, líder ou administrador), a data do cadastro e
+          recusado, acesso removido), o papel (membro ou administrador), a data do cadastro e
           quem decidiu a aprovação.
+        </li>
+        <li>
+          <strong>Ministérios:</strong> de quais ministérios você participa, se é participante ou
+          líder em cada um, e os pedidos que você fez para entrar (com a decisão e quando ela foi
+          tomada).
         </li>
         <li>
           <strong>Cookies necessários</strong> para manter você conectado. Não usamos cookies de
@@ -45,6 +50,7 @@ export default function PaginaPrivacidade() {
       <ul>
         <li>Identificar você e permitir o seu acesso ao app da igreja.</li>
         <li>Controlar quem tem acesso e mostrar o conteúdo adequado ao papel de cada pessoa.</li>
+        <li>Organizar quem participa de cada ministério e decidir os pedidos de entrada.</li>
         <li>Enviar emails de confirmação do cadastro e de recuperação de senha.</li>
       </ul>
       <p>Não vendemos os seus dados nem os usamos para propaganda.</p>
@@ -52,12 +58,16 @@ export default function PaginaPrivacidade() {
       <h2>Quem pode ver os seus dados</h2>
       <ul>
         <li>
-          Líderes de ministério e administradores veem o seu <strong>nome e a data do cadastro</strong>{" "}
-          enquanto o cadastro aguarda aprovação.
+          Os líderes de um ministério veem o seu <strong>nome</strong> e o pedido que você fez para
+          entrar nele, enquanto o pedido aguarda decisão.
         </li>
         <li>
-          Administradores veem também o seu <strong>email e o seu papel</strong>, para gerenciar os
-          acessos.
+          Quem faz parte do mesmo ministério que você vê o seu <strong>nome e o seu papel</strong>{" "}
+          (participante ou líder) naquele ministério. Seu email não aparece para colegas.
+        </li>
+        <li>
+          Administradores veem também o seu <strong>email, o seu papel e os seus ministérios</strong>,
+          para gerenciar os acessos.
         </li>
       </ul>
 

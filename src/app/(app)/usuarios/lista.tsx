@@ -10,7 +10,6 @@ export type Usuario = { id: string; nome: string; email: string; situacao: Situa
 
 const ROTULO_PAPEL: Record<Papel, string> = {
   membro: "Membro",
-  lider: "Líder de ministério",
   administrador: "Administrador",
 };
 

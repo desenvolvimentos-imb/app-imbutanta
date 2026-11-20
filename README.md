@@ -4,6 +4,16 @@ App web (PWA) da Igreja Metodista no Butantã: escalas dos ministérios, informa
 estudos. Tudo é escrito em português do Brasil. Regras do projeto: veja a
 [constituição](.specify/memory/constitution.md) e o [guia de contribuição](CONTRIBUTING.md).
 
+## Papéis e ministérios
+
+O app tem dois papéis de conta: **administrador** e **membro**. A liderança é **por ministério**:
+quem é líder do Louvor não é líder da Recepção. O administrador cria e desativa ministérios; o líder
+gerencia os participantes e decide os pedidos de entrada do próprio ministério; qualquer pessoa
+pode pedir para entrar em ministérios (inclusive no cadastro) e ver os seus em *Meus ministérios*.
+Quando um líder aceita o pedido de uma conta nova, a conta é ativada. Detalhes em
+[`specs/002-ministerios-participantes`](specs/002-ministerios-participantes/spec.md) e na
+[ADR 0006](docs/decisions/0006-lideranca-por-ministerio.md).
+
 ## Tecnologias
 
 - Next.js 16 (App Router) + TypeScript + Tailwind CSS, hospedado na Vercel

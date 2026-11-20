@@ -8,9 +8,12 @@ type Props = {
   dica?: string;
   autoComplete?: string;
   defaultValue?: string;
+  /** Campos são obrigatórios por padrão; use `false` para campos opcionais. */
+  obrigatorio?: boolean;
+  maxLength?: number;
 };
 
-export function Campo({ nome, rotulo, tipo = "text", erro, dica, autoComplete, defaultValue }: Props) {
+export function Campo({ nome, rotulo, tipo = "text", erro, dica, autoComplete, defaultValue, obrigatorio = true, maxLength }: Props) {
   const idErro = `${nome}-erro`;
   const idDica = `${nome}-dica`;
   const descricao = [erro ? idErro : null, dica ? idDica : null].filter(Boolean).join(" ") || undefined;
@@ -24,7 +27,8 @@ export function Campo({ nome, rotulo, tipo = "text", erro, dica, autoComplete, d
         id={nome}
         name={nome}
         type={tipo}
-        required
+        required={obrigatorio}
+        maxLength={maxLength}
         autoComplete={autoComplete}
         defaultValue={defaultValue}
         aria-invalid={erro ? true : undefined}

@@ -12,7 +12,11 @@ insert into auth.users (id, email, email_confirmed_at, raw_user_meta_data, aud, 
   ('00000000-0000-0000-0000-0000000000c4', 'pen.t@exemplo.com',  now(), '{"nome":"Pen T"}',  'authenticated', 'authenticated'),
   ('00000000-0000-0000-0000-0000000000c5', 'pnv.t@exemplo.com',  null,  '{"nome":"Pnv T"}',  'authenticated', 'authenticated');
 update public.perfis set situacao = 'aprovado', papel = 'administrador' where id = '00000000-0000-0000-0000-0000000000c1';
-update public.perfis set situacao = 'aprovado', papel = 'lider'         where id = '00000000-0000-0000-0000-0000000000c2';
+update public.perfis set situacao = 'aprovado', papel = 'membro'        where id = '00000000-0000-0000-0000-0000000000c2';
+-- c2 lidera um ministério: desde a 002 isso NÃO dá leitura de perfis alheios (a fila usa funções).
+insert into public.ministerios (id, nome, descricao) values ('00000000-0000-0000-0000-00000000aa03', 'Teste RLS perfis', '');
+insert into public.participacoes_ministerio (ministerio_id, perfil_id, papel)
+  values ('00000000-0000-0000-0000-00000000aa03', '00000000-0000-0000-0000-0000000000c2', 'lider');
 update public.perfis set situacao = 'aprovado', papel = 'membro'        where id = '00000000-0000-0000-0000-0000000000c3';
 
 -- ===== Membro =====
@@ -42,18 +46,18 @@ reset role;
 select is((select nome from public.perfis where id = '00000000-0000-0000-0000-0000000000c4'),
           'Pen T', 'o nome da pessoa alheia continua intacto (RLS barrou o update)');
 
--- ===== Líder =====
+-- ===== Quem lidera um ministério (sem papel global): não lê perfis alheios =====
 select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-0000000000c2", "role": "authenticated"}', true);
 set local role authenticated;
 select is((select count(*) from public.perfis where id = '00000000-0000-0000-0000-0000000000c4'),
-          1::bigint, 'líder vê pendente com email verificado');
+          0::bigint, 'líder de ministério NÃO lê pendente direto em perfis (usa listar_pedidos_pendentes)');
 select is((select count(*) from public.perfis where id = '00000000-0000-0000-0000-0000000000c5'),
-          0::bigint, 'líder NÃO vê pendente com email não verificado');
+          0::bigint, 'líder de ministério NÃO vê pendente com email não verificado');
 select is((select count(*) from public.perfis where id in
             ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000c3')),
-          0::bigint, 'líder NÃO vê administrador nem membro alheios');
+          0::bigint, 'líder de ministério NÃO vê administrador nem membro alheios');
 select is((select count(*) from public.perfis where id = '00000000-0000-0000-0000-0000000000c2'),
-          1::bigint, 'líder vê o próprio perfil');
+          1::bigint, 'líder de ministério vê o próprio perfil');
 reset role;
 
 -- ===== Administrador =====

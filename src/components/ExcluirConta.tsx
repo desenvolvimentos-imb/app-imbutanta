@@ -17,7 +17,8 @@ export function ExcluirConta() {
       </summary>
       <form action={acao} noValidate className="mt-3 flex flex-col gap-4">
         <p>
-          Isto apaga a sua conta e os seus dados pessoais (nome e email) do app.{" "}
+          Isto apaga a sua conta e os seus dados pessoais (nome e email) do app, junto com os seus
+          vínculos e pedidos de ministério.{" "}
           <strong>Não dá para desfazer.</strong> Se quiser voltar depois, será preciso criar uma
           nova conta e aguardar aprovação.
         </p>
