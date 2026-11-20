@@ -33,17 +33,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Versão FIXA (a mesma do package.json): "latest" consulta a API do GitHub para descobrir a
+      # versão e falha quando o limite de requisições é atingido ("rate limit exceeded").
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 3.2.0
 
       - name: Ligar ao projeto do ambiente
         run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
 
       # Mostra no log quais migrações ainda não estão no banco. Se o histórico do projeto divergir do
       # repositório, o comando falha aqui (corrigir com `supabase migration repair`, ver ADR 0005).
+      # IMPORTANTE: na CLI 3 o `db push` mira o banco LOCAL por padrão. `--remote` aponta para o
+      # projeto vinculado pelo passo acima; sem ele a CLI tenta falar com um Postgres que não existe.
       - name: Migrações pendentes (simulação)
-        run: supabase db push --dry-run
+        run: supabase db push --remote --dry-run
 
       - name: Aplicar as migrações
-        run: supabase db push
+        run: supabase db push --remote

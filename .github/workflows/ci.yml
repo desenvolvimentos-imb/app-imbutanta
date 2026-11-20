@@ -24,9 +24,11 @@ jobs:
       - run: npm run typecheck
       - run: npm test
 
+      # Versão fixa (a mesma do package.json): "latest" consulta a API do GitHub e falha quando o
+      # limite de requisições é atingido.
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 3.2.0
 
       # Valores falsos: só existem para o Supabase local aceitar o provedor Google.
       - name: Preparar variáveis do Supabase local

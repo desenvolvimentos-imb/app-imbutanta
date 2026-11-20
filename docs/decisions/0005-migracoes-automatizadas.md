@@ -46,3 +46,14 @@ funcionalidade o risco cresce, sobretudo em produção (dados reais de membros).
 - (−) A conexão do runner do GitHub com o banco pode exigir o endereço de pooler do Supabase;
   confirmar na primeira execução em desenvolvimento antes de usar em produção.
 - O GitHub Actions é gratuito para repositório público (ADR 0004).
+
+## Atualização (2026-11-20, primeira execução)
+
+A primeira execução mostrou dois ajustes, ambos já corrigidos no workflow:
+
+- Na CLI 3, `supabase db push` mira o **banco local** por padrão; para o projeto vinculado é preciso
+  `--remote`. Sem a flag, a simulação falhou com "connection refused" antes de aplicar qualquer coisa.
+- `version: latest` no `setup-cli` consulta a API do GitHub para descobrir a versão e falhou por
+  limite de requisições ("rate limit exceeded"). A versão passou a ser fixa (3.2.0, a mesma do
+  `package.json`); atualizar a CLI passa a ser uma mudança explícita, nos dois workflows e no
+  `package.json`.
