@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AcaoComConfirmacao } from "@/components/AcaoComConfirmacao";
 import { BotaoPedirEntrada } from "@/components/AcoesPedido";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { classesBotao } from "@/components/estilos-botao";
 import { BuscaPessoa } from "@/components/BuscaPessoa";
 import { ListaParticipantes } from "@/components/ListaParticipantes";
 import { PedidosDeEntrada } from "@/app/(app)/aprovacoes/pedidos";
@@ -76,6 +78,17 @@ export default async function PaginaMinisterio({
           )}
           . O histórico foi preservado.
         </p>
+      )}
+
+      {podeGerir && (
+        <section aria-labelledby="titulo-gestao-escalas" className="flex flex-col gap-3">
+          <h2 id="titulo-gestao-escalas" className="text-lg font-semibold">
+            Escalas
+          </h2>
+          <Link href={`/ministerios/${ministerio.id}/funcoes`} className={classesBotao("secundario")}>
+            Funções e aptidões
+          </Link>
+        </section>
       )}
 
       {ministerio.ativo && !participa && (
