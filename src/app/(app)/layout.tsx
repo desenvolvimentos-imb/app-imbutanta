@@ -9,7 +9,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
   return (
     <>
       <Cabecalho />
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 py-6">{children}</main>
+      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-4 px-4 py-6 md:order-3">{children}</main>
       <NavegacaoInferior papel={perfil.papel} lidera={perfil.lidera} />
     </>
   );

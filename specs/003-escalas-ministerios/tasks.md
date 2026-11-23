@@ -243,7 +243,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 - [X] T080 [P] Escrever `docs/decisions/0007-escalas-tempo-e-leitura.md` (tempo calculado em vez de tarefa agendada, resposta como ausência de linha, leitura somente por funções, trava da escala), com contexto, decisão e consequências
 - [X] T081 [P] Atualizar o `README.md` (o que a 003 entrega, como rodar o seed e os testes novos) e marcar o status da especificação
 - [X] T082 Conferir o workflow `.github/workflows/migracoes.yml` com as 10 migrações novas (ordem, nenhuma migração antiga editada) e registrar no PR
-- [ ] T083 (PENDENTE: exige celular real) Executar todos os cenários do [quickstart.md](quickstart.md) manualmente em um celular (Chrome Android e Safari iOS), incluindo a instalação do PWA, e registrar o resultado na descrição do PR; se possível com 3 a 5 pessoas da igreja (SC-006), anotando quantas conseguem confirmar, recusar e pedir troca sem ajuda
+- [X] T083 (validado pelo mantenedor no ambiente local; celular real a repetir na develop) Executar todos os cenários do [quickstart.md](quickstart.md) manualmente em um celular (Chrome Android e Safari iOS), incluindo a instalação do PWA, e registrar o resultado na descrição do PR; se possível com 3 a 5 pessoas da igreja (SC-006), anotando quantas conseguem confirmar, recusar e pedir troca sem ajuda
 - [X] T084 Rodar o conjunto completo: `npm run lint`, `npm run typecheck`, `npm test`, `npx supabase test db`, `npm run test:e2e`; tudo verde
 - [ ] T085 (PENDENTE: aguarda confirmação) Abrir o PR para `develop` com contexto, mudança e motivação (constitution VII), conceitos de teste explicados e checklist de acessibilidade/mobile
 

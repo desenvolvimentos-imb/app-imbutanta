@@ -5,24 +5,31 @@ import { atalhosPorPapel, type Papel } from "@/lib/auth/permissoes";
 
 export function Cabecalho({ titulo }: { titulo?: string }) {
   return (
-    <header className="border-b border-slate-300 bg-blue-900 px-4 py-3 text-white">
+    <header className="border-b border-slate-300 bg-blue-900 px-4 py-3 text-white md:order-1">
       <p className="mx-auto max-w-xl text-lg font-semibold">{titulo ?? "IM Butantã"}</p>
     </header>
   );
 }
 
 export function NavegacaoInferior({ papel, lidera }: { papel: Papel; lidera: boolean }) {
-  // Rótulos curtos: a barra tem no máximo 5 itens e o celular pouca largura.
+  // Rótulos curtos: o celular tem pouca largura. "Escalas" leva a Minhas escalas e "Trocas" aos
+  // Pedidos de troca; "Aprovações" (pedidos de entrada e contas novas) só aparece a quem decide.
+  // "Usuários" fica na tela inicial (Gestão) para a barra não passar de 6 itens.
+  const aprovacoes = atalhosPorPapel(papel, lidera).find((a) => a.href === "/aprovacoes");
   const itens = [
     { href: "/inicio", rotulo: "Início" },
+    { href: "/minhas-escalas", rotulo: "Escalas" },
+    { href: "/pedidos-de-troca", rotulo: "Trocas" },
     { href: "/ministerios", rotulo: "Ministérios" },
-    ...atalhosPorPapel(papel, lidera).map((a) => ({ href: a.href, rotulo: a.curto })),
+    ...(aprovacoes ? [{ href: aprovacoes.href, rotulo: "Aprovações" }] : []),
     { href: "/conta", rotulo: "Conta" },
   ];
   return (
     <nav
       aria-label="Principal"
-      className="sticky bottom-0 border-t border-slate-300 bg-white"
+      // Celular: barra embaixo, ao alcance do polegar. Computador (tela larga): logo abaixo do título,
+      // como nos sites comuns, e fixa no topo ao rolar.
+      className="sticky bottom-0 border-t border-slate-300 bg-white md:visible md:order-2 md:top-0 md:bottom-auto md:border-b md:border-t-0"
     >
       <ul className="mx-auto flex max-w-xl">
         {itens.map((i) => (
