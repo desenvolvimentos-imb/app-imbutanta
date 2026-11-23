@@ -27,10 +27,17 @@ sessão (`lib/auth/sessao.ts`) carrega esse dado junto do perfil, **do banco a c
 | `/usuarios` (ajustada) | `aprovado` + administrador | A opção de papel "Líder" some; só "Membro" e "Administrador". Remover acesso de quem lidera sozinho mostra o erro `ultimo_lider` |
 | `/meus-ministerios` | `aprovado` | Ministérios de que participo (papel em cada um), meus pedidos e estado (pendente, recusado), botão "Pedir para entrar em outro ministério" e "Cancelar pedido". **Tela vazia amigável** quando não participo de nenhum (RF-033) |
 | `/ministerios` | `aprovado` | Administrador: lista de ativos e desativados com "Novo ministério". Demais: lista de ativos com nome e descrição, e "Pedir para entrar" quando aplicável (RF-032) |
-| `/ministerios/novo` | `aprovado` + administrador | Criar ministério: nome, descrição curta e líder inicial (busca por nome entre contas aprovadas) |
+| `/ministerios/novo` | `aprovado` + administrador | Criar ministério: nome, descrição curta e líder inicial (escolhido em uma **lista** de contas aprovadas; ver nota abaixo) |
 | `/ministerios/[id]` | `aprovado`; conteúdo por papel (abaixo) | Detalhe do ministério |
 
 `/ministerios/[id]` exige `await params` (Next.js 16).
+
+> **Desvio registrado (2026-11-23)**: a escolha do líder inicial em `/ministerios/novo` é uma lista
+> (`select`) de todas as contas aprovadas, e não uma busca por nome como a primeira versão deste
+> contrato previa. Em celular a lista nativa funciona bem para algumas dezenas ou poucas centenas
+> de pessoas, que é o porte esperado. Se a membresia crescer a ponto de a lista ficar longa demais,
+> trocar por uma busca por nome (a função `buscar_pessoas` já existe, mas hoje exige um
+> ministério; seria preciso uma variante para administrador).
 
 ### Conteúdo de `/ministerios/[id]` por papel
 

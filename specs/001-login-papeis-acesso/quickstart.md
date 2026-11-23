@@ -26,8 +26,10 @@ Emails locais (confirmação, recuperação) aparecem no Mailpit (endereço most
 
 Crie também `supabase/.env` (fora do git) com `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` e `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` (valores quaisquer bastam sem Google real).
 
-Contas de teste do `seed.sql` (senha `Senha1234`) (apenas ambiente local): um administrador, um líder, um membro
-aprovado, um pendente e um recusado. Credenciais ficam no próprio `seed.sql`, que é exclusivo
+Contas de teste do `seed.sql` (senha `Senha1234`) (apenas ambiente local): um administrador, um "líder", um membro
+aprovado, um pendente e um recusado. *(Desde a funcionalidade 002 não existe papel global de líder: a conta
+`lider@teste.local` é um membro que lidera o ministério "Louvor". Os ministérios de teste e quem participa de
+quê estão no [quickstart da 002](../002-ministerios-participantes/quickstart.md).)* Credenciais ficam no próprio `seed.sql`, que é exclusivo
 do ambiente local.
 
 ## 2. Testes automatizados

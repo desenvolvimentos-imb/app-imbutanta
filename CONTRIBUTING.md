@@ -46,9 +46,38 @@ commit na `develop`); PRs de release (`develop` → `main`) usam *Create a merge
 
 ## Publicar em produção (release)
 
-1. Valide a `develop` (testes automáticos e uso manual no ambiente de teste).
-2. Abra um PR de `develop` para `main`, descrevendo o que está sendo publicado.
-3. Após os testes passarem, faça o merge. A `main` é a versão de produção.
+A publicação é um ato único que junta o que estiver pronto na `develop`; não há issue por
+funcionalidade. O que falta publicar aparece na diferença entre as branches
+(`git log origin/main..origin/develop`) e no próprio PR de release.
+
+**Antes do PR**
+
+1. Valide a `develop`: testes automáticos verdes e uso manual no ambiente de desenvolvimento
+   (inclusive o login com Google, que não tem teste automático).
+2. Procure pendências de release nas funcionalidades que vão subir: tarefas abertas na fase
+   "Publicação em produção" dos `specs/*/tasks.md` (`grep -n "\[ \]" specs/*/tasks.md`).
+3. Se houver migrações novas, confirme no projeto Supabase de **produção** que o histórico está
+   registrado e bate com o repositório
+   (`select version from supabase_migrations.schema_migrations order by version;`), e que o
+   ambiente `producao` do GitHub tem revisor e os segredos. Se uma migração converter dados de
+   pessoas e já existirem usuários em produção, registre antes quem será afetado.
+
+**O PR e o merge**
+
+4. Abra um PR de `develop` para `main`, descrevendo o que está sendo publicado, e faça o merge com
+   *Create a merge commit*. A `main` é a versão de produção.
+5. **Aprove o workflow `Migrações` logo depois do merge** (aba *Actions*, ambiente `producao`):
+   a Vercel publica o código na hora, mas o banco só muda depois da sua aprovação. Até lá o app
+   em produção roda com código novo e banco antigo.
+6. Confira que a simulação do workflow lista **só as migrações novas** e que a aplicação conclui.
+
+**Depois**
+
+7. Valide em produção o que foi publicado (ver o quickstart de cada funcionalidade).
+
+Preferir migrações **compatíveis com o código anterior** (que só acrescentam colunas, tabelas e
+funções) reduz o risco da janela entre o merge e a aprovação; isso importa quando o app já tiver
+pessoas usando.
 
 ## Migrações do banco
 

@@ -1,5 +1,6 @@
-// Quando o app não consegue ler o perfil da pessoa logada, ele mostra uma mensagem clara em
-// português, com saída (Sair), em vez de fingir que a conta está "pendente".
+// Quando o app não consegue ler o perfil da pessoa logada (ou outro dado de uma página), ele mostra
+// uma mensagem clara e NEUTRA em português, com saída (Sair), em vez de fingir que a conta está
+// "pendente". A mensagem não cita "conta": a mesma tela serve para qualquer falha de carregamento.
 import { expect, test } from "@playwright/test";
 import { clienteAdmin } from "./ajuda/admin";
 import { emailNovo, SENHA } from "./ajuda/email";
@@ -20,7 +21,7 @@ test("conta sem perfil mostra erro claro e permite sair", async ({ page }) => {
 
   await entrarCom(page, email);
 
-  await expect(page.getByRole("heading", { name: "Não foi possível carregar a sua conta" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Não foi possível carregar esta página" })).toBeVisible();
   await expect(page.getByText(/aguardando aprovação/i)).toHaveCount(0); // não finge que está pendente
   await expect(page.getByRole("button", { name: "Tentar de novo" })).toBeVisible();
 

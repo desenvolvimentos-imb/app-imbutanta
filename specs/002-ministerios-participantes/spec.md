@@ -4,7 +4,7 @@
 
 **Criada em**: 2026-11-19
 
-**Status**: Rascunho
+**Status**: Implementada e validada em desenvolvimento em 2026-11-23 (publicação em produção pendente)
 
 **Entrada**: Descrição do usuário: "Ministérios e participantes do app IM Butantã: cadastro de ministérios pelo administrador, vínculo de pessoas a ministérios como participante ou líder (por ministério), pedidos de entrada decididos pelo líder, ajuste na aprovação de novos usuários e a tela Meus ministérios."
 

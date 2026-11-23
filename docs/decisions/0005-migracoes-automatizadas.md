@@ -1,7 +1,7 @@
 # 0005 — Migrações aplicadas por workflow do GitHub Actions
 
 - **Data**: 2026-11-20
-- **Situação**: Aceita (implementação prevista na funcionalidade `002-ministerios-participantes`)
+- **Situação**: Implementada (2026-11-23): o workflow rodou com sucesso no projeto de desenvolvimento depois do PR #12; produção ainda não publicada
 - **Origem**: ADR 0003 (atualização de 2026-11-20) e emenda 1.3.0 da constituição
 
 ## Contexto
