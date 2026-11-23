@@ -51,7 +51,7 @@ set local role authenticated;
 select is((select count(*) from public.minhas_escalas(false)), 4::bigint, 'próximas: publicadas e a cancelada em que estou escalado (rascunho nunca aparece)');
 select is((select array_agg(evento order by data, horario) from public.minhas_escalas(false)),
           array['Hoje cedo', 'Sábado 12/12', 'Cancelada 14/12', 'Domingo 20/12'], 'em ordem de data');
-select is((select funcoes from public.minhas_escalas(false) where evento = 'Domingo 20/12'), array['Vocal', 'Violão'],
+select is((select array(select unnest(funcoes) order by 1) from public.minhas_escalas(false) where evento = 'Domingo 20/12'), array['Violão', 'Vocal'],
           'duas vagas na mesma escala: um só item, com as duas funções');
 select is((select minha_resposta || '/' || motivo from public.minhas_escalas(false) where evento = 'Domingo 20/12'), 'recusado/Viagem', 'mostra a minha resposta e o motivo');
 select is((select minha_resposta from public.minhas_escalas(false) where evento = 'Sábado 12/12'), 'pendente', 'sem resposta = pendente');
