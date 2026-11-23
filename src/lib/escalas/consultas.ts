@@ -51,3 +51,84 @@ export async function minhasAptidoes(ministerioId: string): Promise<MinhaAptidao
   if (!idValido(ministerioId)) return [];
   return (await chamar<MinhaAptidao[] | null>("minhas_aptidoes", { p_ministerio: ministerioId })) ?? [];
 }
+
+// ===== Escalas =====
+
+export type SituacaoEscala = "rascunho" | "publicada" | "cancelada";
+export type RespostaEscala = "pendente" | "confirmado" | "recusado";
+
+export type EscalaResumo = {
+  id: string;
+  evento: string;
+  data: string; // "AAAA-MM-DD"
+  horario: string; // "HH:MM:SS"
+  situacao: SituacaoEscala;
+  total_vagas: number;
+  vagas_abertas: number;
+  /** Só o gestor recebe estas duas contagens (nulas para os demais). */
+  recusadas: number | null;
+  sem_resposta: number | null;
+};
+
+export type VagaDaEscala = {
+  id: string;
+  funcao_id: string;
+  funcao: string;
+  funcao_ativa: boolean;
+  rotulo: string;
+  ordem: number;
+  pessoa: { id: string; nome: string } | null;
+  em_aberto: boolean;
+  minha: boolean;
+  /** Só o gestor recebe os campos abaixo. */
+  resposta?: RespostaEscala | null;
+  motivo?: string | null;
+  precisa_atencao?: "em_aberto" | "recusada" | "sem_resposta" | null;
+};
+
+export type EscalaDetalhe = {
+  escala: {
+    id: string;
+    ministerio_id: string;
+    ministerio: string;
+    ministerio_ativo: boolean;
+    evento: string;
+    data: string;
+    horario: string;
+    observacao: string;
+    situacao: SituacaoEscala;
+  };
+  papel: "gestor" | "participante";
+  somente_leitura: boolean;
+  iniciada: boolean;
+  vagas: VagaDaEscala[];
+  minhas_vagas: string[];
+  minha_resposta: { resposta: RespostaEscala; motivo: string } | null;
+  pode_responder: boolean;
+  pode_pedir_troca: boolean;
+  /** Só o gestor: uma linha por pessoa escalada. */
+  respostas: { perfil_id: string; nome: string; resposta: RespostaEscala; motivo: string }[] | null;
+};
+
+export type Candidato = { id: string; nome: string; apta_para: string[] };
+
+export async function listarEscalasMinisterio(ministerioId: string, passadas = false): Promise<EscalaResumo[]> {
+  if (!idValido(ministerioId)) return [];
+  return (await chamar<EscalaResumo[] | null>("listar_escalas_ministerio", { p_ministerio: ministerioId, p_passadas: passadas })) ?? [];
+}
+
+/** Devolve a escala, ou null se não existir ou a pessoa não puder vê-la (o banco decide). */
+export async function lerEscala(escalaId: string): Promise<EscalaDetalhe | null> {
+  if (!idValido(escalaId)) return null;
+  return await chamar<EscalaDetalhe | null>("ler_escala", { p_escala: escalaId });
+}
+
+export async function listarCandidatos(escalaId: string): Promise<Candidato[]> {
+  if (!idValido(escalaId)) return [];
+  return (await chamar<Candidato[] | null>("listar_candidatos_escala", { p_escala: escalaId })) ?? [];
+}
+
+export async function contarEscalasComVagasAbertas(ministerioId: string): Promise<number> {
+  if (!idValido(ministerioId)) return 0;
+  return (await chamar<number | null>("contar_escalas_com_vagas_abertas", { p_ministerio: ministerioId })) ?? 0;
+}

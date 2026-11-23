@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AcaoComConfirmacao } from "@/components/AcaoComConfirmacao";
 import { BotaoPedirEntrada } from "@/components/AcoesPedido";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { contarEscalasComVagasAbertas } from "@/lib/escalas/consultas";
 import { classesBotao } from "@/components/estilos-botao";
 import { BuscaPessoa } from "@/components/BuscaPessoa";
 import { ListaParticipantes } from "@/components/ListaParticipantes";
@@ -57,6 +58,7 @@ export default async function PaginaMinisterio({
   // Situação da própria pessoa neste ministério: participa, já pediu ou pode pedir.
   const [minhasParticipacoes, meusPedidos] = await Promise.all([listarMinhasParticipacoes(), listarMeusPedidos()]);
   const participa = minhasParticipacoes.some((p) => p.ministerio_id === ministerio.id);
+  const vagasAbertas = podeGerir ? await contarEscalasComVagasAbertas(ministerio.id) : 0;
   const pedidoPendente = meusPedidos.find((p) => p.ministerio_id === ministerio.id && p.situacao === "pendente");
 
   return (
@@ -85,8 +87,27 @@ export default async function PaginaMinisterio({
           <h2 id="titulo-gestao-escalas" className="text-lg font-semibold">
             Escalas
           </h2>
+          {vagasAbertas > 0 && (
+            <p role="status" className="rounded-lg border border-orange-800 bg-orange-50 p-3 text-base text-orange-950">
+              {vagasAbertas === 1 ? "1 escala tem vagas em aberto." : `${vagasAbertas} escalas têm vagas em aberto.`}
+            </p>
+          )}
+          <Link href={`/ministerios/${ministerio.id}/escalas`} className={classesBotao("primario")}>
+            Escalas
+          </Link>
           <Link href={`/ministerios/${ministerio.id}/funcoes`} className={classesBotao("secundario")}>
             Funções e aptidões
+          </Link>
+        </section>
+      )}
+
+      {ministerio.ativo && participa && !podeGerir && (
+        <section aria-labelledby="titulo-escalas-participante" className="flex flex-col gap-3">
+          <h2 id="titulo-escalas-participante" className="text-lg font-semibold">
+            Escalas
+          </h2>
+          <Link href={`/ministerios/${ministerio.id}/escalas`} className={classesBotao("secundario")}>
+            Ver escalas do ministério
           </Link>
         </section>
       )}
