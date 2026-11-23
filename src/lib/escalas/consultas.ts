@@ -132,3 +132,32 @@ export async function contarEscalasComVagasAbertas(ministerioId: string): Promis
   if (!idValido(ministerioId)) return 0;
   return (await chamar<number | null>("contar_escalas_com_vagas_abertas", { p_ministerio: ministerioId })) ?? 0;
 }
+
+// ===== Minhas escalas =====
+
+export type MinhaEscala = {
+  escala_id: string;
+  ministerio_id: string;
+  ministerio: string;
+  evento: string;
+  funcoes: string[];
+  data: string;
+  horario: string;
+  situacao: SituacaoEscala;
+  minha_resposta: RespostaEscala;
+  motivo: string;
+  pode_responder: boolean;
+};
+
+export type Pendencias = { sem_resposta: number; trocas_recebidas: number; trocas_para_aprovar: number };
+
+/** As escalas em que a pessoa está escalada: próximas (padrão) ou passadas. */
+export async function minhasEscalas(passadas = false): Promise<MinhaEscala[]> {
+  return (await chamar<MinhaEscala[] | null>("minhas_escalas", { p_passadas: passadas })) ?? [];
+}
+
+/** Números para a tela inicial (escalas sem resposta e, depois, pedidos de troca). */
+export async function contarPendencias(): Promise<Pendencias> {
+  const r = await chamar<Pendencias | null>("contar_pendencias_escala");
+  return r ?? { sem_resposta: 0, trocas_recebidas: 0, trocas_para_aprovar: 0 };
+}

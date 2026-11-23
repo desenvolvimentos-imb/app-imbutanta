@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AcaoComConfirmacao } from "@/components/AcaoComConfirmacao";
+import { BotoesResposta } from "@/components/BotoesResposta";
+import { SeloResposta } from "@/components/SeloResposta";
 import { SeloSituacao } from "@/components/CartaoEscala";
 import { EditorVagas } from "@/components/EditorVagas";
 import { FormularioEscala } from "@/components/FormularioEscala";
@@ -71,6 +73,21 @@ export default async function PaginaEscala({ params }: { params: Promise<{ id: s
             rotuloBotao="Salvar alterações"
             avisoRespostas={escala.situacao === "publicada"}
           />
+        </section>
+      )}
+
+      {detalhe.minha_resposta && escala.situacao !== "cancelada" && (
+        <section aria-labelledby="titulo-minha-resposta" className="flex flex-col gap-3 rounded-lg border border-blue-900 p-4">
+          <h2 id="titulo-minha-resposta" className="text-lg font-semibold">Sua participação</h2>
+          <div><SeloResposta resposta={detalhe.minha_resposta.resposta} /></div>
+          {detalhe.minha_resposta.resposta === "recusado" && detalhe.minha_resposta.motivo && (
+            <p className="text-base text-slate-800">Motivo: {detalhe.minha_resposta.motivo}</p>
+          )}
+          {detalhe.pode_responder ? (
+            <BotoesResposta escalaId={escala.id} ministerioId={id} evento={escala.evento} atual={detalhe.minha_resposta.resposta} />
+          ) : (
+            detalhe.iniciada && <p className="text-base text-slate-800">O horário de início já passou: a resposta não pode mais ser mudada.</p>
+          )}
         </section>
       )}
 

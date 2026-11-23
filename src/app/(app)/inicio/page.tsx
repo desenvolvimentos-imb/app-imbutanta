@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ATALHOS_MINISTERIOS, atalhosPorPapel } from "@/lib/auth/permissoes";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { contarPendencias } from "@/lib/escalas/consultas";
 import { contarPedidosPendentes } from "@/lib/ministerios/consultas";
 import { criarClienteServidor } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Início" };
 
-const RESERVADOS = ["Minhas escalas", "Informativos", "Estudos"];
+const RESERVADOS = ["Informativos", "Estudos"];
 
-// Tela inicial: muda conforme o papel (RF-023). Escalas, informativos e estudos chegam em
-// funcionalidades futuras; por enquanto ficam como espaços reservados.
+// Tela inicial: muda conforme o papel (RF-023). Informativos e estudos chegam em funcionalidades
+// futuras; por enquanto ficam como espaços reservados.
 export default async function PaginaInicio() {
   const perfil = await exigirAcesso("/inicio");
   const atalhos = atalhosPorPapel(perfil.papel, perfil.lidera);
@@ -31,9 +32,32 @@ export default async function PaginaInicio() {
     }
   }
 
+  const pendenciasEscala = await contarPendencias();
+
   return (
     <>
       <h1 className="text-2xl font-bold">Olá, {perfil.nome}!</h1>
+
+      <section aria-labelledby="titulo-escalas" className="flex flex-col gap-3">
+        <h2 id="titulo-escalas" className="text-lg font-semibold">
+          Escalas
+        </h2>
+        <ul className="flex flex-col gap-3">
+          <li>
+            <Link
+              href="/minhas-escalas"
+              className="flex min-h-14 items-center rounded-lg border-2 border-blue-900 px-4 text-lg font-semibold text-blue-900 hover:bg-blue-50"
+            >
+              Minhas escalas
+              {pendenciasEscala.sem_resposta > 0 && (
+                <span className="ml-2 rounded-full bg-blue-900 px-2 py-0.5 text-sm text-white">
+                  {pendenciasEscala.sem_resposta} sem resposta
+                </span>
+              )}
+            </Link>
+          </li>
+        </ul>
+      </section>
 
       <section aria-labelledby="titulo-ministerios" className="flex flex-col gap-3">
         <h2 id="titulo-ministerios" className="text-lg font-semibold">

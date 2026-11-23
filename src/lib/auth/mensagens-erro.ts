@@ -55,6 +55,7 @@ const POR_CODIGO: Record<string, string> = {
   troca_duplicada: "Esta vaga já tem um pedido de troca em andamento.",
   conflito_troca: "Este pedido já foi decidido ou perdeu efeito. Atualize a lista.",
   troca_invalida: "Escolha outra pessoa do ministério que ainda não esteja nesta escala.",
+  motivo_invalido: "O motivo pode ter no máximo 200 caracteres.",
 };
 
 export function traduzirErro(erro: ErroLike | Error): string {

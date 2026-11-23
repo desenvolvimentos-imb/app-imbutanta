@@ -33,12 +33,11 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 | `20261123120003_escalas_acesso.sql` | RLS, revogações e funções auxiliares de permissão | T008 |
 | `20261123120004_funcoes_aptidoes.sql` | funções e aptidões | US1 |
 | `20261123120005_escalas_escrita.sql` | criar/editar escala, vagas, avisos, publicar, cancelar | US2 |
-| `20261123120006_escalas_leitura.sql` | `listar_escalas_ministerio`, `ler_escala` (básica) e contador de vagas em aberto | US2 |
-| `20261123120007_responder_e_minhas_escalas.sql` | `responder_escala`, `minhas_escalas`, `contar_pendencias_escala` e `ler_escala` ampliada (resposta própria) | US3 |
-| `20261123120008_efeitos_de_mudanca.sql` | efeitos de trocar pessoa/data nas respostas e pedidos; liberar vagas futuras e gatilhos | US4 |
-| `20261123120009_leitura_do_gestor.sql` | `ler_escala` e `listar_escalas_ministerio` ampliadas (respostas, motivos, destaques) | US4 |
-| `20261123120010_pedidos_troca.sql` | pedir, responder, decidir, cancelar, listar trocas; `contar_pendencias_escala` ampliada | US5 |
-| `20261123120011_desativar_ministerio_escalas.sql` | `desativar_ministerio` cancela escalas futuras e contador | US6 |
+| `20261123120006_escalas_leitura.sql` | `listar_escalas_ministerio`, `ler_escala` (completa: vagas, minha resposta, respostas e destaques do gestor) e contador de vagas em aberto | US2 |
+| `20261123120007_responder_e_minhas_escalas.sql` | `responder_escala`, `minhas_escalas`, `contar_pendencias_escala` | US3 |
+| `20261123120008_liberar_vagas_futuras.sql` | `liberar_vagas_futuras` e os gatilhos de remoção de participante e perda de acesso | US4 |
+| `20261123120009_pedidos_troca.sql` | pedir, responder, decidir, cancelar, listar trocas; `contar_pendencias_escala` ampliada | US5 |
+| `20261123120010_desativar_ministerio_escalas.sql` | `desativar_ministerio` cancela escalas futuras e contador | US6 |
 
 **Regra de ouro**: a numeração segue a ordem das histórias; **nenhuma tarefa edita uma migração já criada**. Quando uma história precisa mudar uma função anterior (ex.: `ler_escala`), faz `create or replace` na **sua própria** migração nova.
 
@@ -141,18 +140,18 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Testes da História 3
 
-- [ ] T038 [P] [US3] Escrever `supabase/tests/028_responder_escala.test.sql` (pgTAP): `responder_escala` — quem ocupa vaga confirma/recusa; vale para todas as vagas da pessoa; motivo só gravado ao recusar; `nao_escalado`; `escala_nao_publicada` (rascunho); `escala_cancelada`; `evento_iniciado` (depois do horário, no mesmo dia); muda de resposta antes do início; resposta única por pessoa por escala
-- [ ] T039 [P] [US3] Escrever `supabase/tests/029_minhas_escalas.test.sql` (pgTAP): `minhas_escalas` só devolve publicadas/canceladas em que a pessoa ocupa vaga; rascunho não aparece; ordem das próximas e das passadas; várias funções da mesma pessoa agrupadas; `minha_resposta` "pendente" sem linha; nenhum dado de outras pessoas; `contar_pendencias_escala`
-- [ ] T040 [P] [US3] Escrever `tests/e2e/minhas-escalas.spec.ts` (Playwright, celular): escalado vê o item com ministério, evento, função, data, horário e resposta; confirma e recusa com motivo no item (≤ 3 toques desde a tela inicial); escala cancelada aparece sem botões; tela vazia amigável; depois de o líder mudar a escala, o escalado ao reabrir a tela vê a versão nova (FR-016)
+- [X] T038 [P] [US3] Escrever `supabase/tests/028_responder_escala.test.sql` (pgTAP): `responder_escala` — quem ocupa vaga confirma/recusa; vale para todas as vagas da pessoa; motivo só gravado ao recusar; `nao_escalado`; `escala_nao_publicada` (rascunho); `escala_cancelada`; `evento_iniciado` (depois do horário, no mesmo dia); muda de resposta antes do início; resposta única por pessoa por escala
+- [X] T039 [P] [US3] Escrever `supabase/tests/029_minhas_escalas.test.sql` (pgTAP): `minhas_escalas` só devolve publicadas/canceladas em que a pessoa ocupa vaga; rascunho não aparece; ordem das próximas e das passadas; várias funções da mesma pessoa agrupadas; `minha_resposta` "pendente" sem linha; nenhum dado de outras pessoas; `contar_pendencias_escala`
+- [X] T040 [P] [US3] Escrever `tests/e2e/minhas-escalas.spec.ts` (Playwright, celular): escalado vê o item com ministério, evento, função, data, horário e resposta; confirma e recusa com motivo no item (≤ 3 toques desde a tela inicial); escala cancelada aparece sem botões; tela vazia amigável; depois de o líder mudar a escala, o escalado ao reabrir a tela vê a versão nova (FR-016)
 
 ### Implementação da História 3
 
-- [ ] T041 [US3] Criar `supabase/migrations/20261123120007_responder_e_minhas_escalas.sql` com `responder_escala`, `minhas_escalas`, `contar_pendencias_escala` (por ora só escalas sem resposta) e `create or replace` de `ler_escala` acrescentando `minha_resposta` e `pode_responder`
-- [ ] T042 [P] [US3] Criar a Server Action `src/app/(app)/minhas-escalas/acoes.ts` e `src/components/BotoesResposta.tsx` (Confirmar/Recusar, motivo opcional, estados desabilitados com texto explicando por quê)
-- [ ] T043 [US3] Criar `src/app/(app)/minhas-escalas/page.tsx` ("Próximas", "Ver passadas", vazio amigável)
-- [ ] T044 [US3] Ajustar `src/app/(app)/ministerios/[id]/escalas/[escalaId]/page.tsx` para o participante: nome de quem ocupa cada vaga, suas vagas, sua resposta e os botões; **sem** respostas dos outros
-- [ ] T045 [US3] Ajustar `src/app/(app)/inicio/page.tsx` com o atalho "Minhas escalas" e o contador de escalas sem resposta
-- [ ] T046 [US3] Rodar `npx supabase test db`, `npm test` e `npm run test:e2e -- minhas-escalas` até ficarem verdes (cenários 8 e 9 do [quickstart.md](quickstart.md))
+- [X] T041 [US3] Criar `supabase/migrations/20261123120007_responder_e_minhas_escalas.sql` com `responder_escala`, `minhas_escalas`, `contar_pendencias_escala` (por ora só escalas sem resposta) e `create or replace` de `ler_escala` acrescentando `minha_resposta` e `pode_responder`
+- [X] T042 [P] [US3] Criar a Server Action `src/app/(app)/minhas-escalas/acoes.ts` e `src/components/BotoesResposta.tsx` (Confirmar/Recusar, motivo opcional, estados desabilitados com texto explicando por quê)
+- [X] T043 [US3] Criar `src/app/(app)/minhas-escalas/page.tsx` ("Próximas", "Ver passadas", vazio amigável)
+- [X] T044 [US3] Ajustar `src/app/(app)/ministerios/[id]/escalas/[escalaId]/page.tsx` para o participante: nome de quem ocupa cada vaga, suas vagas, sua resposta e os botões; **sem** respostas dos outros
+- [X] T045 [US3] Ajustar `src/app/(app)/inicio/page.tsx` com o atalho "Minhas escalas" e o contador de escalas sem resposta
+- [X] T046 [US3] Rodar `npx supabase test db`, `npm test` e `npm run test:e2e -- minhas-escalas` até ficarem verdes (cenários 8 e 9 do [quickstart.md](quickstart.md))
 
 **Ponto de verificação**: o ciclo escalar → ver → responder já funciona de ponta a ponta.
 
@@ -201,7 +200,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Implementação da História 5
 
-- [ ] T063 [US5] Criar `supabase/migrations/20261123120010_pedidos_troca.sql` com `pedir_troca`, `responder_pedido_troca`, `decidir_troca_lider` (trava da escala, atomicidade, avisos reutilizando `avisos_para_vaga`), `cancelar_pedido_troca`, `listar_pedidos_troca`, `listar_candidatas_troca`, e `create or replace` de `contar_pendencias_escala` acrescentando os contadores de trocas recebidas e a aprovar, conforme [contracts/banco-rpc.md](contracts/banco-rpc.md)
+- [ ] T063 [US5] Criar `supabase/migrations/20261123120009_pedidos_troca.sql` com `pedir_troca`, `responder_pedido_troca`, `decidir_troca_lider` (trava da escala, atomicidade, avisos reutilizando `avisos_para_vaga`), `cancelar_pedido_troca`, `listar_pedidos_troca`, `listar_candidatas_troca`, e `create or replace` de `contar_pendencias_escala` acrescentando os contadores de trocas recebidas e a aprovar, conforme [contracts/banco-rpc.md](contracts/banco-rpc.md)
 - [ ] T064 [P] [US5] Criar as Server Actions `src/app/(app)/pedidos-de-troca/acoes.ts` e `src/app/(app)/ministerios/[id]/escalas/[escalaId]/acoes-troca.ts` (pedir, aceitar/recusar, aprovar/recusar com `p_ciente`, cancelar)
 - [ ] T065 [P] [US5] Criar `src/components/FormularioPedidoTroca.tsx` (seletor de colegas elegíveis, sem digitar email) e `src/components/CartaoPedidoTroca.tsx` (situação com ícone + texto, ações conforme quem é a pessoa)
 - [ ] T066 [US5] Criar `src/app/(app)/pedidos-de-troca/page.tsx` com os blocos "Recebidos", "Feitos", "Aguardando minha aprovação" (gestor) e "Histórico"
@@ -228,7 +227,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Implementação da História 6
 
-- [ ] T074 [US6] Criar `supabase/migrations/20261123120011_desativar_ministerio_escalas.sql` (`create or replace` de `desativar_ministerio` cancelando escalas futuras + `contar_escalas_futuras`), mantendo a assinatura e o comportamento da 002; rodar `supabase/tests/013_ministerios_admin.test.sql` e ajustar o que dependia do comportamento antigo
+- [ ] T074 [US6] Criar `supabase/migrations/20261123120010_desativar_ministerio_escalas.sql` (`create or replace` de `desativar_ministerio` cancelando escalas futuras + `contar_escalas_futuras`), mantendo a assinatura e o comportamento da 002; rodar `supabase/tests/013_ministerios_admin.test.sql` e ajustar o que dependia do comportamento antigo
 - [ ] T075 [US6] Ajustar a tela de desativação em `src/app/(app)/ministerios/[id]/page.tsx` (e a Server Action existente) para consultar `contar_escalas_futuras` e mostrar a confirmação com o número antes de desativar
 - [ ] T076 [US6] Revisar `listar_escalas_ministerio`, `ler_escala` e as telas para os casos de borda de [spec.md](spec.md) (escala sem vagas; função desativada em vaga existente; líder também escalado; escala de hoje com horário já passado) e ajustar o que faltar, com um teste para cada ajuste
 - [ ] T077 [US6] Rodar `npx supabase test db`, `npm test` e `npm run test:e2e` até ficarem verdes (cenários 18 a 20 do [quickstart.md](quickstart.md))
@@ -243,7 +242,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 - [ ] T079 [P] Ampliar `tests/e2e/acessibilidade.spec.ts` (axe) com as telas novas em 360 px: minhas escalas, pedidos de troca, escalas do ministério, detalhe da escala, funções; corrigir violações AA
 - [ ] T080 [P] Escrever `docs/decisions/0007-escalas-tempo-e-leitura.md` (tempo calculado em vez de tarefa agendada, resposta como ausência de linha, leitura somente por funções, trava da escala), com contexto, decisão e consequências
 - [ ] T081 [P] Atualizar o `README.md` (o que a 003 entrega, como rodar o seed e os testes novos) e marcar o status da especificação
-- [ ] T082 Conferir o workflow `.github/workflows/migracoes.yml` com as 11 migrações novas (ordem, nenhuma migração antiga editada) e registrar no PR
+- [ ] T082 Conferir o workflow `.github/workflows/migracoes.yml` com as 10 migrações novas (ordem, nenhuma migração antiga editada) e registrar no PR
 - [ ] T083 Executar todos os cenários do [quickstart.md](quickstart.md) manualmente em um celular (Chrome Android e Safari iOS), incluindo a instalação do PWA, e registrar o resultado na descrição do PR; se possível com 3 a 5 pessoas da igreja (SC-006), anotando quantas conseguem confirmar, recusar e pedir troca sem ajuda
 - [ ] T084 Rodar o conjunto completo: `npm run lint`, `npm run typecheck`, `npm test`, `npx supabase test db`, `npm run test:e2e`; tudo verde
 - [ ] T085 Abrir o PR para `develop` com contexto, mudança e motivação (constitution VII), conceitos de teste explicados e checklist de acessibilidade/mobile
@@ -272,4 +271,6 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ## Notas de implementação
 
-(Preencher durante a implementação: diferenças do Next.js 16 em relação ao padrão, decisões tomadas no caminho.)
+- **Efeitos de mudança dentro da 005**: trocar a pessoa de uma vaga e mudar data/horário (respostas voltam a pendente, pedidos perdem efeito) ficaram em `20261123120005_escalas_escrita.sql`, junto das funções de escrita, em vez de uma migração separada. A leitura completa do gestor (respostas, destaques) também está em `…0006`. Por isso as migrações da US4 se reduzem a `liberar_vagas_futuras` e seus gatilhos; os testes da US4 provam os efeitos de qualquer forma.
+- **Next.js 16**: `params` e `searchParams` são `Promise` (já seguido nas páginas novas). O React 19 limpa formulários depois de cada Server Action: no editor de vagas, os campos são recriados com os valores devolvidos pelo servidor (`key`) para o líder poder "continuar mesmo assim" com a mesma vaga.
+- O botão que reenvia o formulário com a ciência do líder usa `formAction` (função) em vez de depender do nome/valor do botão enviado.

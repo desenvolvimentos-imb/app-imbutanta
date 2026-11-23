@@ -95,7 +95,7 @@ describe("traduzirErro", () => {
     const codigos = [
       "funcao_duplicada", "funcao_invalida", "evento_invalido", "data_passada", "escala_somente_leitura",
       "escala_cancelada", "escala_sem_vagas", "escala_nao_publicada", "limite_vagas", "nao_participante",
-      "evento_iniciado", "nao_escalado", "ja_escalada", "troca_duplicada", "conflito_troca", "troca_invalida",
+      "evento_iniciado", "nao_escalado", "ja_escalada", "troca_duplicada", "conflito_troca", "troca_invalida", "motivo_invalido",
     ];
     for (const c of codigos) {
       const m = traduzirErro({ message: c });

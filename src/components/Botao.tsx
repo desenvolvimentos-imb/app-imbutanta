@@ -7,10 +7,10 @@ import { classesBotao, type Variante } from "./estilos-botao";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & { variante?: Variante };
 
-export function BotaoEnviar({ variante = "primario", children, ...resto }: Props) {
+export function BotaoEnviar({ variante = "primario", children, disabled, ...resto }: Props) {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className={classesBotao(variante)} {...resto}>
+    <button type="submit" className={classesBotao(variante)} {...resto} disabled={pending || disabled}>
       {pending ? "Aguarde..." : children}
     </button>
   );
