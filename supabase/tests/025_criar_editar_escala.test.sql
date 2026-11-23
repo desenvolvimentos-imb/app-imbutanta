@@ -2,7 +2,7 @@
 -- Relógio fixado em 10/12/2026 09:00 (São Paulo), redefinindo agora_sp() dentro da transação.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(25);
+select plan(27);
 
 create or replace function public.agora_sp() returns timestamptz language sql stable as
   $$ select '2026-12-10 12:00:00+00'::timestamptz $$;
@@ -36,6 +36,12 @@ select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000
 set local role authenticated;
 select is((select (public.criar_escala('00000000-0000-0000-0000-00000025000a', '  Culto de hoje ', '2026-12-10', '19:00')).situacao::text), 'rascunho', 'cria escala de HOJE como rascunho');
 select lives_ok($$ select public.criar_escala('00000000-0000-0000-0000-00000025000a', 'Culto de amanhã', '2026-12-11', '09:00', 'Trazer partitura') $$, 'cria escala futura com observação');
+select lives_ok($$ select public.criar_escala('00000000-0000-0000-0000-00000025000a', 'Hoje cedo', '2026-12-10', '07:00') $$, 'escala de HOJE com horário que já passou é permitida (só a data não pode ser anterior a hoje)');
+reset role;
+select set_config('t.escala_hoje', (select id::text from public.escalas where evento = 'Hoje cedo'), true);
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000002502", "role": "authenticated"}', true);
+set local role authenticated;
+select lives_ok($$ select public.editar_escala(current_setting('t.escala_hoje')::uuid, 'Hoje cedo', '2026-12-10', '08:00', 'ainda é hoje: o líder edita até o fim do dia') $$, 'a escala de hoje continua editável até o fim do dia');
 select throws_ok($$ select public.criar_escala('00000000-0000-0000-0000-00000025000a', 'Culto de ontem', '2026-12-09', '09:00') $$, 'P0001', 'data_passada', 'data anterior a hoje é recusada');
 select throws_ok($$ select public.criar_escala('00000000-0000-0000-0000-00000025000a', '', '2026-12-20', '09:00') $$, 'P0001', 'evento_invalido', 'evento em branco');
 select throws_ok($$ select public.criar_escala('00000000-0000-0000-0000-00000025000a', 'X', '2026-12-20', '09:00') $$, 'P0001', 'evento_invalido', 'evento curto demais');

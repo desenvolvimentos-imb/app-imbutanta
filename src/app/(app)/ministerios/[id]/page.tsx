@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { AcaoComConfirmacao } from "@/components/AcaoComConfirmacao";
 import { BotaoPedirEntrada } from "@/components/AcoesPedido";
 import { exigirAcesso } from "@/lib/auth/sessao";
-import { contarEscalasComVagasAbertas } from "@/lib/escalas/consultas";
+import { contarEscalasComVagasAbertas, contarEscalasFuturas } from "@/lib/escalas/consultas";
 import { classesBotao } from "@/components/estilos-botao";
 import { BuscaPessoa } from "@/components/BuscaPessoa";
 import { ListaParticipantes } from "@/components/ListaParticipantes";
@@ -59,6 +59,14 @@ export default async function PaginaMinisterio({
   const [minhasParticipacoes, meusPedidos] = await Promise.all([listarMinhasParticipacoes(), listarMeusPedidos()]);
   const participa = minhasParticipacoes.some((p) => p.ministerio_id === ministerio.id);
   const vagasAbertas = podeGerir ? await contarEscalasComVagasAbertas(ministerio.id) : 0;
+  // Antes de o administrador confirmar a desativação, o app diz quantas escalas futuras serão canceladas.
+  const escalasFuturas = ehAdmin && ministerio.ativo ? await contarEscalasFuturas(ministerio.id) : 0;
+  const avisoEscalas =
+    escalasFuturas === 0
+      ? ""
+      : escalasFuturas === 1
+        ? " Isto cancelará 1 escala futura (ela continua visível, marcada como cancelada)."
+        : ` Isto cancelará ${escalasFuturas} escalas futuras (elas continuam visíveis, marcadas como canceladas).`;
   const pedidoPendente = meusPedidos.find((p) => p.ministerio_id === ministerio.id && p.situacao === "pendente");
 
   return (
@@ -156,7 +164,7 @@ export default async function PaginaMinisterio({
             <AcaoComConfirmacao
               rotulo="Desativar ministério"
               rotuloConfirmar="Confirmar desativação"
-              aviso="O ministério sai da lista de ativos e deixa de receber pedidos. Participantes e histórico continuam registrados."
+              aviso={`O ministério sai da lista de ativos e deixa de receber pedidos. Participantes e histórico continuam registrados.${avisoEscalas}`}
               acao={desativarMinisterio}
               campos={{ id: ministerio.id }}
             />

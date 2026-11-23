@@ -220,17 +220,17 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ### Testes da História 6
 
-- [ ] T070 [P] [US6] Escrever `supabase/tests/038_visibilidade_escalas.test.sql` (pgTAP): participante vê só publicadas (e canceladas em que esteve escalado) com nomes, só a própria resposta; líder de outro ministério e estranho recebem zero linhas/nada; administrador vê rascunhos, respostas e motivos de qualquer ministério; ministério desativado deixa as escalas somente para leitura e **toda função de escrita** (inclusive com administrador) retorna `ministerio_inativo`
-- [ ] T071 [P] [US6] Escrever `supabase/tests/039_desativar_ministerio_escalas.test.sql` (pgTAP): `contar_escalas_futuras` conta não canceladas com data ≥ hoje (rascunhos e publicadas); `desativar_ministerio` cancela essas escalas e seus pedidos pendentes na mesma transação e não toca nas passadas; só administrador; desativar sem escalas continua funcionando como na 002
-- [ ] T072 [P] [US6] Escrever `tests/e2e/visibilidade-escalas.spec.ts` (Playwright): participante não vê respostas dos outros; estranho abre a URL direta e não vê nada; administrador desativa um ministério, vê "Isto cancelará N escalas futuras" e só após confirmar elas ficam canceladas
-- [ ] T073 [P] [US6] Ampliar `tests/e2e/seguranca-api.spec.ts`: chamadas diretas à API com a chave pública e com sessão de membro às tabelas e funções de escalas devolvem negado/vazio
+- [X] T070 [P] [US6] Escrever `supabase/tests/038_visibilidade_escalas.test.sql` (pgTAP): participante vê só publicadas (e canceladas em que esteve escalado) com nomes, só a própria resposta; líder de outro ministério e estranho recebem zero linhas/nada; administrador vê rascunhos, respostas e motivos de qualquer ministério; ministério desativado deixa as escalas somente para leitura e **toda função de escrita** (inclusive com administrador) retorna `ministerio_inativo`
+- [X] T071 [P] [US6] Escrever `supabase/tests/039_desativar_ministerio_escalas.test.sql` (pgTAP): `contar_escalas_futuras` conta não canceladas com data ≥ hoje (rascunhos e publicadas); `desativar_ministerio` cancela essas escalas e seus pedidos pendentes na mesma transação e não toca nas passadas; só administrador; desativar sem escalas continua funcionando como na 002
+- [X] T072 [P] [US6] Escrever `tests/e2e/visibilidade-escalas.spec.ts` (Playwright): participante não vê respostas dos outros; estranho abre a URL direta e não vê nada; administrador desativa um ministério, vê "Isto cancelará N escalas futuras" e só após confirmar elas ficam canceladas
+- [X] T073 [P] [US6] Ampliar `tests/e2e/seguranca-api.spec.ts`: chamadas diretas à API com a chave pública e com sessão de membro às tabelas e funções de escalas devolvem negado/vazio
 
 ### Implementação da História 6
 
-- [ ] T074 [US6] Criar `supabase/migrations/20261123120010_desativar_ministerio_escalas.sql` (`create or replace` de `desativar_ministerio` cancelando escalas futuras + `contar_escalas_futuras`), mantendo a assinatura e o comportamento da 002; rodar `supabase/tests/013_ministerios_admin.test.sql` e ajustar o que dependia do comportamento antigo
-- [ ] T075 [US6] Ajustar a tela de desativação em `src/app/(app)/ministerios/[id]/page.tsx` (e a Server Action existente) para consultar `contar_escalas_futuras` e mostrar a confirmação com o número antes de desativar
-- [ ] T076 [US6] Revisar `listar_escalas_ministerio`, `ler_escala` e as telas para os casos de borda de [spec.md](spec.md) (escala sem vagas; função desativada em vaga existente; líder também escalado; escala de hoje com horário já passado) e ajustar o que faltar, com um teste para cada ajuste
-- [ ] T077 [US6] Rodar `npx supabase test db`, `npm test` e `npm run test:e2e` até ficarem verdes (cenários 18 a 20 do [quickstart.md](quickstart.md))
+- [X] T074 [US6] Criar `supabase/migrations/20261123120010_desativar_ministerio_escalas.sql` (`create or replace` de `desativar_ministerio` cancelando escalas futuras + `contar_escalas_futuras`), mantendo a assinatura e o comportamento da 002; rodar `supabase/tests/013_ministerios_admin.test.sql` e ajustar o que dependia do comportamento antigo
+- [X] T075 [US6] Ajustar a tela de desativação em `src/app/(app)/ministerios/[id]/page.tsx` (e a Server Action existente) para consultar `contar_escalas_futuras` e mostrar a confirmação com o número antes de desativar
+- [X] T076 [US6] Revisar `listar_escalas_ministerio`, `ler_escala` e as telas para os casos de borda de [spec.md](spec.md) (escala sem vagas; função desativada em vaga existente; líder também escalado; escala de hoje com horário já passado) e ajustar o que faltar, com um teste para cada ajuste
+- [X] T077 [US6] Rodar `npx supabase test db`, `npm test` e `npm run test:e2e` até ficarem verdes (cenários 18 a 20 do [quickstart.md](quickstart.md))
 
 **Ponto de verificação**: todas as histórias funcionam e a visibilidade está provada.
 
@@ -238,14 +238,14 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 
 ## Fase 9: Acabamento e transversais
 
-- [ ] T078 [P] Ajustar `supabase/seed.sql` conforme [quickstart.md](quickstart.md): funções, aptidões, escala publicada e rascunho do Louvor, escala da Recepção no mesmo dia
-- [ ] T079 [P] Ampliar `tests/e2e/acessibilidade.spec.ts` (axe) com as telas novas em 360 px: minhas escalas, pedidos de troca, escalas do ministério, detalhe da escala, funções; corrigir violações AA
-- [ ] T080 [P] Escrever `docs/decisions/0007-escalas-tempo-e-leitura.md` (tempo calculado em vez de tarefa agendada, resposta como ausência de linha, leitura somente por funções, trava da escala), com contexto, decisão e consequências
-- [ ] T081 [P] Atualizar o `README.md` (o que a 003 entrega, como rodar o seed e os testes novos) e marcar o status da especificação
-- [ ] T082 Conferir o workflow `.github/workflows/migracoes.yml` com as 10 migrações novas (ordem, nenhuma migração antiga editada) e registrar no PR
-- [ ] T083 Executar todos os cenários do [quickstart.md](quickstart.md) manualmente em um celular (Chrome Android e Safari iOS), incluindo a instalação do PWA, e registrar o resultado na descrição do PR; se possível com 3 a 5 pessoas da igreja (SC-006), anotando quantas conseguem confirmar, recusar e pedir troca sem ajuda
-- [ ] T084 Rodar o conjunto completo: `npm run lint`, `npm run typecheck`, `npm test`, `npx supabase test db`, `npm run test:e2e`; tudo verde
-- [ ] T085 Abrir o PR para `develop` com contexto, mudança e motivação (constitution VII), conceitos de teste explicados e checklist de acessibilidade/mobile
+- [X] T078 [P] Ajustar `supabase/seed.sql` conforme [quickstart.md](quickstart.md): funções, aptidões, escala publicada e rascunho do Louvor, escala da Recepção no mesmo dia
+- [X] T079 [P] Ampliar `tests/e2e/acessibilidade.spec.ts` (axe) com as telas novas em 360 px: minhas escalas, pedidos de troca, escalas do ministério, detalhe da escala, funções; corrigir violações AA
+- [X] T080 [P] Escrever `docs/decisions/0007-escalas-tempo-e-leitura.md` (tempo calculado em vez de tarefa agendada, resposta como ausência de linha, leitura somente por funções, trava da escala), com contexto, decisão e consequências
+- [X] T081 [P] Atualizar o `README.md` (o que a 003 entrega, como rodar o seed e os testes novos) e marcar o status da especificação
+- [X] T082 Conferir o workflow `.github/workflows/migracoes.yml` com as 10 migrações novas (ordem, nenhuma migração antiga editada) e registrar no PR
+- [ ] T083 (PENDENTE: exige celular real) Executar todos os cenários do [quickstart.md](quickstart.md) manualmente em um celular (Chrome Android e Safari iOS), incluindo a instalação do PWA, e registrar o resultado na descrição do PR; se possível com 3 a 5 pessoas da igreja (SC-006), anotando quantas conseguem confirmar, recusar e pedir troca sem ajuda
+- [X] T084 Rodar o conjunto completo: `npm run lint`, `npm run typecheck`, `npm test`, `npx supabase test db`, `npm run test:e2e`; tudo verde
+- [ ] T085 (PENDENTE: aguarda confirmação) Abrir o PR para `develop` com contexto, mudança e motivação (constitution VII), conceitos de teste explicados e checklist de acessibilidade/mobile
 
 ---
 

@@ -18,8 +18,9 @@ npm run dev             # http://localhost:3000
 O `seed.sql` mantém as contas da 001/002 (senha `Senha1234`, só ambiente local) e acrescenta, para o
 ministério "Louvor": as funções "Vocal", "Violão" e "Bateria"; aptidões (o membro é apto em Vocal e
 Violão; o líder em Bateria); uma escala **publicada** de exemplo com vagas ocupadas e uma em aberto;
-e uma escala em **rascunho**. A "Recepção" ganha uma escala publicada no mesmo dia da do Louvor, com uma pessoa que
-confirmou e outra pendente, para validar o aviso de outro ministério.
+e uma escala em **rascunho** (ids fixos `44444444-…401` e `…402`). A Ana (líder da Recepção)
+**confirmou** uma escala da Recepção no mesmo dia da escala publicada do Louvor: para validar o aviso de outro
+ministério, adicione-a como participante do Louvor e escale-a numa vaga desse dia.
 
 ## 2. Testes automatizados
 

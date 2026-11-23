@@ -71,7 +71,7 @@ test("líder vê destaques, troca a pessoa, muda o horário e remove um particip
 
   // ===== Trocar a pessoa da vaga recusada (a nova não tem aptidão: aviso, e o líder continua) =====
   await vaga("V2").getByLabel("Pessoa").selectOption({ label: c.p4.nome });
-  await vaga("V2").getByRole("button", { name: /Salvar Vocal V2/ }).click();
+  await vaga("V2").getByRole("button", { name: /Salvar vaga Vocal V2/ }).click();
   await expect(vaga("V2")).toContainText("não está apta para a função Vocal");
   await vaga("V2").getByRole("button", { name: "Continuar mesmo assim" }).click();
   await expect(vaga("V2")).not.toContainText("Recusou");

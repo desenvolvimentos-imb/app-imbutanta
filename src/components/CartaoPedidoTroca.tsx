@@ -76,7 +76,7 @@ function BotaoCancelar({ p }: { p: PedidoTroca }) {
     <form action={acao} className="flex flex-col gap-2">
       <MensagemErro texto={estado.erro} />
       <Escondidos p={p} extra={{}} />
-      <BotaoEnviar variante="secundario" aria-label={`Cancelar o pedido de troca: ${p.evento}`}>Cancelar pedido</BotaoEnviar>
+      <BotaoEnviar variante="secundario" aria-label={`Cancelar pedido de troca: ${p.evento}`}>Cancelar pedido</BotaoEnviar>
     </form>
   );
 }

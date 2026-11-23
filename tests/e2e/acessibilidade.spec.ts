@@ -75,3 +75,28 @@ test("desativar pede confirmação acessível", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Confirmar desativação" })).toBeVisible();
   await verificar(page, "confirmação de desativação");
 });
+
+// Funcionalidade 003 (escalas): telas novas, como líder (gestão) e como membro (escalado).
+const ESCALA_PUBLICADA = "44444444-4444-4444-4444-444444444401"; // seed: Louvor, publicada
+const ESCALA_RASCUNHO = "44444444-4444-4444-4444-444444444402"; // seed: Louvor, rascunho
+
+test("telas de escalas (líder)", async ({ page }) => {
+  await entrarCom(page, "lider@teste.local");
+  for (const rota of [
+    "/minhas-escalas", "/pedidos-de-troca",
+    `/ministerios/${LOUVOR}/escalas`, `/ministerios/${LOUVOR}/escalas/nova`,
+    `/ministerios/${LOUVOR}/escalas/${ESCALA_PUBLICADA}`, `/ministerios/${LOUVOR}/escalas/${ESCALA_RASCUNHO}`,
+    `/ministerios/${LOUVOR}/funcoes`,
+  ]) {
+    await page.goto(rota);
+    await verificar(page, rota);
+  }
+});
+
+test("telas de escalas (membro escalado)", async ({ page }) => {
+  await entrarCom(page, "membro@teste.local");
+  for (const rota of ["/inicio", "/minhas-escalas", "/pedidos-de-troca", `/ministerios/${LOUVOR}/escalas`, `/ministerios/${LOUVOR}/escalas/${ESCALA_PUBLICADA}`]) {
+    await page.goto(rota);
+    await verificar(page, rota);
+  }
+});

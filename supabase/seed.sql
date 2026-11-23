@@ -75,3 +75,41 @@ insert into public.participacoes_ministerio (ministerio_id, perfil_id, papel) va
 -- A pessoa pendente pediu o Louvor no cadastro: o líder do Louvor pode aceitar e ativar a conta.
 insert into public.pedidos_entrada_ministerio (ministerio_id, perfil_id, origem_cadastro) values
   ('22222222-2222-2222-2222-222222222201', '11111111-1111-1111-1111-111111111104', true);
+
+-- ===== Escalas (specs/003-escalas-ministerios) =====
+-- Ana (líder da Recepção) CONFIRMOU a escala da Recepção no mesmo dia da escala publicada do Louvor.
+-- Para ver o aviso "participante já escalado em outro ministério neste mesmo dia", adicione a Ana como
+-- participante do Louvor (pela tela do ministério) e escale-a numa vaga do Louvor desse dia.
+-- (Ela não é participante do Louvor no seed para não alterar os testes das funcionalidades 001 e 002.)
+
+insert into public.funcoes_ministerio (id, ministerio_id, nome) values
+  ('33333333-3333-3333-3333-333333333301', '22222222-2222-2222-2222-222222222201', 'Vocal'),
+  ('33333333-3333-3333-3333-333333333302', '22222222-2222-2222-2222-222222222201', 'Violão'),
+  ('33333333-3333-3333-3333-333333333303', '22222222-2222-2222-2222-222222222201', 'Bateria'),
+  ('33333333-3333-3333-3333-333333333304', '22222222-2222-2222-2222-222222222202', 'Recepção');
+
+-- Marta é apta em Vocal (principal) e Violão (secundária); Lucas em Bateria (principal).
+insert into public.aptidoes (funcao_id, perfil_id, tipo) values
+  ('33333333-3333-3333-3333-333333333301', '11111111-1111-1111-1111-111111111103', 'principal'),
+  ('33333333-3333-3333-3333-333333333302', '11111111-1111-1111-1111-111111111103', 'secundaria'),
+  ('33333333-3333-3333-3333-333333333303', '11111111-1111-1111-1111-111111111102', 'principal');
+
+-- Louvor: uma escala PUBLICADA daqui a 7 dias (vagas preenchidas e uma em aberto) e um rascunho
+-- daqui a 14. Recepção: escala publicada no MESMO dia da do Louvor, com a Ana confirmada.
+insert into public.escalas (id, ministerio_id, evento, data, horario, observacao, situacao) values
+  ('44444444-4444-4444-4444-444444444401', '22222222-2222-2222-2222-222222222201', 'Culto de domingo', current_date + 7, '09:00', 'Ensaio às 08h.', 'publicada'),
+  ('44444444-4444-4444-4444-444444444402', '22222222-2222-2222-2222-222222222201', 'Culto de celebração', current_date + 14, '19:00', '', 'rascunho'),
+  ('44444444-4444-4444-4444-444444444403', '22222222-2222-2222-2222-222222222202', 'Recepção do culto', current_date + 7, '08:30', '', 'publicada');
+
+insert into public.vagas_escala (id, escala_id, funcao_id, rotulo, perfil_id, ordem) values
+  ('55555555-5555-5555-5555-555555555501', '44444444-4444-4444-4444-444444444401', '33333333-3333-3333-3333-333333333301', 'Vocal 1', '11111111-1111-1111-1111-111111111103', 1),
+  ('55555555-5555-5555-5555-555555555502', '44444444-4444-4444-4444-444444444401', '33333333-3333-3333-3333-333333333302', '', '11111111-1111-1111-1111-111111111103', 2),
+  ('55555555-5555-5555-5555-555555555503', '44444444-4444-4444-4444-444444444401', '33333333-3333-3333-3333-333333333303', '', '11111111-1111-1111-1111-111111111102', 3),
+  ('55555555-5555-5555-5555-555555555504', '44444444-4444-4444-4444-444444444401', '33333333-3333-3333-3333-333333333301', 'Vocal 2', null, 4),
+  ('55555555-5555-5555-5555-555555555505', '44444444-4444-4444-4444-444444444402', '33333333-3333-3333-3333-333333333301', '', null, 1),
+  ('55555555-5555-5555-5555-555555555506', '44444444-4444-4444-4444-444444444403', '33333333-3333-3333-3333-333333333304', '', '11111111-1111-1111-1111-111111111101', 1);
+
+-- Lucas já confirmou; Marta ainda não respondeu (pendente); Ana confirmou a Recepção.
+insert into public.respostas_escala (escala_id, perfil_id, resposta, motivo) values
+  ('44444444-4444-4444-4444-444444444401', '11111111-1111-1111-1111-111111111102', 'confirmado', ''),
+  ('44444444-4444-4444-4444-444444444403', '11111111-1111-1111-1111-111111111101', 'confirmado', '');

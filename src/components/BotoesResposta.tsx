@@ -54,12 +54,12 @@ export function BotoesResposta({ escalaId, ministerioId, evento, atual }: Props)
         <form action={acao}>
           {campos}
           <input type="hidden" name="resposta" value="confirmado" />
-          <BotaoEnviar variante={atual === "confirmado" ? "secundario" : "primario"} aria-label={`Confirmar presença: ${evento}`}
+          <BotaoEnviar variante={atual === "confirmado" ? "secundario" : "primario"} aria-label={atual === "confirmado" ? `Confirmado: ${evento}` : `Confirmar presença: ${evento}`}
                        aria-pressed={atual === "confirmado"} disabled={atual === "confirmado"}>
             {atual === "confirmado" ? "Confirmado" : "Confirmar"}
           </BotaoEnviar>
         </form>
-        <button type="button" onClick={() => setRecusando(true)} aria-label={`Recusar: ${evento}`}
+        <button type="button" onClick={() => setRecusando(true)} aria-label={atual === "recusado" ? `Mudar recusa: ${evento}` : `Recusar: ${evento}`}
                 className={classesBotao("secundario")}>
           {atual === "recusado" ? "Mudar recusa" : "Recusar"}
         </button>

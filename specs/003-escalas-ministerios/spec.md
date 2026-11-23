@@ -4,7 +4,7 @@
 
 **Criada em**: 2026-11-23
 
-**Status**: Rascunho
+**Status**: Implementada e validada em desenvolvimento em 2026-11-23 (validação manual em celular e PR pendentes)
 
 **Entrada**: Descrição do usuário: "Escalas dos ministérios: o líder monta a escala de cada evento (quem ocupa cada vaga, em qual data e horário); as pessoas escaladas veem a escala, confirmam ou recusam e pedem para ser substituídas por outra pessoa do ministério. Inclui funções e aptidões por ministério, avisos de conflito ao líder, tela Minhas escalas e tela Pedidos de troca."
 

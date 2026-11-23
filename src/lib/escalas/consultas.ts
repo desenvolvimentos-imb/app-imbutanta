@@ -221,3 +221,9 @@ export async function listarCandidatasTroca(vagaId: string): Promise<Candidata[]
   if (!idValido(vagaId)) return [];
   return (await chamar<Candidata[] | null>("listar_candidatas_troca", { p_vaga: vagaId })) ?? [];
 }
+
+/** Só o administrador: quantas escalas futuras seriam canceladas ao desativar o ministério (FR-020). */
+export async function contarEscalasFuturas(ministerioId: string): Promise<number> {
+  if (!idValido(ministerioId)) return 0;
+  return (await chamar<number | null>("contar_escalas_futuras", { p_ministerio: ministerioId })) ?? 0;
+}

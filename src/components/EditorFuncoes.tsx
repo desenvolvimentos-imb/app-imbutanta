@@ -48,7 +48,7 @@ function LinhaFuncao({ ministerioId, funcao }: { ministerioId: string; funcao: F
             <input type="hidden" name="funcao" value={funcao.id} />
             <Campo nome="nome" idCampo={`nome-${funcao.id}`} rotulo={`Nome da função ${funcao.nome}`} erro={estado.erros?.nome}
                    defaultValue={funcao.nome} maxLength={40} />
-            <BotaoEnviar variante="secundario" aria-label={`Salvar o novo nome da função ${funcao.nome}`}>Salvar nome</BotaoEnviar>
+            <BotaoEnviar variante="secundario" aria-label={`Salvar nome da função ${funcao.nome}`}>Salvar nome</BotaoEnviar>
           </form>
           <AcaoComConfirmacao
             rotulo="Desativar"

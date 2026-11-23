@@ -81,7 +81,7 @@ function FormularioVaga({ ministerioId, escalaId, vaga, funcoes, candidatos }: O
 
       <AvisosVaga avisos={avisos} aoDispensar={() => setDispensado(estado)} aoContinuar={continuar} />
       {avisos.length === 0 && (
-        <BotaoEnviar variante={vaga ? "secundario" : "primario"} aria-label={vaga ? `Salvar ${nomeVaga}` : "Adicionar vaga"}>
+        <BotaoEnviar variante={vaga ? "secundario" : "primario"} aria-label={vaga ? `Salvar vaga ${nomeVaga}` : "Adicionar vaga"}>
           {vaga ? "Salvar vaga" : "Adicionar vaga"}
         </BotaoEnviar>
       )}

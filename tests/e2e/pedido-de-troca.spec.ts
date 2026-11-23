@@ -60,7 +60,7 @@ test("pedir, cancelar, pedir de novo, aceitar, aprovar com aviso e conferir a va
   await page.goto("/pedidos-de-troca");
   const feito = page.getByRole("listitem").filter({ hasText: c.evento });
   await expect(feito).toContainText("Aguardando a pessoa indicada");
-  await feito.getByRole("button", { name: /Cancelar o pedido de troca/ }).click();
+  await feito.getByRole("button", { name: /Cancelar pedido de troca/ }).click();
   await expect(page.getByRole("region", { name: /Histórico/ }).getByRole("listitem").filter({ hasText: c.evento })).toContainText("Cancelado");
   await page.goto(urlEscala);
   await page.getByRole("button", { name: /Pedir troca da vaga Vocal/ }).click();
