@@ -161,3 +161,63 @@ export async function contarPendencias(): Promise<Pendencias> {
   const r = await chamar<Pendencias | null>("contar_pendencias_escala");
   return r ?? { sem_resposta: 0, trocas_recebidas: 0, trocas_para_aprovar: 0 };
 }
+
+// ===== Pedidos de troca =====
+
+export type SituacaoTroca =
+  | "aguardando_indicada" | "aguardando_lider" | "aprovado"
+  | "recusado_indicada" | "recusado_lider" | "cancelado" | "sem_efeito";
+
+export type PedidoTroca = {
+  id: string;
+  /** Como a pessoa aparece no pedido: quem pediu, a indicada ou quem gere o ministério. */
+  papel_na_lista: "solicitante" | "indicada" | "gestor";
+  /** Situação EFETIVA: pedido pendente de escala cancelada ou já iniciada vem como "sem_efeito". */
+  situacao: SituacaoTroca;
+  ministerio_id: string;
+  ministerio: string;
+  escala_id: string;
+  evento: string;
+  data: string;
+  horario: string;
+  vaga_id: string;
+  funcao: string;
+  rotulo: string;
+  solicitante_id: string;
+  solicitante: string;
+  indicada_id: string;
+  indicada: string;
+  criado_em: string;
+  pode_responder: boolean;
+  pode_decidir: boolean;
+  pode_cancelar: boolean;
+};
+
+export type PedidoDaEscala = {
+  id: string;
+  vaga_id: string;
+  situacao: SituacaoTroca;
+  solicitante_id: string;
+  solicitante: string;
+  indicada_id: string;
+  indicada: string;
+};
+
+export type Candidata = { id: string; nome: string };
+
+/** Pedidos que a pessoa fez e recebeu e, para quem gere ministérios, os que aguardam a aprovação. */
+export async function listarPedidosTroca(): Promise<PedidoTroca[]> {
+  return (await chamar<PedidoTroca[] | null>("listar_pedidos_troca")) ?? [];
+}
+
+/** Pedidos pendentes de uma escala que a pessoa pode ver (os próprios; o gestor vê todos). */
+export async function listarPedidosDaEscala(escalaId: string): Promise<PedidoDaEscala[]> {
+  if (!idValido(escalaId)) return [];
+  return (await chamar<PedidoDaEscala[] | null>("listar_pedidos_da_escala", { p_escala: escalaId })) ?? [];
+}
+
+/** Participantes que podem ser indicadas para assumir a vaga. */
+export async function listarCandidatasTroca(vagaId: string): Promise<Candidata[]> {
+  if (!idValido(vagaId)) return [];
+  return (await chamar<Candidata[] | null>("listar_candidatas_troca", { p_vaga: vagaId })) ?? [];
+}

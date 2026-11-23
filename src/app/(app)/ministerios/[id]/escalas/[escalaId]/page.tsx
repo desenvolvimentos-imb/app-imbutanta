@@ -7,10 +7,14 @@ import { SeloResposta } from "@/components/SeloResposta";
 import { SeloSituacao } from "@/components/CartaoEscala";
 import { EditorVagas } from "@/components/EditorVagas";
 import { FormularioEscala } from "@/components/FormularioEscala";
+import { FormularioPedidoTroca } from "@/components/FormularioPedidoTroca";
 import { ListaVagas } from "@/components/ListaVagas";
+import { SeloTroca } from "@/components/SeloTroca";
 import { PublicarEscala } from "@/components/PublicarEscala";
 import { exigirAcesso } from "@/lib/auth/sessao";
-import { lerEscala, listarCandidatos, listarFuncoes } from "@/lib/escalas/consultas";
+import {
+  lerEscala, listarCandidatasTroca, listarCandidatos, listarFuncoes, listarPedidosDaEscala,
+} from "@/lib/escalas/consultas";
 import { formatarDataHora } from "@/lib/escalas/datas";
 import { cancelarEscala, editarEscala } from "../acoes";
 
@@ -28,6 +32,12 @@ export default async function PaginaEscala({ params }: { params: Promise<{ id: s
   const { escala } = detalhe;
   const gestor = detalhe.papel === "gestor";
   const editavel = gestor && escala.ministerio_ativo && escala.situacao !== "cancelada" && !detalhe.somente_leitura;
+
+  const minhasVagas = detalhe.vagas.filter((v) => v.minha);
+  const [pedidos, candidatasTroca] = await Promise.all([
+    listarPedidosDaEscala(escalaId),
+    detalhe.pode_pedir_troca && minhasVagas.length > 0 ? listarCandidatasTroca(minhasVagas[0].id) : Promise.resolve([]),
+  ]);
 
   const [funcoes, candidatos] = editavel
     ? await Promise.all([listarFuncoes(id, true), listarCandidatos(escalaId)])
@@ -88,6 +98,35 @@ export default async function PaginaEscala({ params }: { params: Promise<{ id: s
           ) : (
             detalhe.iniciada && <p className="text-base text-slate-800">O horário de início já passou: a resposta não pode mais ser mudada.</p>
           )}
+        </section>
+      )}
+
+      {detalhe.pode_pedir_troca && minhasVagas.length > 0 && (
+        <section aria-labelledby="titulo-troca" className="flex flex-col gap-3">
+          <h2 id="titulo-troca" className="text-lg font-semibold">Não vai poder ir?</h2>
+          <p className="text-base text-slate-800">
+            Peça que outra pessoa do ministério assuma a vaga. A pessoa aceita e o líder aprova; até lá, nada muda na escala.
+          </p>
+          <ul className="flex flex-col gap-3">
+            {minhasVagas.map((v) => {
+              const nomeVaga = `${v.funcao}${v.rotulo ? ` · ${v.rotulo}` : ""}`;
+              const pedido = pedidos.find((p) => p.vaga_id === v.id && p.solicitante_id === v.pessoa?.id);
+              return (
+                <li key={v.id} className="flex flex-col gap-2 rounded-lg border border-slate-400 p-3">
+                  <p className="text-base font-semibold">{nomeVaga}</p>
+                  {pedido ? (
+                    <>
+                      <p className="text-base">Pedido para {pedido.indicada}.</p>
+                      <div><SeloTroca situacao={pedido.situacao} /></div>
+                      <p className="text-sm text-slate-800">Acompanhe e cancele em &quot;Pedidos de troca&quot;.</p>
+                    </>
+                  ) : (
+                    <FormularioPedidoTroca vagaId={v.id} escalaId={escala.id} ministerioId={id} nomeVaga={nomeVaga} candidatas={candidatasTroca} />
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </section>
       )}
 

@@ -56,6 +56,19 @@ export default async function PaginaInicio() {
               )}
             </Link>
           </li>
+          <li>
+            <Link
+              href="/pedidos-de-troca"
+              className="flex min-h-14 items-center rounded-lg border-2 border-blue-900 px-4 text-lg font-semibold text-blue-900 hover:bg-blue-50"
+            >
+              Pedidos de troca
+              {pendenciasEscala.trocas_recebidas + pendenciasEscala.trocas_para_aprovar > 0 && (
+                <span className="ml-2 rounded-full bg-blue-900 px-2 py-0.5 text-sm text-white">
+                  {pendenciasEscala.trocas_recebidas + pendenciasEscala.trocas_para_aprovar} aguardando
+                </span>
+              )}
+            </Link>
+          </li>
         </ul>
       </section>
 
