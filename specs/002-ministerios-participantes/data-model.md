@@ -137,7 +137,8 @@ Sem `insert`/`update`/`delete` direto para `anon` nem `authenticated`; só funç
 
 | Tabela | Operação | Quem | Condição |
 |--------|----------|------|----------|
-| `ministerios` | `select` | visitante e qualquer pessoa logada | somente `ativo` e só as colunas `id`, `nome`, `descricao`, `ativo` (permissão por coluna) |
+| `ministerios` | `select` | visitante (sem login) | somente ministérios `ativo` e só as colunas `id`, `nome`, `descricao`, `ativo` (permissão por coluna) |
+| `ministerios` | `select` | qualquer pessoa logada | somente ministérios `ativo`, **todas as colunas** (inclui `criado_em` e `desativado_em`, que não são dado pessoal); só o visitante fica restrito às 4 colunas acima |
 | `ministerios` | `select` | administrador aprovado | todos (ativos e desativados) |
 | `participacoes_ministerio` | `select` | qualquer pessoa autenticada | só as **próprias** linhas |
 | `participacoes_ministerio` | `select` | administrador aprovado | todas |

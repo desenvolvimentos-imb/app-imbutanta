@@ -69,9 +69,11 @@ Resultado esperado: tudo verde. O CI roda o mesmo conjunto a cada PR.
 
 ## 4. Migração dos líderes globais (produção e desenvolvimento)
 
-A migração converte o papel global `lider` em `membro` (RF-027). **Antes de aplicar** em cada
-ambiente, registre quem tem esse papel, para que o administrador saiba quem precisa ser
-vinculado a ministérios depois:
+A migração converte o papel global `lider` em `membro` (RF-027). **Se o ambiente já tiver
+usuários**, antes de aplicar registre quem tem esse papel, para que o administrador saiba quem
+precisa ser vinculado a ministérios depois. **Em produção esta consulta foi dispensada** (em
+2026-11-23 o projeto ainda não tinha pessoas configuradas nem usuários); ela só volta a valer se
+uma migração futura converter dados de pessoas que já existam em produção.
 
 ```sql
 -- Rodar no SQL Editor do Supabase do ambiente, ANTES de aplicar a migração (somente leitura).
@@ -89,7 +91,7 @@ migrações são aplicadas pelo workflow `migracoes.yml`, não por colagem manua
 1. Merge da 002 em `develop`: o workflow aplica as migrações no projeto de **desenvolvimento**.
    Confira em *Supabase → Database → Migrations* e valide os cenários acima (inclusive o roteiro
    Google).
-2. Rode a consulta da seção 4 no **produção** antes do release, para saber quem era líder global.
+2. Só se já houver usuários em produção: rode a consulta da seção 4 antes do release, para saber quem era líder global (dispensada na 002: produção sem usuários).
 3. PR `develop` → `main`: após o merge, o workflow espera a **sua aprovação** no GitHub
    (*Environment* `producao`) e então aplica no projeto de produção.
 4. Se o workflow ainda não estiver ativo, use a contingência da

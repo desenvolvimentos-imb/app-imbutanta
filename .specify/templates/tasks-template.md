@@ -160,6 +160,20 @@ Examples of foundational tasks (adjust based on your project):
 
 ---
 
+## Phase N+1: Publicação em produção (release)
+
+**Purpose**: Pendências que só podem ser resolvidas ao publicar em produção (`develop` → `main`).
+Elas ficam aqui, abertas, até o release, para não dependerem de memória. Passo a passo geral em
+`CONTRIBUTING.md` ("Publicar em produção"). Remova as tarefas que não se aplicam a esta
+funcionalidade (por exemplo, sem migrações) e acrescente as específicas dela.
+
+- [ ] TXXX (release) Se há migrações novas: conferir que o histórico de migrações do projeto de produção está registrado e bate com o repositório
+- [ ] TXXX (release) Se uma migração converte dados de pessoas e já existem usuários em produção: registrar antes quem será afetado
+- [ ] TXXX (release) Depois do merge em `main`: aprovar o workflow `Migrações` (ambiente `producao`) e conferir que a simulação lista só as migrações novas
+- [ ] TXXX (release) Validar em produção os cenários do quickstart desta funcionalidade
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies
