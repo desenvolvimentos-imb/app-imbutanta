@@ -56,6 +56,16 @@ const POR_CODIGO: Record<string, string> = {
   conflito_troca: "Este pedido já foi decidido ou perdeu efeito. Atualize a lista.",
   troca_invalida: "Escolha outra pessoa do ministério que ainda não esteja nesta escala.",
   motivo_invalido: "O motivo pode ter no máximo 200 caracteres.",
+  // Disponibilidade (funcionalidade 004)
+  consulta_invalida: "Confira os dados: título de 2 a 80 caracteres, observação de até 300.",
+  consulta_sem_datas: "A consulta precisa ter pelo menos uma data.",
+  consulta_fechada: "Esta consulta está fechada.",
+  consulta_ja_aberta: "Esta consulta já está aberta.",
+  prazo_invalido: "O prazo não pode ser anterior a hoje.",
+  prazo_vencido: "O prazo desta consulta já passou. Informe um novo prazo ou remova o prazo para reabrir.",
+  data_duplicada: "Essa data já está em outra consulta deste ministério.",
+  data_encerrada: "Esta data já passou e não aceita mais respostas.",
+  resposta_invalida: "Resposta inválida. Atualize a tela e tente de novo.",
 };
 
 export function traduzirErro(erro: ErroLike | Error): string {
@@ -66,6 +76,10 @@ export function traduzirErro(erro: ErroLike | Error): string {
   // O banco informa em `details` o nome do ministério que ficaria sem líder: citar na mensagem.
   if (e.message === "ultimo_lider" && e.details) {
     return `O ministério ${e.details} precisa de pelo menos um líder. Defina outro líder antes.`;
+  }
+  // O banco informa em `details` o título da consulta que já tem a data: citar na mensagem.
+  if (e.message === "data_duplicada" && e.details) {
+    return `Essa data já está na consulta “${e.details}” deste ministério.`;
   }
   if (e.code && POR_CODIGO[e.code]) return POR_CODIGO[e.code];
   // Funções SQL levantam exceção com message igual ao código.
