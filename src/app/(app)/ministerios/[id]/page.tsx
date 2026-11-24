@@ -106,6 +106,9 @@ export default async function PaginaMinisterio({
           <Link href={`/ministerios/${ministerio.id}/funcoes`} className={classesBotao("secundario")}>
             Funções e aptidões
           </Link>
+          <Link href={`/ministerios/${ministerio.id}/disponibilidade`} className={classesBotao("secundario")}>
+            Disponibilidade
+          </Link>
         </section>
       )}
 

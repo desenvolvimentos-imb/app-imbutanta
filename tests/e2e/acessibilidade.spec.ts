@@ -100,3 +100,34 @@ test("telas de escalas (membro escalado)", async ({ page }) => {
     await verificar(page, rota);
   }
 });
+
+// Funcionalidade 004 (disponibilidade): telas novas, como líder (gestão) e como membro (responde).
+const CONSULTA_ABERTA = "66666666-6666-6666-6666-666666666601"; // seed: Louvor, aberta
+const CONSULTA_FECHADA = "66666666-6666-6666-6666-666666666602"; // seed: Louvor, fechada
+
+test("telas de disponibilidade (líder), em 360 px", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await entrarCom(page, "lider@teste.local");
+  for (const rota of [
+    `/ministerios/${LOUVOR}/disponibilidade`, `/ministerios/${LOUVOR}/disponibilidade/nova`,
+    `/ministerios/${LOUVOR}/disponibilidade/${CONSULTA_ABERTA}`, `/ministerios/${LOUVOR}/disponibilidade/${CONSULTA_FECHADA}`,
+    "/disponibilidade", `/disponibilidade/${CONSULTA_ABERTA}`,
+  ]) {
+    await page.goto(rota);
+    await verificar(page, rota);
+  }
+  // A grade na outra visão (tabela) também precisa passar.
+  await page.goto(`/ministerios/${LOUVOR}/disponibilidade/${CONSULTA_ABERTA}`);
+  await page.getByRole("button", { name: "Tabela" }).click();
+  await expect(page.getByRole("region", { name: "Grade de disponibilidade" })).toBeVisible();
+  await verificar(page, "grade em tabela");
+});
+
+test("telas de disponibilidade (membro), em 360 px", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 740 });
+  await entrarCom(page, "membro@teste.local");
+  for (const rota of ["/inicio", "/disponibilidade", `/disponibilidade/${CONSULTA_ABERTA}`, `/disponibilidade/${CONSULTA_FECHADA}`]) {
+    await page.goto(rota);
+    await verificar(page, rota);
+  }
+});

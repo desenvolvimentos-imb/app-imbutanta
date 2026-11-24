@@ -31,11 +31,11 @@ select lives_ok($$ select public.criar_consulta('00000000-0000-0000-0000-0000004
   '2026-12-12', '[{"data":"2026-12-13","rotulo":"Culto especial"},{"data":"2026-12-20"},{"data":"2026-12-10"}]'::jsonb) $$,
   'líder cria consulta com datas (hoje incluído), rótulo e prazo');
 reset role;
-select is((select count(*) from public.datas_consulta where consulta_id = (select id from public.consultas_disponibilidade where titulo = 'Escala de dezembro')),
+select is((select count(*) from public.datas_consulta where consulta_id = (select id from public.consultas_disponibilidade where titulo = 'Escala de dezembro' and ministerio_id = '00000000-0000-0000-0000-00000042000a')),
           3::bigint, 'as 3 datas foram gravadas');
-select is((select fechada from public.consultas_disponibilidade where titulo = 'Escala de dezembro'), false, 'a consulta nasce aberta');
+select is((select fechada from public.consultas_disponibilidade where titulo = 'Escala de dezembro' and ministerio_id = '00000000-0000-0000-0000-00000042000a'), false, 'a consulta nasce aberta');
 select is((select rotulo from public.datas_consulta where data = '2026-12-13' and ministerio_id = '00000000-0000-0000-0000-00000042000a'), 'Culto especial', 'rótulo gravado');
-select is((select criada_por from public.consultas_disponibilidade where titulo = 'Escala de dezembro'), '00000000-0000-0000-0000-000000004202'::uuid, 'criada_por é quem criou');
+select is((select criada_por from public.consultas_disponibilidade where titulo = 'Escala de dezembro' and ministerio_id = '00000000-0000-0000-0000-00000042000a'), '00000000-0000-0000-0000-000000004202'::uuid, 'criada_por é quem criou');
 
 set local role authenticated;
 select throws_ok($$ select public.criar_consulta('00000000-0000-0000-0000-00000042000a', '', '', null, '[{"data":"2026-12-27"}]') $$, 'P0001', 'consulta_invalida', 'título vazio');
@@ -49,7 +49,7 @@ select throws_ok($$ select public.criar_consulta('00000000-0000-0000-0000-000000
 select throws_ok($$ select public.criar_consulta('00000000-0000-0000-0000-00000042000a', 'Rep', '', null, '[{"data":"2027-02-07"},{"data":"2027-02-07"}]') $$, 'P0001', 'data_duplicada', 'data repetida na própria lista');
 select throws_ok($$ select public.criar_consulta('00000000-0000-0000-0000-00000042000a', 'Outra', '', null, '[{"data":"2026-12-20"}]') $$, 'P0001', 'data_duplicada', 'data já em outra consulta do ministério');
 reset role;
-select is((select count(*) from public.consultas_disponibilidade where titulo in ('Ok','Muitas','Rep','Outra')), 0::bigint, 'tudo ou nada: nenhuma consulta ficou gravada após erro');
+select is((select count(*) from public.consultas_disponibilidade where titulo in ('Ok','Muitas','Rep','Outra') and ministerio_id = '00000000-0000-0000-0000-00000042000a'), 0::bigint, 'tudo ou nada: nenhuma consulta ficou gravada após erro');
 
 select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000004201", "role": "authenticated"}', true);
 set local role authenticated;

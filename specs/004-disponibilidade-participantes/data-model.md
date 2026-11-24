@@ -76,8 +76,9 @@ Resposta de uma pessoa numa data (RF-014 a RF-017, RF-021).
 | `atualizada_em` | timestamptz | padrão `now()` |
 
 Chave primária `(data_id, perfil_id)`. Índice `(perfil_id)`. **Sem linha = "sem resposta".**
-Quando o líder preenche, `preenchida_por` recebe o id dele; quando a própria pessoa altera depois,
-volta a nulo (RF-021). Ao deixar o ministério, **nada é apagado**: a linha só não é lida
+`preenchida_por` guarda quem alterou a resposta por último e só muda quando a resposta muda: quando o líder
+preenche, recebe o id dele; quando a própria pessoa muda o valor depois, volta a nulo (RF-021).
+Repetir a mesma resposta não altera a marca. Ao deixar o ministério, **nada é apagado**: a linha só não é lida
 ([Decisão 8](research.md#decisao-8)).
 
 ## Tabela `observacoes_disponibilidade`

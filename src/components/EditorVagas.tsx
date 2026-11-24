@@ -7,6 +7,8 @@ import { AvisosVaga } from "@/components/AvisosVaga";
 import { BotaoEnviar } from "@/components/Botao";
 import { DestaqueVaga } from "@/components/DestaqueVaga";
 import { MensagemErro, MensagemInfo } from "@/components/MensagemErro";
+import { SeloDisponibilidade } from "@/components/SeloDisponibilidade";
+import type { SituacaoNaData } from "@/lib/disponibilidade/consultas";
 import type { Candidato, FuncaoMinisterio, VagaDaEscala } from "@/lib/escalas/consultas";
 import type { EstadoVaga } from "@/lib/escalas/estado";
 import { removerVaga, salvarVaga } from "@/app/(app)/ministerios/[id]/escalas/acoes";
@@ -17,9 +19,18 @@ type Props = {
   vagas: VagaDaEscala[];
   funcoes: FuncaoMinisterio[];
   candidatos: Candidato[];
+  /**
+   * Resposta de cada pessoa na data da escala (consulta de disponibilidade do ministério, 004).
+   * Vazio quando a data não está em nenhuma consulta: então nada é mostrado (RF-030).
+   */
+  disponibilidade?: Record<string, SituacaoNaData>;
 };
 
-function FormularioVaga({ ministerioId, escalaId, vaga, funcoes, candidatos }: Omit<Props, "vagas"> & { vaga?: VagaDaEscala }) {
+const TEXTO_DISPONIBILIDADE: Record<SituacaoNaData, string> = {
+  disponivel: "disponível", indisponivel: "indisponível", sem_resposta: "sem resposta",
+};
+
+function FormularioVaga({ ministerioId, escalaId, vaga, funcoes, candidatos, disponibilidade = {} }: Omit<Props, "vagas"> & { vaga?: VagaDaEscala }) {
   const [estado, acao] = useActionState<EstadoVaga, FormData>(salvarVaga, {});
   const [dispensado, setDispensado] = useState<EstadoVaga | null>(null);
   const idBase = vaga ? `vaga-${vaga.id}` : "vaga-nova";
@@ -74,7 +85,11 @@ function FormularioVaga({ ministerioId, escalaId, vaga, funcoes, candidatos }: O
           <select id={`${idBase}-pessoa`} name="pessoa" defaultValue={estado.valores?.pessoa ?? vaga?.pessoa?.id ?? ""}
                   className="min-h-12 rounded-lg border border-slate-500 bg-white px-3 text-base">
             <option value="">Em aberto (sem pessoa)</option>
-            {candidatos.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
+            {candidatos.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nome}{disponibilidade[c.id] ? ` (${TEXTO_DISPONIBILIDADE[disponibilidade[c.id]]})` : ""}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -89,7 +104,7 @@ function FormularioVaga({ ministerioId, escalaId, vaga, funcoes, candidatos }: O
   );
 }
 
-export function EditorVagas({ ministerioId, escalaId, vagas, funcoes, candidatos }: Props) {
+export function EditorVagas({ ministerioId, escalaId, vagas, funcoes, candidatos, disponibilidade = {} }: Props) {
   return (
     <div className="flex flex-col gap-6">
       {vagas.length === 0 && <p className="rounded-lg bg-slate-100 p-4 text-lg">Esta escala ainda não tem vagas. Adicione a primeira abaixo.</p>}
@@ -100,13 +115,18 @@ export function EditorVagas({ ministerioId, escalaId, vagas, funcoes, candidatos
               <h3 className="text-lg font-semibold">{v.funcao}{v.rotulo && <span className="font-normal"> · {v.rotulo}</span>}</h3>
               <DestaqueVaga tipo={v.precisa_atencao} />
             </div>
+            {v.pessoa && disponibilidade[v.pessoa.id] && disponibilidade[v.pessoa.id] !== "disponivel" && (
+              <p className="flex flex-wrap items-center gap-2 text-base">
+                Disponibilidade nesta data: <SeloDisponibilidade situacao={disponibilidade[v.pessoa.id]} />
+              </p>
+            )}
             {v.resposta && (
               <p className="text-base text-slate-800">
                 Resposta: {v.resposta === "pendente" ? "Pendente" : v.resposta === "confirmado" ? "Confirmado" : "Recusado"}
                 {v.resposta === "recusado" && v.motivo ? ` — ${v.motivo}` : ""}
               </p>
             )}
-            <FormularioVaga ministerioId={ministerioId} escalaId={escalaId} vaga={v} funcoes={funcoes} candidatos={candidatos} />
+            <FormularioVaga ministerioId={ministerioId} escalaId={escalaId} vaga={v} funcoes={funcoes} candidatos={candidatos} disponibilidade={disponibilidade} />
             <AcaoComConfirmacao
               rotulo="Remover vaga"
               rotuloConfirmar="Confirmar remoção"
@@ -123,7 +143,7 @@ export function EditorVagas({ ministerioId, escalaId, vagas, funcoes, candidatos
       <section aria-labelledby="titulo-nova-vaga" className="flex flex-col gap-3 rounded-lg border border-blue-900 p-4">
         <h3 id="titulo-nova-vaga" className="text-lg font-semibold">Adicionar vaga</h3>
         {funcoes.some((f) => f.ativa) ? (
-          <FormularioVaga ministerioId={ministerioId} escalaId={escalaId} funcoes={funcoes} candidatos={candidatos} />
+          <FormularioVaga ministerioId={ministerioId} escalaId={escalaId} funcoes={funcoes} candidatos={candidatos} disponibilidade={disponibilidade} />
         ) : (
           <p className="text-base">Crie ao menos uma função do ministério antes de adicionar vagas.</p>
         )}

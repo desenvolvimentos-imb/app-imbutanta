@@ -26,6 +26,20 @@ notificações: cada pessoa vê a versão atual ao abrir o app. Detalhes em
 [`specs/003-escalas-ministerios`](specs/003-escalas-ministerios/spec.md) e na
 [ADR 0007](docs/decisions/0007-escalas-tempo-e-leitura.md).
 
+## Disponibilidade dos participantes
+
+O líder (ou o administrador) cria uma **consulta de disponibilidade** com as datas em que precisa
+de gente (uma a uma, ou "todos os domingos de dezembro"), com prazo e mensagem opcionais. Cada
+participante marca, na tela *Disponibilidade*, **disponível** ou **indisponível** em cada data (as
+não marcadas continuam **sem resposta**, que nunca é tratada como indisponível) e pode deixar uma
+observação só para o líder. O líder acompanha tudo numa **grade** (por data no celular, em tabela no
+computador), com o total de disponíveis por data e por função, quem ainda não respondeu e as
+observações; também pode preencher a resposta de quem respondeu por outro meio. Ao escalar alguém
+numa data coberta por uma consulta, o app mostra a resposta da pessoa e avisa, sem bloquear, quando
+ela está indisponível ou sem resposta. Detalhes em
+[`specs/004-disponibilidade-participantes`](specs/004-disponibilidade-participantes/spec.md) e na
+[ADR 0008](docs/decisions/0008-disponibilidade-prazo-e-ausencia.md).
+
 ## Tecnologias
 
 - Next.js 16 (App Router) + TypeScript + Tailwind CSS, hospedado na Vercel
@@ -61,7 +75,7 @@ npm run lint         # estilo do código
 npm run typecheck    # tipos TypeScript
 npm test             # testes unitários (Vitest)
 npm run test:db      # testes das regras do banco (pgTAP)
-npm run test:integracao # concorrência das escalas com duas sessões reais (exige supabase start)
+npm run test:integracao # concorrência (escalas e disponibilidade) com duas sessões reais (exige supabase start)
 npm run test:e2e     # testes ponta a ponta (Playwright, celular emulado)
 ```
 

@@ -1,7 +1,7 @@
 -- T050: preencher_disponibilidade (líder). Relógio: 10/12/2026.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(16);
 
 create or replace function public.agora_sp() returns timestamptz language sql stable as
   $$ select '2026-12-10 12:00:00+00'::timestamptz $$;
@@ -72,6 +72,16 @@ select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000
 set local role authenticated;
 select throws_ok($$ select public.preencher_disponibilidade('00000000-0000-0000-0000-00000052c001', '00000000-0000-0000-0000-000000005202', '[]') $$, 'P0001', 'ministerio_inativo', 'ministério desativado');
 reset role;
+
+-- Salvar a tela inteira sem mudar uma data NÃO apaga a marca dela (quem alterou por último fica marcado)
+update public.respostas_disponibilidade set preenchida_por = '00000000-0000-0000-0000-000000005201'
+ where data_id = '00000000-0000-0000-0000-00000052d001' and perfil_id = '00000000-0000-0000-0000-000000005202';
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000005202", "role": "authenticated"}', true);
+set local role authenticated;
+select lives_ok($$ select public.responder_disponibilidade('00000000-0000-0000-0000-00000052c001', '[{"data_id":"00000000-0000-0000-0000-00000052d001","resposta":"indisponivel"}]') $$, 'a pessoa salva a mesma resposta de novo');
+reset role;
+select is((select preenchida_por from public.respostas_disponibilidade where data_id = '00000000-0000-0000-0000-00000052d001' and perfil_id = '00000000-0000-0000-0000-000000005202'),
+          '00000000-0000-0000-0000-000000005201'::uuid, 'resposta repetida mantém a marca do líder; só muda quando a resposta muda');
 
 select * from finish();
 rollback;

@@ -6,7 +6,8 @@
 -- Tudo ou nada: qualquer item inválido levanta exceção e a transação inteira é desfeita
 -- (research.md, decisão 7).
 --  * resposta nula = voltar a "sem resposta" (apaga a linha);
---  * `p_preenchida_por` nulo = a própria pessoa respondeu; com valor = o líder que preencheu (RF-021);
+--  * `p_preenchida_por` nulo = a própria pessoa respondeu; com valor = o líder que preencheu (RF-021).
+--    Quem alterou por último fica marcado; repetir a mesma resposta não muda a marca;
 --  * `p_permitir_passadas`: só o líder corrige data que já passou; o participante recebe data_encerrada.
 create function public.gravar_respostas_disponibilidade(
   p_consulta uuid, p_perfil uuid, p_respostas jsonb, p_preenchida_por uuid, p_permitir_passadas boolean
@@ -53,7 +54,15 @@ begin
       insert into public.respostas_disponibilidade (data_id, perfil_id, resposta, preenchida_por, atualizada_em)
       values (v_data_id, p_perfil, v_resposta::public.resposta_disponibilidade, p_preenchida_por, now())
       on conflict (data_id, perfil_id) do update
-        set resposta = excluded.resposta, preenchida_por = excluded.preenchida_por, atualizada_em = now();
+        -- A marca "preenchido pelo líder" diz QUEM alterou a resposta por último: só muda quando a
+        -- resposta muda. Salvar a tela inteira sem mexer numa data não apaga a marca dela.
+        set resposta = excluded.resposta,
+            preenchida_por = case
+              when public.respostas_disponibilidade.resposta is distinct from excluded.resposta then excluded.preenchida_por
+              else public.respostas_disponibilidade.preenchida_por end,
+            atualizada_em = case
+              when public.respostas_disponibilidade.resposta is distinct from excluded.resposta then now()
+              else public.respostas_disponibilidade.atualizada_em end;
     end if;
   end loop;
 end;

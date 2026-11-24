@@ -4,7 +4,7 @@
 
 **Criada em**: 2026-11-24
 
-**Status**: Rascunho
+**Status**: Implementada e validada por testes automatizados em 2026-11-24 (validação manual em celular e PR pendentes)
 
 **Entrada**: Descrição do usuário: "Disponibilidade dos participantes dos ministérios: o líder de um ministério pede aos participantes que informem em quais datas podem ser escalados e acompanha as respostas em uma só tela. Substitui o formulário externo que a igreja usa hoje. Serve a qualquer ministério."
 
