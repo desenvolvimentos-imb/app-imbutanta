@@ -49,5 +49,6 @@ jobs:
       - name: Migrações pendentes (simulação)
         run: supabase db push --remote --dry-run
 
+      # --yes: a CLI 3.2 pede confirmação antes de aplicar e, sem terminal, aborta sem mudar nada.
       - name: Aplicar as migrações
-        run: supabase db push --remote
+        run: supabase db push --remote --yes
