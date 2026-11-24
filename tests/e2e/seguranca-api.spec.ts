@@ -171,3 +171,63 @@ test("conta pendente (sem acesso aprovado) não gerencia ministérios nem decide
   expect((await pendente.rpc("listar_participantes", { p_ministerio: LOUVOR })).data).toEqual([]);
   expect((await pendente.rpc("listar_pedidos_pendentes")).data).toEqual([]);
 });
+
+// ===== Escalas (funcionalidade 003, FR-025, SC-003) =====
+const TABELAS_DE_ESCALAS = ["escalas", "vagas_escala", "respostas_escala", "pedidos_troca", "aptidoes"] as const;
+const FUNCOES_DE_ESCRITA = [
+  ["criar_funcao", { p_ministerio: LOUVOR, p_nome: "Invasora" }],
+  ["criar_escala", { p_ministerio: LOUVOR, p_evento: "Invasão", p_data: "2099-01-01", p_horario: "09:00" }],
+  ["publicar_escala", { p_escala: "99999999-9999-9999-9999-999999999999" }],
+  ["cancelar_escala", { p_escala: "99999999-9999-9999-9999-999999999999" }],
+  ["salvar_vaga", { p_escala: "99999999-9999-9999-9999-999999999999", p_vaga: null, p_funcao: LOUVOR, p_rotulo: "", p_perfil: null }],
+  ["pedir_troca", { p_vaga: "99999999-9999-9999-9999-999999999999", p_indicada: ID_MARTA }],
+  ["decidir_troca_lider", { p_pedido: "99999999-9999-9999-9999-999999999999", p_aprova: true }],
+] as const;
+
+test("visitante sem login não lê nem escreve nada de escalas", async () => {
+  const anonimo = clientePublico();
+  for (const tabela of TABELAS_DE_ESCALAS) {
+    expect((await anonimo.from(tabela).select("*")).error, tabela).not.toBeNull();
+  }
+  expect((await anonimo.from("funcoes_ministerio").select("*")).error).not.toBeNull();
+  for (const [nome, argumentos] of FUNCOES_DE_ESCRITA) {
+    expect((await anonimo.rpc(nome, argumentos)).error, nome).not.toBeNull();
+  }
+  expect((await anonimo.rpc("ler_escala", { p_escala: "99999999-9999-9999-9999-999999999999" })).error).not.toBeNull();
+  expect((await anonimo.rpc("minhas_escalas")).error).not.toBeNull();
+});
+
+test("membro não lê as tabelas de escalas direto e as funções de gestão o recusam", async () => {
+  const membro = await logadoComo("membro@teste.local");
+
+  // Leitura direta é negada: tudo passa por funções que escondem o que não é da pessoa.
+  for (const tabela of TABELAS_DE_ESCALAS) {
+    expect((await membro.from(tabela).select("*")).error, tabela).not.toBeNull();
+  }
+  // Escrita direta também.
+  expect((await membro.from("escalas").insert({ ministerio_id: LOUVOR, evento: "Invasão", data: "2099-01-01", horario: "09:00" })).error).not.toBeNull();
+  expect((await membro.from("funcoes_ministerio").insert({ ministerio_id: LOUVOR, nome: "Invasora" })).error).not.toBeNull();
+
+  // Funções de gestão recusam quem não gere o ministério.
+  expect((await membro.rpc("criar_funcao", { p_ministerio: LOUVOR, p_nome: "Invasora" })).error?.message).toBe("sem_permissao");
+  expect(
+    (await membro.rpc("criar_escala", { p_ministerio: LOUVOR, p_evento: "Invasão", p_data: "2099-01-01", p_horario: "09:00" })).error?.message,
+  ).toBe("sem_permissao");
+
+  // Escala inexistente ou de outro ministério: a mesma resposta (nada vaza).
+  const escala = await membro.rpc("ler_escala", { p_escala: "99999999-9999-9999-9999-999999999999" });
+  expect(escala.error).toBeNull();
+  expect(escala.data).toBeNull();
+  // Funções de escalas devolvem só nome, nunca email (a chave pública não vê emails de colegas).
+  const candidatos = await membro.rpc("listar_candidatos_escala", { p_escala: "99999999-9999-9999-9999-999999999999" });
+  expect(candidatos.data ?? []).toEqual([]);
+});
+
+test("o relógio das escalas não pode ser mudado por quem usa a API", async () => {
+  const membro = await logadoComo("membro@teste.local");
+  // `agora_sp` e `hoje_sp` são internas: ninguém as executa pela API.
+  expect((await membro.rpc("agora_sp")).error).not.toBeNull();
+  expect((await membro.rpc("hoje_sp")).error).not.toBeNull();
+  // E uma configuração de sessão não é aceita pela API (não há como mudar "hoje").
+  expect((await membro.rpc("set_config", { setting_name: "app.agora_teste", new_value: "2000-01-01", is_local: false })).error).not.toBeNull();
+});

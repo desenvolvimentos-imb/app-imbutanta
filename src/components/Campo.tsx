@@ -11,20 +11,23 @@ type Props = {
   /** Campos são obrigatórios por padrão; use `false` para campos opcionais. */
   obrigatorio?: boolean;
   maxLength?: number;
+  /** Quando vários formulários na mesma página têm um campo com o mesmo `name`, dá um id único a cada um. */
+  idCampo?: string;
 };
 
-export function Campo({ nome, rotulo, tipo = "text", erro, dica, autoComplete, defaultValue, obrigatorio = true, maxLength }: Props) {
-  const idErro = `${nome}-erro`;
-  const idDica = `${nome}-dica`;
+export function Campo({ nome, rotulo, tipo = "text", erro, dica, autoComplete, defaultValue, obrigatorio = true, maxLength, idCampo }: Props) {
+  const id = idCampo ?? nome;
+  const idErro = `${id}-erro`;
+  const idDica = `${id}-dica`;
   const descricao = [erro ? idErro : null, dica ? idDica : null].filter(Boolean).join(" ") || undefined;
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={nome} className="text-base font-medium text-slate-900">
+      <label htmlFor={id} className="text-base font-medium text-slate-900">
         {rotulo}
       </label>
       <input
-        id={nome}
+        id={id}
         name={nome}
         type={tipo}
         required={obrigatorio}

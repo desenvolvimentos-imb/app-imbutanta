@@ -38,6 +38,24 @@ const POR_CODIGO: Record<string, string> = {
   conflito_pedido: "Este pedido já foi decidido. Atualize a lista.",
   pessoa_invalida: "Esta pessoa não pode ser adicionada.",
   sem_lider: "Escolha um líder para reativar o ministério.",
+  // Escalas (funcionalidade 003)
+  funcao_duplicada: "Já existe uma função ativa com esse nome neste ministério.",
+  funcao_invalida: "Escolha uma função ativa deste ministério.",
+  evento_invalido: "Informe o nome do evento (2 a 80 caracteres).",
+  data_passada: "A data não pode ser anterior a hoje.",
+  escala_somente_leitura: "Esta escala já passou e não pode mais ser alterada.",
+  escala_cancelada: "Esta escala foi cancelada.",
+  escala_sem_vagas: "Adicione ao menos uma vaga antes de publicar.",
+  escala_nao_publicada: "Esta escala ainda não foi publicada.",
+  limite_vagas: "Uma escala pode ter no máximo 50 vagas.",
+  nao_participante: "Só participantes do ministério podem ser escalados.",
+  evento_iniciado: "O horário de início deste evento já passou.",
+  nao_escalado: "Você não está escalado nesta escala.",
+  ja_escalada: "Esta pessoa já está escalada nesta escala.",
+  troca_duplicada: "Esta vaga já tem um pedido de troca em andamento.",
+  conflito_troca: "Este pedido já foi decidido ou perdeu efeito. Atualize a lista.",
+  troca_invalida: "Escolha outra pessoa do ministério que ainda não esteja nesta escala.",
+  motivo_invalido: "O motivo pode ter no máximo 200 caracteres.",
 };
 
 export function traduzirErro(erro: ErroLike | Error): string {

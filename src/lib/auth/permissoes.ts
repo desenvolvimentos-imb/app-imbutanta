@@ -68,7 +68,7 @@ export const ATALHOS_MINISTERIOS: Atalho[] = [
 export function atalhosPorPapel(papel: Papel, lidera: boolean): Atalho[] {
   const atalhos: Atalho[] = [];
   if (ADMINISTRADOR_OU_LIDER(papel, lidera)) {
-    atalhos.push({ href: "/aprovacoes", rotulo: "Pedidos e aprovações", curto: "Pedidos" });
+    atalhos.push({ href: "/aprovacoes", rotulo: "Pedidos e aprovações", curto: "Aprovações" });
   }
   if (ADMINISTRADOR(papel)) {
     atalhos.push({ href: "/usuarios", rotulo: "Gerenciar usuários", curto: "Usuários" });

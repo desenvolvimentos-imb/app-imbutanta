@@ -35,8 +35,11 @@ jobs:
         run: |
           printf 'SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=ci-dummy\nSUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=ci-dummy\n' > supabase/.env
 
+      # Sobe só o que o app e os testes usam (banco, autenticação, API, gateway e caixa de emails).
+      # Menos imagens para baixar: o registro público limita os downloads ("Rate exceeded") e, ao
+      # falhar no meio, deixava containers ocupando as portas na nova tentativa.
       - name: Subir Supabase local
-        run: supabase start
+        run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,realtime,storage-api,postgres-meta
 
       - name: Testes de banco (pgTAP)
         run: supabase test db

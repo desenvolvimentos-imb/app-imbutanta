@@ -14,11 +14,23 @@ Quando um líder aceita o pedido de uma conta nova, a conta é ativada. Detalhes
 [`specs/002-ministerios-participantes`](specs/002-ministerios-participantes/spec.md) e na
 [ADR 0006](docs/decisions/0006-lideranca-por-ministerio.md).
 
+## Escalas dos ministérios
+
+O líder (ou o administrador) cadastra as **funções** do ministério (vocal, violão...) e as
+**aptidões** de cada participante, monta a **escala** de cada evento com as vagas (a mesma pessoa
+pode ocupar mais de uma), publica e acompanha as respostas. Quem está escalado vê tudo em
+*Minhas escalas*, confirma ou recusa, e pode **pedir troca** de uma vaga: a pessoa indicada aceita e
+o líder aprova (veja *Pedidos de troca*). O app avisa o líder, sem bloquear, quando alguém já
+confirmou outra escala no mesmo dia em outro ministério ou não é apto para a função. Não há
+notificações: cada pessoa vê a versão atual ao abrir o app. Detalhes em
+[`specs/003-escalas-ministerios`](specs/003-escalas-ministerios/spec.md) e na
+[ADR 0007](docs/decisions/0007-escalas-tempo-e-leitura.md).
+
 ## Tecnologias
 
 - Next.js 16 (App Router) + TypeScript + Tailwind CSS, hospedado na Vercel
 - Supabase: autenticação (Google e email/senha) e banco Postgres com RLS
-- Testes: Vitest (unitários), pgTAP (banco) e Playwright (ponta a ponta)
+- Testes: Vitest (unitários e, em `npm run test:integracao`, concorrência com duas sessões reais), pgTAP (banco) e Playwright (ponta a ponta)
 
 Decisões e o porquê delas ficam em [`docs/decisions/`](docs/decisions/).
 
@@ -49,6 +61,7 @@ npm run lint         # estilo do código
 npm run typecheck    # tipos TypeScript
 npm test             # testes unitários (Vitest)
 npm run test:db      # testes das regras do banco (pgTAP)
+npm run test:integracao # concorrência das escalas com duas sessões reais (exige supabase start)
 npm run test:e2e     # testes ponta a ponta (Playwright, celular emulado)
 ```
 

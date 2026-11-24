@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AcaoComConfirmacao } from "@/components/AcaoComConfirmacao";
 import { BotaoPedirEntrada } from "@/components/AcoesPedido";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { contarEscalasComVagasAbertas, contarEscalasFuturas } from "@/lib/escalas/consultas";
+import { classesBotao } from "@/components/estilos-botao";
 import { BuscaPessoa } from "@/components/BuscaPessoa";
 import { ListaParticipantes } from "@/components/ListaParticipantes";
 import { PedidosDeEntrada } from "@/app/(app)/aprovacoes/pedidos";
@@ -55,6 +58,15 @@ export default async function PaginaMinisterio({
   // Situação da própria pessoa neste ministério: participa, já pediu ou pode pedir.
   const [minhasParticipacoes, meusPedidos] = await Promise.all([listarMinhasParticipacoes(), listarMeusPedidos()]);
   const participa = minhasParticipacoes.some((p) => p.ministerio_id === ministerio.id);
+  const vagasAbertas = podeGerir ? await contarEscalasComVagasAbertas(ministerio.id) : 0;
+  // Antes de o administrador confirmar a desativação, o app diz quantas escalas futuras serão canceladas.
+  const escalasFuturas = ehAdmin && ministerio.ativo ? await contarEscalasFuturas(ministerio.id) : 0;
+  const avisoEscalas =
+    escalasFuturas === 0
+      ? ""
+      : escalasFuturas === 1
+        ? " Isto cancelará 1 escala futura (ela continua visível, marcada como cancelada)."
+        : ` Isto cancelará ${escalasFuturas} escalas futuras (elas continuam visíveis, marcadas como canceladas).`;
   const pedidoPendente = meusPedidos.find((p) => p.ministerio_id === ministerio.id && p.situacao === "pendente");
 
   return (
@@ -76,6 +88,36 @@ export default async function PaginaMinisterio({
           )}
           . O histórico foi preservado.
         </p>
+      )}
+
+      {podeGerir && (
+        <section aria-labelledby="titulo-gestao-escalas" className="flex flex-col gap-3">
+          <h2 id="titulo-gestao-escalas" className="text-lg font-semibold">
+            Escalas
+          </h2>
+          {vagasAbertas > 0 && (
+            <p role="status" className="rounded-lg border border-orange-800 bg-orange-50 p-3 text-base text-orange-950">
+              {vagasAbertas === 1 ? "1 escala tem vagas em aberto." : `${vagasAbertas} escalas têm vagas em aberto.`}
+            </p>
+          )}
+          <Link href={`/ministerios/${ministerio.id}/escalas`} className={classesBotao("primario")}>
+            Escalas
+          </Link>
+          <Link href={`/ministerios/${ministerio.id}/funcoes`} className={classesBotao("secundario")}>
+            Funções e aptidões
+          </Link>
+        </section>
+      )}
+
+      {ministerio.ativo && participa && !podeGerir && (
+        <section aria-labelledby="titulo-escalas-participante" className="flex flex-col gap-3">
+          <h2 id="titulo-escalas-participante" className="text-lg font-semibold">
+            Escalas
+          </h2>
+          <Link href={`/ministerios/${ministerio.id}/escalas`} className={classesBotao("secundario")}>
+            Ver escalas do ministério
+          </Link>
+        </section>
       )}
 
       {ministerio.ativo && !participa && (
@@ -122,7 +164,7 @@ export default async function PaginaMinisterio({
             <AcaoComConfirmacao
               rotulo="Desativar ministério"
               rotuloConfirmar="Confirmar desativação"
-              aviso="O ministério sai da lista de ativos e deixa de receber pedidos. Participantes e histórico continuam registrados."
+              aviso={`O ministério sai da lista de ativos e deixa de receber pedidos. Participantes e histórico continuam registrados.${avisoEscalas}`}
               acao={desativarMinisterio}
               campos={{ id: ministerio.id }}
             />

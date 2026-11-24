@@ -72,3 +72,24 @@ describe("ATALHOS_MINISTERIOS (para todos)", () => {
     expect(ATALHOS_MINISTERIOS.map((a) => a.href)).toEqual(["/meus-ministerios", "/ministerios"]);
   });
 });
+
+describe("rotas de escalas (003): sem regra de rota nova; a barreira por ministério é do banco", () => {
+  const rotas = [
+    "/minhas-escalas",
+    "/pedidos-de-troca",
+    "/ministerios/0b9f3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e/escalas",
+    "/ministerios/0b9f3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e/escalas/nova",
+    "/ministerios/0b9f3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e/funcoes",
+  ];
+  it("qualquer pessoa aprovada chega às telas (o banco decide o que ela vê)", () => {
+    for (const r of rotas) {
+      expect(destinoPara("aprovado", "membro", r, false), r).toBeNull();
+      expect(destinoPara("aprovado", "membro", r, true), r).toBeNull();
+      expect(destinoPara("aprovado", "administrador", r, false), r).toBeNull();
+    }
+  });
+  it("quem não está aprovado continua preso à tela da sua situação", () => {
+    expect(destinoPara("pendente", "membro", "/minhas-escalas", false)).toBe("/aguardando-aprovacao");
+    expect(destinoPara("recusado", "membro", "/pedidos-de-troca", false)).toBe("/cadastro-recusado");
+  });
+});

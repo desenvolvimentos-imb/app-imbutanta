@@ -90,4 +90,18 @@ describe("traduzirErro", () => {
     expect(registrado).toContain("email_address_invalid");
     log.mockRestore();
   });
+
+  it("escalas: cada código novo tem mensagem em português, sem texto técnico", () => {
+    const codigos = [
+      "funcao_duplicada", "funcao_invalida", "evento_invalido", "data_passada", "escala_somente_leitura",
+      "escala_cancelada", "escala_sem_vagas", "escala_nao_publicada", "limite_vagas", "nao_participante",
+      "evento_iniciado", "nao_escalado", "ja_escalada", "troca_duplicada", "conflito_troca", "troca_invalida", "motivo_invalido",
+    ];
+    for (const c of codigos) {
+      const m = traduzirErro({ message: c });
+      expect(m, c).not.toBe(c);
+      expect(m, c).toMatch(/[.]$/);
+      expect(m, c).not.toMatch(/Algo deu errado/);
+    }
+  });
 });
