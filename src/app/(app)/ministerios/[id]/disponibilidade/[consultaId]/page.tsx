@@ -43,7 +43,7 @@ export default async function PaginaConsulta({ params }: { params: Promise<{ id:
       </p>
       {consulta.mensagem && <p className="rounded-lg bg-slate-50 p-3 text-base">{consulta.mensagem}</p>}
 
-      <GradeDisponibilidade grade={grade} hrefFuncoes={`/ministerios/${id}/funcoes`} />
+      <GradeDisponibilidade grade={grade} hrefFuncoes={`/ministerios/${id}/funcoes`} podeCorrigir={ministerioAtivo} />
 
       <section aria-labelledby="titulo-preencher" className="flex flex-col gap-3">
         <h2 id="titulo-preencher" className="text-lg font-semibold">Preencher ou corrigir respostas</h2>

@@ -10,7 +10,7 @@ import type { GradeConsulta } from "@/lib/disponibilidade/consultas";
 
 type Modo = "auto" | "data" | "tabela";
 
-export function GradeDisponibilidade({ grade, hrefFuncoes }: { grade: GradeConsulta; hrefFuncoes: string }) {
+export function GradeDisponibilidade({ grade, hrefFuncoes, podeCorrigir = false }: { grade: GradeConsulta; hrefFuncoes: string; podeCorrigir?: boolean }) {
   const [modo, setModo] = useState<Modo>("auto");
   const semResposta = grade.participantes.filter((p) => p.nao_respondeu);
   // "auto": visão por data no celular, tabela a partir de 768 px. Explícito: vale em qualquer tela.
@@ -41,8 +41,8 @@ export function GradeDisponibilidade({ grade, hrefFuncoes }: { grade: GradeConsu
                 className={classesBotao(modo === "tabela" ? "primario" : "secundario")}>Tabela</button>
       </div>
 
-      <div className={classeData}><VisaoPorData grade={grade} /></div>
-      <div className={classeTabela}><TabelaDisponibilidade grade={grade} /></div>
+      <div className={classeData}><VisaoPorData grade={grade} podeCorrigir={podeCorrigir} /></div>
+      <div className={classeTabela}><TabelaDisponibilidade grade={grade} podeCorrigir={podeCorrigir} /></div>
 
       {grade.participantes.some((p) => p.observacao) && (
         <div className="flex flex-col gap-2 md:hidden">

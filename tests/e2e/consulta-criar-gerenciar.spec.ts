@@ -29,6 +29,10 @@ test("líder cria, edita, fecha e reabre; participante comum não vê a gestão"
   await expect(page.getByText("Aberta").first()).toBeVisible();
   const urlConsulta = page.url();
 
+  // O atalho do ministério mostra quantas consultas estão abertas.
+  await page.goto(`/ministerios/${c.ministerioId}`);
+  await expect(page.getByText("1 consulta de disponibilidade aberta.")).toBeVisible();
+
   // ===== Data repetida em outra consulta do ministério: erro indicando a consulta =====
   await page.goto(`/ministerios/${c.ministerioId}/disponibilidade/nova`);
   await page.getByLabel("Título").fill("Outra consulta");

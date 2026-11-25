@@ -12,7 +12,9 @@ test("líder preenche, grade marca, consulta fechada ainda aceita correção, pe
   await entrarCom(page, "lider@teste.local");
   await page.goto(`/ministerios/${c.ministerioId}/disponibilidade/${c.consultaId}`);
   const bloco = page.locator("details", { hasText: `Preencher ou corrigir: ${c.bia.nome}` });
-  await bloco.locator("summary").click();
+  // O link "Corrigir" da grade abre o bloco da pessoa.
+  await page.getByRole("link", { name: `Corrigir respostas de ${c.bia.nome}` }).first().click();
+  await expect(bloco).toHaveAttribute("open", "");
   await bloco.locator("fieldset").nth(0).getByRole("radio", { name: "Disponível", exact: true }).check();
   await bloco.locator("fieldset").nth(1).getByRole("radio", { name: "Indisponível", exact: true }).check();
   await bloco.getByRole("button", { name: /Salvar respostas de/ }).click();

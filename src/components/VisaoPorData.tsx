@@ -11,7 +11,7 @@ const GRUPOS: { situacao: SituacaoNaData; titulo: string }[] = [
   { situacao: "sem_resposta", titulo: "Sem resposta" },
 ];
 
-export function VisaoPorData({ grade }: { grade: GradeConsulta }) {
+export function VisaoPorData({ grade, podeCorrigir = false }: { grade: GradeConsulta; podeCorrigir?: boolean }) {
   return (
     <ul className="flex flex-col gap-4">
       {grade.datas.map((d) => (
@@ -39,6 +39,10 @@ export function VisaoPorData({ grade }: { grade: GradeConsulta }) {
                     {pessoas.map((p) => (
                       <li key={p.perfil_id} className="flex flex-wrap items-center gap-2 text-base">
                         {p.nome}
+                        {podeCorrigir && (
+                          <a href={`#corrigir-${p.perfil_id}`} aria-label={`Corrigir respostas de ${p.nome}`}
+                             className="inline-flex min-h-11 items-center px-1 text-base font-medium text-blue-900 underline">Corrigir</a>
+                        )}
                         {p.nao_respondeu && g.situacao === "sem_resposta" && (
                           <span className="rounded border border-amber-800 bg-amber-50 px-1.5 text-sm font-semibold text-amber-950">Ainda não respondeu</span>
                         )}

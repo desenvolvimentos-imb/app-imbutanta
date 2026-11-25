@@ -1,7 +1,7 @@
 -- T056: disponibilidade_da_escala. Relógio: 10/12/2026.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(11);
+select plan(14);
 
 create or replace function public.agora_sp() returns timestamptz language sql stable as
   $$ select '2026-12-10 12:00:00+00'::timestamptz $$;
@@ -52,6 +52,16 @@ select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000
 set local role authenticated;
 select is((select resposta from public.disponibilidade_da_escala('00000000-0000-0000-0000-00000053e001') where perfil_id = '00000000-0000-0000-0000-000000005303'), 'indisponivel', 'com a consulta fechada a resposta continua aparecendo');
 reset role;
+
+-- Remover a data da consulta (aberta, com 2 datas) NÃO mexe na escala; a função passa a devolver zero linhas
+update public.consultas_disponibilidade set fechada = false where id = '00000000-0000-0000-0000-00000053c001';
+insert into public.datas_consulta (id, consulta_id, ministerio_id, data) values
+  ('00000000-0000-0000-0000-00000053d002', '00000000-0000-0000-0000-00000053c001', '00000000-0000-0000-0000-00000053000a', '2026-12-30');
+set local role authenticated;
+select is(public.remover_data_consulta('00000000-0000-0000-0000-00000053d001', true) ->> 'removida', 'true', 'o líder remove a data que coincide com a escala');
+select is((select count(*) from public.disponibilidade_da_escala('00000000-0000-0000-0000-00000053e001')), 0::bigint, 'sem a data, a função devolve zero linhas (nada a mostrar)');
+reset role;
+select is((select situacao::text || '|' || data::text from public.escalas where id = '00000000-0000-0000-0000-00000053e001'), 'rascunho|2026-12-13', 'a escala continua exatamente como estava');
 
 -- Só o gestor
 select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000005302", "role": "authenticated"}', true);

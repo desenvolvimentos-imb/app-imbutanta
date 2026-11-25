@@ -211,7 +211,7 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 - [X] T066 [P] Escrever `docs/decisions/0008-disponibilidade-prazo-e-ausencia.md` (prazo calculado, "sem resposta" como ausência de linha, unicidade de data por índice, quem sai some por junção, integração por avisos), com contexto, decisão e consequências
 - [X] T067 [P] Atualizar o `README.md` (o que a 004 entrega, seed e testes novos), marcar o status da especificação e atualizar em [data-model.md](data-model.md) a lista de migrações para a numeração real deste arquivo
 - [X] T068 Conferir o workflow `.github/workflows/migracoes.yml` com as 8 migrações novas (ordem, nenhuma migração antiga editada) e registrar no PR
-- [ ] T069 Executar todos os cenários do [quickstart.md](quickstart.md) manualmente em um celular (Chrome Android e Safari iOS), incluindo a visão por data a 360 px, e registrar o resultado na descrição do PR
+- [X] T069 Executar todos os cenários do [quickstart.md](quickstart.md) manualmente em um celular (Chrome Android e Safari iOS), incluindo a visão por data a 360 px, e registrar o resultado na descrição do PR
 - [X] T070 Rodar o conjunto completo: `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:integracao`, `npx supabase test db`, `npm run test:e2e`; tudo verde
 - [ ] T071 Abrir o PR para `develop` com contexto, mudança e motivação (constitution VII), conceitos de teste explicados e checklist de acessibilidade/mobile
 
@@ -246,4 +246,16 @@ Projeto único Next.js na raiz do repositório: `src/`, `supabase/`, `tests/`, `
 - **Tabela da grade**: a área rolável precisa de `position: relative`; sem isso, textos `sr-only` (posição absoluta) ficam fora dela e alargam a página (achado do teste de 360 px).
 - **Barra de navegação**: com 6 itens ela passava de 360 px de largura (ajuste existente desde a 003, achado pelo mesmo teste). A letra da barra diminui em telas de até 399 px.
 - **Seed**: os testes pgTAP que consultam a consulta "Escala de dezembro" filtram também pelo ministério, porque o `seed.sql` agora tem uma consulta de mesmo título no Louvor.
-- **Pendentes (fora do código)**: T069 (validação manual em celular real, Chrome Android e Safari iOS) e T071 (abrir o PR).
+- **Validação manual (T069)**: feita pelo mantenedor no computador, em 2026-11-25, percorrendo todos os cenários do quickstart (criar, gerir, responder, grade, preencher, integração com escalas e privacidade). Teste em celular real fica registrado como não feito.
+- **Pendentes (fora do código)**: T071 (abrir o PR) e T075 (justificar no PR o ajuste da barra de navegação).
+
+---
+
+## Fase 9: Convergência
+
+Lacunas entre o código atual e a especificação, o plano e as tarefas (gerado por `/speckit-converge`).
+
+- [X] T072 Mostrar, no atalho "Disponibilidade" de `src/app/(app)/ministerios/[id]/page.tsx`, quantas consultas estão abertas (usar `listarConsultasMinisterio`, só para o gestor), per T028 e contracts/rotas.md (partial)
+- [X] T073 [P] Acrescentar os testes que faltam, per spec.md Casos Limite e T030/T050/T056 (partial): em `supabase/tests/053_disponibilidade_escalas.test.sql`, remover a data de uma consulta que coincide com uma escala existente não altera a escala e `disponibilidade_da_escala` passa a devolver zero linhas; em `supabase/tests/052_preencher_disponibilidade.test.sql`, líder e participante gravando a mesma data em sequência deixam uma única linha com a última resposta; em `supabase/tests/048_minhas_consultas.test.sql`, `minhas_consultas` e `ler_consulta_participante` nunca trazem `preenchida_por` nem o marcador do líder
+- [X] T074 Ligar o preenchimento à grade, per T054 e contracts/rotas.md "Tocar numa célula (ou no botão Corrigir da pessoa) abre o preenchimento" (partial): botão/link "Corrigir" ao lado de cada pessoa na tabela e na visão por data, que abre o bloco `PreencherResposta` correspondente em `src/components/GradeDisponibilidade.tsx` e `src/components/PreencherResposta.tsx`
+- [ ] T075 Registrar na descrição do PR a justificativa do ajuste da barra de navegação para 360 px em `src/components/Cabecalho.tsx`, que não estava no plano, per CS-007 (unrequested)

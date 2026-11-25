@@ -1,7 +1,7 @@
 -- T050: preencher_disponibilidade (líder). Relógio: 10/12/2026.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(16);
+select plan(19);
 
 create or replace function public.agora_sp() returns timestamptz language sql stable as
   $$ select '2026-12-10 12:00:00+00'::timestamptz $$;
@@ -82,6 +82,19 @@ select lives_ok($$ select public.responder_disponibilidade('00000000-0000-0000-0
 reset role;
 select is((select preenchida_por from public.respostas_disponibilidade where data_id = '00000000-0000-0000-0000-00000052d001' and perfil_id = '00000000-0000-0000-0000-000000005202'),
           '00000000-0000-0000-0000-000000005201'::uuid, 'resposta repetida mantém a marca do líder; só muda quando a resposta muda');
+
+-- Líder e participante gravando a mesma data em sequência: uma única linha, com a última resposta
+update public.ministerios set ativo = true where id = '00000000-0000-0000-0000-00000052000a';
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000005201", "role": "authenticated"}', true);
+set local role authenticated;
+select lives_ok($$ select public.preencher_disponibilidade('00000000-0000-0000-0000-00000052c001', '00000000-0000-0000-0000-000000005202', '[{"data_id":"00000000-0000-0000-0000-00000052d001","resposta":"disponivel"}]') $$, 'líder grava "disponível"');
+reset role;
+select set_config('request.jwt.claims', '{"sub": "00000000-0000-0000-0000-000000005202", "role": "authenticated"}', true);
+set local role authenticated;
+select lives_ok($$ select public.responder_disponibilidade('00000000-0000-0000-0000-00000052c001', '[{"data_id":"00000000-0000-0000-0000-00000052d001","resposta":"indisponivel"}]') $$, 'em seguida a pessoa grava "indisponível"');
+reset role;
+select is((select count(*) || '|' || min(resposta::text) from public.respostas_disponibilidade where data_id = '00000000-0000-0000-0000-00000052d001' and perfil_id = '00000000-0000-0000-0000-000000005202'),
+          '1|indisponivel', 'vale a última gravada, sem erro nem linha duplicada');
 
 select * from finish();
 rollback;

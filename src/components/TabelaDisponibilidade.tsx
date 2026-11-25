@@ -6,7 +6,7 @@ import { SeloDisponibilidade } from "@/components/SeloDisponibilidade";
 import type { GradeConsulta } from "@/lib/disponibilidade/consultas";
 import { formatarDataConsulta } from "@/lib/disponibilidade/datas";
 
-export function TabelaDisponibilidade({ grade }: { grade: GradeConsulta }) {
+export function TabelaDisponibilidade({ grade, podeCorrigir = false }: { grade: GradeConsulta; podeCorrigir?: boolean }) {
   // Funções que aparecem em alguma data, na ordem do banco (nome).
   const funcoes = grade.datas[0]?.por_funcao ?? [];
   return (
@@ -28,6 +28,10 @@ export function TabelaDisponibilidade({ grade }: { grade: GradeConsulta }) {
             <tr key={p.perfil_id} className="border-t border-slate-300 align-top">
               <th scope="row" className="sticky left-0 z-10 bg-white p-2 font-medium">
                 {p.nome}
+                {podeCorrigir && (
+                  <a href={`#corrigir-${p.perfil_id}`} aria-label={`Corrigir respostas de ${p.nome}`}
+                     className="mt-1 flex min-h-11 items-center text-base font-medium text-blue-900 underline">Corrigir</a>
+                )}
                 {p.nao_respondeu && (
                   <span className="mt-1 block rounded border border-amber-800 bg-amber-50 px-1.5 text-sm font-semibold text-amber-950">Ainda não respondeu</span>
                 )}

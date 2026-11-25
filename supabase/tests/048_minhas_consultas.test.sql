@@ -1,7 +1,7 @@
 -- T031: minhas_consultas, ler_consulta_participante e contar_consultas_pendentes. Relógio: 10/12/2026.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(17);
+select plan(19);
 
 create or replace function public.agora_sp() returns timestamptz language sql stable as
   $$ select '2026-12-10 12:00:00+00'::timestamptz $$;
@@ -33,6 +33,9 @@ insert into public.datas_consulta (id, consulta_id, ministerio_id, data) values
 insert into public.respostas_disponibilidade (data_id, perfil_id, resposta) values
   ('00000000-0000-0000-0000-00000048d001', '00000000-0000-0000-0000-000000004801', 'disponivel'),
   ('00000000-0000-0000-0000-00000048d001', '00000000-0000-0000-0000-000000004802', 'indisponivel');
+-- A resposta do P1 foi preenchida por outra pessoa (líder): a própria pessoa nunca vê esse marcador.
+update public.respostas_disponibilidade set preenchida_por = '00000000-0000-0000-0000-000000004802'
+ where perfil_id = '00000000-0000-0000-0000-000000004801';
 insert into public.observacoes_disponibilidade (consulta_id, perfil_id, texto) values
   ('00000000-0000-0000-0000-00000048c001', '00000000-0000-0000-0000-000000004802', 'Segredo do P2');
 
@@ -46,6 +49,8 @@ select is(public.minhas_consultas() -> 'abertas' -> 0 -> 'datas' -> 1 ->> 'respo
 select is(jsonb_array_length(public.minhas_consultas() -> 'fechadas_recentes'), 1, 'fechadas recentes: só a dos últimos 60 dias');
 select is(public.minhas_consultas() -> 'fechadas_recentes' -> 0 ->> 'pode_responder', 'false', 'fechada: não pode responder');
 select ok(public.minhas_consultas()::text not like '%Segredo do P2%' and public.minhas_consultas()::text not like '%u2.48%', 'não traz observação nem dados do colega');
+select ok(public.minhas_consultas()::text not like '%preenchida%', 'minhas_consultas não traz quem preencheu nem o marcador do líder');
+select ok(public.ler_consulta_participante('00000000-0000-0000-0000-00000048c001')::text not like '%preenchida%', 'ler_consulta_participante também não');
 select is(public.ler_consulta_participante('00000000-0000-0000-0000-00000048c001') ->> 'titulo', 'Aberta A', 'ler_consulta_participante devolve a consulta');
 select is(public.ler_consulta_participante('00000000-0000-0000-0000-00000048c002') ->> 'pode_responder', 'false', 'consulta fechada abre só para leitura');
 select is(public.ler_consulta_participante('00000000-0000-0000-0000-00000048c00b'), null::jsonb, 'consulta de outro ministério: nulo');
