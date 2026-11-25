@@ -104,4 +104,20 @@ describe("traduzirErro", () => {
       expect(m, c).not.toMatch(/Algo deu errado/);
     }
   });
+
+  it("disponibilidade: cada código novo tem mensagem em português, sem texto técnico", () => {
+    const codigos = [
+      "consulta_invalida", "consulta_sem_datas", "consulta_fechada", "consulta_ja_aberta", "prazo_invalido",
+      "prazo_vencido", "data_duplicada", "data_encerrada", "resposta_invalida",
+    ];
+    for (const c of codigos) {
+      const m = traduzirErro({ message: c });
+      expect(m, c).not.toBe(c);
+      expect(m, c).toMatch(/[.]$/);
+      expect(m, c).not.toMatch(/Algo deu errado/);
+    }
+  });
+  it("data repetida cita o título da consulta que já tem a data", () => {
+    expect(traduzirErro({ message: "data_duplicada", details: "Escala de dezembro" })).toContain("Escala de dezembro");
+  });
 });

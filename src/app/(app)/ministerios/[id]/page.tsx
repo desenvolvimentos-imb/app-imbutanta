@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AcaoComConfirmacao } from "@/components/AcaoComConfirmacao";
 import { BotaoPedirEntrada } from "@/components/AcoesPedido";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { listarConsultasMinisterio } from "@/lib/disponibilidade/consultas";
 import { contarEscalasComVagasAbertas, contarEscalasFuturas } from "@/lib/escalas/consultas";
 import { classesBotao } from "@/components/estilos-botao";
 import { BuscaPessoa } from "@/components/BuscaPessoa";
@@ -59,6 +60,7 @@ export default async function PaginaMinisterio({
   const [minhasParticipacoes, meusPedidos] = await Promise.all([listarMinhasParticipacoes(), listarMeusPedidos()]);
   const participa = minhasParticipacoes.some((p) => p.ministerio_id === ministerio.id);
   const vagasAbertas = podeGerir ? await contarEscalasComVagasAbertas(ministerio.id) : 0;
+  const consultasAbertas = podeGerir ? (await listarConsultasMinisterio(ministerio.id)).filter((c) => c.aberta).length : 0;
   // Antes de o administrador confirmar a desativação, o app diz quantas escalas futuras serão canceladas.
   const escalasFuturas = ehAdmin && ministerio.ativo ? await contarEscalasFuturas(ministerio.id) : 0;
   const avisoEscalas =
@@ -105,6 +107,14 @@ export default async function PaginaMinisterio({
           </Link>
           <Link href={`/ministerios/${ministerio.id}/funcoes`} className={classesBotao("secundario")}>
             Funções e aptidões
+          </Link>
+          {consultasAbertas > 0 && (
+            <p role="status" className="rounded-lg border border-blue-900 bg-blue-50 p-3 text-base text-blue-950">
+              {consultasAbertas === 1 ? "1 consulta de disponibilidade aberta." : `${consultasAbertas} consultas de disponibilidade abertas.`}
+            </p>
+          )}
+          <Link href={`/ministerios/${ministerio.id}/disponibilidade`} className={classesBotao("secundario")}>
+            Disponibilidade
           </Link>
         </section>
       )}

@@ -32,4 +32,16 @@ describe("lerAvisos", () => {
     expect(lerAvisos(null)).toEqual([]);
     expect(lerAvisos({})).toEqual([]);
   });
+
+  it("aviso de disponibilidade (004): lê e escreve em português", () => {
+    const avisos = lerAvisos([
+      { tipo: "sem_disponibilidade", resposta: "indisponivel" },
+      { tipo: "sem_disponibilidade", resposta: "sem_resposta" },
+      { tipo: "sem_disponibilidade", resposta: "disponivel" },
+      { tipo: "sem_disponibilidade" },
+    ]);
+    expect(avisos).toHaveLength(2);
+    expect(textoDoAviso(avisos[0])).toBe("Esta pessoa marcou que está indisponível nesta data.");
+    expect(textoDoAviso(avisos[1])).toBe("Esta pessoa ainda não respondeu sobre esta data.");
+  });
 });

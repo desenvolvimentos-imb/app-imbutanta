@@ -1,11 +1,13 @@
 // Vagas de uma escala em modo de leitura: função, rótulo e quem ocupa (ou "Em aberto").
 // O gestor recebe também a resposta, o motivo da recusa e o destaque (FR-022, FR-023).
 import { DestaqueVaga } from "@/components/DestaqueVaga";
+import { SeloDisponibilidade } from "@/components/SeloDisponibilidade";
+import type { SituacaoNaData } from "@/lib/disponibilidade/consultas";
 import type { VagaDaEscala } from "@/lib/escalas/consultas";
 
 const ROTULO_RESPOSTA = { pendente: "Pendente", confirmado: "Confirmado", recusado: "Recusado" } as const;
 
-export function ListaVagas({ vagas }: { vagas: VagaDaEscala[] }) {
+export function ListaVagas({ vagas, disponibilidade = {} }: { vagas: VagaDaEscala[]; disponibilidade?: Record<string, SituacaoNaData> }) {
   if (vagas.length === 0) {
     return <p className="rounded-lg bg-slate-100 p-4 text-lg">Esta escala ainda não tem vagas.</p>;
   }
@@ -30,6 +32,11 @@ export function ListaVagas({ vagas }: { vagas: VagaDaEscala[] }) {
               <span className="font-medium">Em aberto</span>
             )}
           </p>
+          {v.pessoa && disponibilidade[v.pessoa.id] && disponibilidade[v.pessoa.id] !== "disponivel" && (
+            <p className="flex flex-wrap items-center gap-2 text-base">
+              Disponibilidade nesta data: <SeloDisponibilidade situacao={disponibilidade[v.pessoa.id]} />
+            </p>
+          )}
           {v.resposta && (
             <p className="text-base text-slate-800">
               Resposta: {ROTULO_RESPOSTA[v.resposta]}

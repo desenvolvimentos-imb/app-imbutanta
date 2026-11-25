@@ -12,6 +12,7 @@ import { ListaVagas } from "@/components/ListaVagas";
 import { SeloTroca } from "@/components/SeloTroca";
 import { PublicarEscala } from "@/components/PublicarEscala";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { disponibilidadeDaEscala } from "@/lib/disponibilidade/consultas";
 import {
   lerEscala, listarCandidatasTroca, listarCandidatos, listarFuncoes, listarPedidosDaEscala,
 } from "@/lib/escalas/consultas";
@@ -38,6 +39,10 @@ export default async function PaginaEscala({ params }: { params: Promise<{ id: s
     listarPedidosDaEscala(escalaId),
     detalhe.pode_pedir_troca && minhasVagas.length > 0 ? listarCandidatasTroca(minhasVagas[0].id) : Promise.resolve([]),
   ]);
+
+  // Só o gestor vê a disponibilidade das pessoas na data da escala (004, RF-028 a RF-030). Fica vazio
+  // quando a data não pertence a nenhuma consulta do ministério: então nada é mostrado.
+  const disponibilidade = gestor ? Object.fromEntries(await disponibilidadeDaEscala(escalaId)) : {};
 
   const [funcoes, candidatos] = editavel
     ? await Promise.all([listarFuncoes(id, true), listarCandidatos(escalaId)])
@@ -133,9 +138,9 @@ export default async function PaginaEscala({ params }: { params: Promise<{ id: s
       <section aria-labelledby="titulo-vagas" className="flex flex-col gap-4">
         <h2 id="titulo-vagas" className="text-lg font-semibold">Vagas</h2>
         {editavel ? (
-          <EditorVagas ministerioId={id} escalaId={escala.id} vagas={detalhe.vagas} funcoes={funcoes} candidatos={candidatos} />
+          <EditorVagas ministerioId={id} escalaId={escala.id} vagas={detalhe.vagas} funcoes={funcoes} candidatos={candidatos} disponibilidade={disponibilidade} />
         ) : (
-          <ListaVagas vagas={detalhe.vagas} />
+          <ListaVagas vagas={detalhe.vagas} disponibilidade={disponibilidade} />
         )}
       </section>
 

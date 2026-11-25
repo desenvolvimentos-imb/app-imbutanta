@@ -113,3 +113,29 @@ insert into public.vagas_escala (id, escala_id, funcao_id, rotulo, perfil_id, or
 insert into public.respostas_escala (escala_id, perfil_id, resposta, motivo) values
   ('44444444-4444-4444-4444-444444444401', '11111111-1111-1111-1111-111111111102', 'confirmado', ''),
   ('44444444-4444-4444-4444-444444444403', '11111111-1111-1111-1111-111111111101', 'confirmado', '');
+
+-- ===== Disponibilidade (specs/004-disponibilidade-participantes) =====
+-- Louvor: consulta ABERTA "Escala de dezembro" com 4 datas (a primeira coincide com a escala publicada
+-- de exemplo, para validar o aviso ao escalar, e traz o rótulo "Culto especial") e prazo daqui a
+-- alguns dias. Marta respondeu parte (a segunda resposta foi preenchida pelo líder), Lucas ainda não
+-- respondeu nada. Mais uma consulta FECHADA, no histórico.
+insert into public.consultas_disponibilidade (id, ministerio_id, titulo, mensagem, prazo, fechada, criada_por) values
+  ('66666666-6666-6666-6666-666666666601', '22222222-2222-2222-2222-222222222201', 'Escala de dezembro',
+   'Marquem as datas em que podem servir.', current_date + 5, false, '11111111-1111-1111-1111-111111111102'),
+  ('66666666-6666-6666-6666-666666666602', '22222222-2222-2222-2222-222222222201', 'Escala de novembro',
+   '', null, true, '11111111-1111-1111-1111-111111111102');
+insert into public.datas_consulta (id, consulta_id, ministerio_id, data, rotulo) values
+  ('77777777-7777-7777-7777-777777777701', '66666666-6666-6666-6666-666666666601', '22222222-2222-2222-2222-222222222201', current_date + 7, 'Culto especial'),
+  ('77777777-7777-7777-7777-777777777702', '66666666-6666-6666-6666-666666666601', '22222222-2222-2222-2222-222222222201', current_date + 14, ''),
+  ('77777777-7777-7777-7777-777777777703', '66666666-6666-6666-6666-666666666601', '22222222-2222-2222-2222-222222222201', current_date + 21, ''),
+  ('77777777-7777-7777-7777-777777777704', '66666666-6666-6666-6666-666666666601', '22222222-2222-2222-2222-222222222201', current_date + 28, ''),
+  ('77777777-7777-7777-7777-777777777705', '66666666-6666-6666-6666-666666666602', '22222222-2222-2222-2222-222222222201', current_date - 20, ''),
+  ('77777777-7777-7777-7777-777777777706', '66666666-6666-6666-6666-666666666602', '22222222-2222-2222-2222-222222222201', current_date - 13, '');
+insert into public.respostas_disponibilidade (data_id, perfil_id, resposta, preenchida_por) values
+  ('77777777-7777-7777-7777-777777777701', '11111111-1111-1111-1111-111111111103', 'indisponivel', null),
+  ('77777777-7777-7777-7777-777777777702', '11111111-1111-1111-1111-111111111103', 'disponivel', '11111111-1111-1111-1111-111111111102'),
+  ('77777777-7777-7777-7777-777777777705', '11111111-1111-1111-1111-111111111103', 'disponivel', null),
+  ('77777777-7777-7777-7777-777777777705', '11111111-1111-1111-1111-111111111102', 'disponivel', null),
+  ('77777777-7777-7777-7777-777777777706', '11111111-1111-1111-1111-111111111102', 'indisponivel', null);
+insert into public.observacoes_disponibilidade (consulta_id, perfil_id, texto) values
+  ('66666666-6666-6666-6666-666666666601', '11111111-1111-1111-1111-111111111103', 'Posso estar nesse dia se for preciso, mas prefiro não.');

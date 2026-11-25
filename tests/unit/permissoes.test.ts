@@ -93,3 +93,23 @@ describe("rotas de escalas (003): sem regra de rota nova; a barreira por minist�
     expect(destinoPara("recusado", "membro", "/pedidos-de-troca", false)).toBe("/cadastro-recusado");
   });
 });
+
+describe("rotas de disponibilidade (004): sem regra de rota nova; a barreira por ministério é do banco", () => {
+  const rotas = [
+    "/disponibilidade",
+    "/disponibilidade/0b9f3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e",
+    "/ministerios/0b9f3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e/disponibilidade",
+    "/ministerios/0b9f3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e/disponibilidade/nova",
+    "/ministerios/0b9f3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e/disponibilidade/1f8a3b56-6a2e-4c33-9d3a-1c2f4b5a6d7e",
+  ];
+  it("qualquer pessoa aprovada chega às telas (o banco decide o que ela vê)", () => {
+    for (const rota of rotas) {
+      expect(destinoPara("aprovado", "membro", rota, false), rota).toBeNull();
+      expect(destinoPara("aprovado", "administrador", rota, false), rota).toBeNull();
+    }
+  });
+  it("quem não está aprovado continua preso à tela da sua situação", () => {
+    expect(destinoPara("pendente", "membro", "/disponibilidade", false)).toBe("/aguardando-aprovacao");
+    expect(destinoPara("acesso_removido", "membro", rotas[2], false)).toBe("/acesso-removido");
+  });
+});

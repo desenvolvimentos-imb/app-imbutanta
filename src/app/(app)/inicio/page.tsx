@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ATALHOS_MINISTERIOS, atalhosPorPapel } from "@/lib/auth/permissoes";
 import { exigirAcesso } from "@/lib/auth/sessao";
+import { contarConsultasPendentes } from "@/lib/disponibilidade/consultas";
 import { contarPendencias } from "@/lib/escalas/consultas";
 import { contarPedidosPendentes } from "@/lib/ministerios/consultas";
 import { criarClienteServidor } from "@/lib/supabase/server";
@@ -32,7 +33,7 @@ export default async function PaginaInicio() {
     }
   }
 
-  const pendenciasEscala = await contarPendencias();
+  const [pendenciasEscala, consultasPendentes] = await Promise.all([contarPendencias(), contarConsultasPendentes()]);
 
   return (
     <>
@@ -70,6 +71,23 @@ export default async function PaginaInicio() {
             </Link>
           </li>
         </ul>
+      </section>
+
+      <section aria-labelledby="titulo-disponibilidade" className="flex flex-col gap-3">
+        <h2 id="titulo-disponibilidade" className="text-lg font-semibold">
+          Disponibilidade
+        </h2>
+        <Link
+          href="/disponibilidade"
+          className="flex min-h-14 items-center rounded-lg border-2 border-blue-900 px-4 text-lg font-semibold text-blue-900 hover:bg-blue-50"
+        >
+          Disponibilidade
+          {consultasPendentes > 0 && (
+            <span className="ml-2 rounded-full bg-blue-900 px-2 py-0.5 text-sm text-white">
+              Consulta aguardando sua resposta
+            </span>
+          )}
+        </Link>
       </section>
 
       <section aria-labelledby="titulo-ministerios" className="flex flex-col gap-3">

@@ -11,7 +11,10 @@ export type AvisoOutroMinisterio = {
 
 export type AvisoSemAptidao = { tipo: "sem_aptidao"; funcao: string };
 
-export type Aviso = AvisoOutroMinisterio | AvisoSemAptidao;
+/** A data da escala está numa consulta de disponibilidade do ministério (004) e a pessoa não confirmou. */
+export type AvisoSemDisponibilidade = { tipo: "sem_disponibilidade"; resposta: "indisponivel" | "sem_resposta" };
+
+export type Aviso = AvisoOutroMinisterio | AvisoSemAptidao | AvisoSemDisponibilidade;
 
 /** Frase exigida pela especificação para o conflito entre ministérios. */
 export const TEXTO_OUTRO_MINISTERIO = "participante já escalado em outro ministério neste mesmo dia";
@@ -20,6 +23,11 @@ export const TEXTO_OUTRO_MINISTERIO = "participante já escalado em outro minist
 export function textoDoAviso(aviso: Aviso): string {
   if (aviso.tipo === "outro_ministerio") {
     return `${TEXTO_OUTRO_MINISTERIO}: ${aviso.ministerio}, ${aviso.evento}, às ${aviso.horario.slice(0, 5)}.`;
+  }
+  if (aviso.tipo === "sem_disponibilidade") {
+    return aviso.resposta === "indisponivel"
+      ? "Esta pessoa marcou que está indisponível nesta data."
+      : "Esta pessoa ainda não respondeu sobre esta data.";
   }
   return `Esta pessoa não está apta para a função ${aviso.funcao}.`;
 }
@@ -35,6 +43,8 @@ export function lerAvisos(bruto: unknown): Aviso[] {
       avisos.push({ tipo: "outro_ministerio", ministerio: a.ministerio, evento: a.evento, horario: a.horario });
     } else if (a.tipo === "sem_aptidao" && typeof a.funcao === "string") {
       avisos.push({ tipo: "sem_aptidao", funcao: a.funcao });
+    } else if (a.tipo === "sem_disponibilidade" && (a.resposta === "indisponivel" || a.resposta === "sem_resposta")) {
+      avisos.push({ tipo: "sem_disponibilidade", resposta: a.resposta });
     }
   }
   return avisos;
