@@ -44,7 +44,7 @@ export function AcoesConsulta({ ministerioId, consultaId, aberta, prazoVencido, 
       <MensagemInfo texto={estadoReabrir.info} />
       {campos}
       {prazoVencido && (
-        <fieldset className="flex flex-col gap-3 rounded-lg border border-amber-800 bg-amber-50 p-3">
+        <fieldset className="min-w-0 flex flex-col gap-3 rounded-lg border border-amber-800 bg-amber-50 p-3">
           <legend className="px-1 text-base font-semibold text-amber-950">O prazo desta consulta já passou</legend>
           <div className="flex flex-col gap-1">
             <label htmlFor="novo_prazo" className="text-base font-medium">Novo prazo</label>

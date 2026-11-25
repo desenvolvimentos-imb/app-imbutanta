@@ -15,7 +15,8 @@ export function NavegacaoInferior({ papel, lidera }: { papel: Papel; lidera: boo
   // Rótulos curtos: o celular tem pouca largura. "Escalas" leva a Minhas escalas e "Trocas" aos
   // Pedidos de troca; "Aprovações" (pedidos de entrada e contas novas) só aparece a quem decide.
   // "Usuários" fica na tela inicial (Gestão) para a barra não passar de 6 itens. Em telas de 360 px ou
-  // menos, a letra da barra diminui um pouco para os 6 itens caberem sem rolagem horizontal da página.
+  // menos, a letra da barra diminui um pouco e, se a fonte do aparelho for mais larga, a palavra pode
+  // quebrar em vez de alargar a página (visto no CI, que usa outra fonte): sem rolagem horizontal.
   const aprovacoes = atalhosPorPapel(papel, lidera).find((a) => a.href === "/aprovacoes");
   const itens = [
     { href: "/inicio", rotulo: "Início" },
@@ -37,7 +38,7 @@ export function NavegacaoInferior({ papel, lidera }: { papel: Papel; lidera: boo
           <li key={i.href} className="min-w-0 flex-1">
             <Link
               href={i.href}
-              className="flex min-h-14 items-center justify-center px-0.5 text-center text-xs font-medium min-[400px]:px-1 min-[400px]:text-sm text-blue-950 hover:bg-blue-50 focus:outline-3 focus:outline-offset-[-3px] focus:outline-blue-700"
+              className="flex min-h-14 items-center justify-center px-0.5 text-center text-xs font-medium [overflow-wrap:anywhere] min-[400px]:px-1 min-[400px]:text-sm text-blue-950 hover:bg-blue-50 focus:outline-3 focus:outline-offset-[-3px] focus:outline-blue-700"
             >
               {i.rotulo}
             </Link>

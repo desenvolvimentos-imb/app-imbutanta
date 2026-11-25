@@ -60,7 +60,7 @@ export function SeletorDatas({ hoje, inicial = [], jaExistentes = 0 }: Props) {
   })();
 
   return (
-    <fieldset className="flex flex-col gap-4 rounded-lg border border-slate-400 p-4">
+    <fieldset className="min-w-0 flex flex-col gap-4 rounded-lg border border-slate-400 p-4">
       <legend className="px-1 text-base font-semibold">Datas da consulta</legend>
       <input type="hidden" name="datas" value={JSON.stringify(lista)} />
 
@@ -68,7 +68,7 @@ export function SeletorDatas({ hoje, inicial = [], jaExistentes = 0 }: Props) {
         <label htmlFor="nova-data" className="text-base font-medium">Escolher uma data</label>
         <div className="flex gap-2">
           <input id="nova-data" type="date" min={hoje} value={dataNova} onChange={(e) => setDataNova(e.target.value)}
-                 className="min-h-12 flex-1 rounded-lg border border-slate-500 bg-white px-3 text-base" />
+                 className="min-h-12 min-w-0 flex-1 rounded-lg border border-slate-500 bg-white px-3 text-base" />
           <button type="button" onClick={adicionarUma} className={`${classesBotao("secundario")} !w-auto`}>
             Adicionar data
           </button>
@@ -78,15 +78,15 @@ export function SeletorDatas({ hoje, inicial = [], jaExistentes = 0 }: Props) {
       <div className="flex flex-col gap-2 border-t border-slate-300 pt-3">
         <p className="text-base font-medium">Ou todos os dias da semana de um mês</p>
         <div className="grid grid-cols-2 gap-2">
-          <div className="flex flex-col gap-1">
+          <div className="flex min-w-0 flex-col gap-1">
             <label htmlFor="atalho-mes" className="text-sm text-slate-800">Mês</label>
             <input id="atalho-mes" type="month" value={mes} min={hoje.slice(0, 7)} onChange={(e) => setMes(e.target.value)}
-                   className="min-h-12 rounded-lg border border-slate-500 bg-white px-3 text-base" />
+                   className="min-h-12 w-full min-w-0 rounded-lg border border-slate-500 bg-white px-3 text-base" />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex min-w-0 flex-col gap-1">
             <label htmlFor="atalho-dia" className="text-sm text-slate-800">Dia da semana</label>
             <select id="atalho-dia" value={diaDaSemana} onChange={(e) => setDiaDaSemana(Number(e.target.value))}
-                    className="min-h-12 rounded-lg border border-slate-500 bg-white px-3 text-base">
+                    className="min-h-12 w-full min-w-0 rounded-lg border border-slate-500 bg-white px-3 text-base">
               {DIAS_DA_SEMANA.map((nome, i) => <option key={nome} value={i}>{nome}</option>)}
             </select>
           </div>
@@ -114,7 +114,7 @@ export function SeletorDatas({ hoje, inicial = [], jaExistentes = 0 }: Props) {
                   <input id={`rotulo-${d.data}`} type="text" maxLength={40} placeholder="Rótulo (opcional), ex.: Culto especial"
                          value={d.rotulo}
                          onChange={(e) => setLista((atual) => atual.map((x, j) => (j === i ? { ...x, rotulo: e.target.value } : x)))}
-                         className="min-h-12 flex-1 rounded-lg border border-slate-500 bg-white px-3 text-base" />
+                         className="min-h-12 min-w-0 flex-1 rounded-lg border border-slate-500 bg-white px-3 text-base" />
                   <button type="button" onClick={() => setLista((atual) => atual.filter((_, j) => j !== i))}
                           aria-label={`Remover ${formatarDataConsulta(d.data)}`}
                           className={`${classesBotao("secundario")} !w-auto`}>

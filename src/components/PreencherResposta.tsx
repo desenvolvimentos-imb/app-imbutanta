@@ -48,7 +48,7 @@ export function PreencherResposta({ acao, ministerioId, consultaId, datas, pesso
         <input type="hidden" name="consulta" value={consultaId} />
         <input type="hidden" name="perfil" value={pessoa.perfil_id} />
         {datas.map((d) => (
-          <fieldset key={d.id} className="flex flex-col gap-2">
+          <fieldset key={d.id} className="min-w-0 flex flex-col gap-2">
             <legend className="text-base font-medium">
               {formatarDataConsulta(d.data)}{d.rotulo && ` · ${d.rotulo}`}
             </legend>

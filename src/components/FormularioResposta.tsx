@@ -39,7 +39,7 @@ export function FormularioResposta({ consulta, acao }: Props) {
         const bloqueada = somenteLeitura || d.passada;
         const atual = d.resposta ?? "";
         return (
-          <fieldset key={d.id} disabled={bloqueada} className="flex flex-col gap-2 rounded-lg border border-slate-400 p-3">
+          <fieldset key={d.id} disabled={bloqueada} className="min-w-0 flex flex-col gap-2 rounded-lg border border-slate-400 p-3">
             <legend className="px-1 text-lg font-semibold">
               {formatarDataConsulta(d.data)}
               {d.rotulo && <span className="font-normal text-slate-800"> · {d.rotulo}</span>}
